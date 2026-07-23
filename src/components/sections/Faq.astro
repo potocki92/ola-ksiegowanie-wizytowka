@@ -1,4 +1,7 @@
 ---
+import Section from "../ui/Section.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+
 interface FaqItem {
 	q: string;
 	a: string;
@@ -27,20 +30,23 @@ const faqs: FaqItem[] = [
 	},
 	{
 		q: "Ile to kosztuje?",
-		a: "Prowadzenie JDG zaczyna się od 200 zł miesięcznie. Ostateczną stawkę ustalam po konsultacji — zależy od formy opodatkowania, VAT-u i liczby dokumentów.",
+		a: "Prowadzenie JDG zaczyna się od 250 zł miesięcznie w promocji dla nowych klientów (cena regularna 350 zł). Ostateczną stawkę ustalam po konsultacji — zależy od formy opodatkowania, VAT-u i liczby dokumentów.",
 	},
 ];
 ---
 
-<section id="faq" class="px-[clamp(18px,4vw,56px)] py-[clamp(60px,8vw,120px)]">
-	<div class="mx-auto grid max-w-[1220px] items-start gap-7 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-[clamp(32px,5vw,72px)]">
-		<div>
-			<div class="mb-3.5 text-[13px] font-bold tracking-[1px] text-accent uppercase">FAQ</div>
-			<h2 class="text-[clamp(28px,4vw,48px)] leading-[1.05] tracking-[-0.03em]">Częste pytania</h2>
-			<p class="mt-4 max-w-[30ch] text-[15px] leading-[1.6] text-muted-600">
-				Nie znalazłeś odpowiedzi? Napisz — odpowiadam tego samego dnia.
-			</p>
-		</div>
+<Section id="faq">
+	<div class="grid items-start gap-7 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-[clamp(32px,5vw,72px)]">
+		<SectionHeading
+			eyebrow="FAQ"
+			heading="Częste pytania"
+			lead="Nie znalazłeś odpowiedzi? Napisz — odpowiadam tego samego dnia."
+			variant="inline"
+			headingWidth="none"
+			leadWidth="max-w-[30ch]"
+			leadClass="text-[15px]"
+			headingClass="text-[clamp(28px,4vw,48px)] leading-[1.05] tracking-[-0.03em]"
+		/>
 		<div>
 			{
 				faqs.map((faq, i) => (
@@ -54,7 +60,7 @@ const faqs: FaqItem[] = [
 							<span>{faq.q}</span>
 							<span
 								data-faq-icon
-								class="flex-shrink-0 font-sans text-[26px] leading-none font-normal text-accent transition-transform duration-[250ms]"
+								class="shrink-0 font-sans text-[26px] leading-none font-normal text-accent transition-transform duration-250"
 								style={i === 0 ? "transform: rotate(45deg)" : undefined}
 							>
 								+
@@ -73,7 +79,7 @@ const faqs: FaqItem[] = [
 			}
 		</div>
 	</div>
-</section>
+</Section>
 
 <script>
 	const buttons = document.querySelectorAll<HTMLButtonElement>("[data-faq-toggle]");
