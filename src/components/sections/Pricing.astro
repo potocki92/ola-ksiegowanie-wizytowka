@@ -1,0 +1,89 @@
+---
+import Icon from "../ui/Icon.astro";
+
+const includedItems = [
+	"Prowadzenie KPiR / ryczałtu",
+	"Rozliczenia VAT i JPK",
+	"Deklaracje i rozliczenia ZUS",
+	"Doradztwo w wyborze formy",
+	"Przypomnienia o terminach",
+	"Stały kontakt z księgową",
+];
+---
+
+<section id="cennik" class="px-[clamp(18px,4vw,56px)] py-[clamp(60px,8vw,120px)]">
+	<div class="mx-auto max-w-[1000px]">
+		<div class="mx-auto mb-[clamp(36px,4vw,56px)] max-w-[50ch] text-center">
+			<div class="mb-3.5 text-[13px] font-bold tracking-[1px] text-accent uppercase">Cennik</div>
+			<h2 class="text-[clamp(30px,4.6vw,56px)] leading-[1.02] tracking-[-0.03em]">
+				Jasna cena. Bez ukrytych dopłat.
+			</h2>
+			<p class="mt-4 text-base leading-[1.6] text-muted-600">
+				Ostateczną stawkę ustalam po bezpłatnej konsultacji — zależy od formy opodatkowania,
+				VAT-u i liczby dokumentów w miesiącu.
+			</p>
+		</div>
+
+		<div class="grid gap-3.5 md:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)] md:gap-5">
+			<div
+				class="relative overflow-hidden rounded-[26px] bg-linear-to-br from-muted-900 to-muted-800 p-[clamp(28px,3.2vw,44px)] text-white shadow-[0_30px_60px_-34px_rgba(11,11,18,0.5)]"
+			>
+				<div
+					class="pointer-events-none absolute -top-12.5 -right-12.5 h-[220px] w-[220px] rounded-full bg-[radial-gradient(circle,rgba(123,108,246,0.4),transparent_70%)]"
+				>
+				</div>
+				<div class="relative">
+					<div class="text-[13px] font-bold tracking-[0.5px] text-white/60 uppercase">
+						Prowadzenie JDG
+					</div>
+					<div class="mt-3 flex items-baseline gap-2">
+						<span class="text-base opacity-75">od</span>
+						<span class="font-display text-[clamp(48px,7vw,74px)] leading-none font-extrabold tracking-[-0.04em]">
+							200 zł
+						</span>
+						<span class="text-base opacity-75">/ mies.</span>
+					</div>
+					<div class="my-6 h-px bg-white/16"></div>
+					<ul class="grid gap-3 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-3.5">
+						{
+							includedItems.map((item) => (
+								<li class="flex items-start gap-2.5 text-[14.5px] font-medium">
+									<Icon
+										name="check"
+										size={18}
+										strokeWidth={2.4}
+										class="mt-px flex-shrink-0 text-success-mint"
+									/>
+									{item}
+								</li>
+							))
+						}
+					</ul>
+					<a
+						href="#kontakt"
+						class="mt-7.5 inline-flex h-13 items-center justify-center gap-2.5 rounded-2xl bg-white px-7 text-[15px] font-bold text-muted-900 transition-transform duration-200 hover:-translate-y-0.5"
+					>
+						Wyceń moją firmę →
+					</a>
+				</div>
+			</div>
+			<div
+				class="flex flex-col rounded-[26px] border border-border-2 bg-white p-[clamp(26px,3vw,40px)] shadow-[0_16px_40px_-30px_rgba(11,11,18,0.25)]"
+			>
+				<div class="text-[13px] font-bold tracking-[0.5px] text-muted-100 uppercase">
+					Założenie JDG
+				</div>
+				<div class="mt-3 font-display text-[clamp(28px,3.6vw,40px)] leading-[1.05] font-extrabold tracking-[-0.02em]">
+					W cenie<br />prowadzenia
+				</div>
+				<p class="mt-3.5 text-[14.5px] leading-[1.6] text-muted-600">
+					Rejestracja firmy jest bezpłatna, gdy zostajemy na dłużej. Sama rejestracja bez dalszej
+					współpracy — <strong class="font-extrabold text-ink">50 zł jednorazowo</strong>.
+				</p>
+				<div class="mt-auto border-t border-border-4 pt-5 text-[13px] text-muted-300">
+					Umowę i pełnomocnictwo (UPL-1) załatwiamy zdalnie.
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
