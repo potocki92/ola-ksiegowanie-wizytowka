@@ -1,0 +1,120 @@
+---
+import Icon from "../ui/Icon.astro";
+
+const navLinks = [
+	{ href: "#uslugi", label: "Usługi" },
+	{ href: "#o-mnie", label: "O mnie" },
+	{ href: "#cennik", label: "Cennik" },
+	{ href: "#faq", label: "FAQ" },
+];
+---
+
+<div
+	class="hidden md:block border-b border-black/[0.06] bg-white"
+>
+	<div
+		class="mx-auto flex max-w-[1220px] items-center justify-center gap-2.5 px-6 py-2.5 text-[13px] font-semibold text-muted-600"
+	>
+		<span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+		Przyjmuję nowych klientów na 2026 · pierwsza konsultacja bezpłatnie
+	</div>
+</div>
+
+<nav
+	class="sticky top-0 z-[60] flex items-center justify-between px-[clamp(18px,4vw,56px)] py-3.5 bg-bg/78 backdrop-blur-xl border-b border-black/[0.06]"
+>
+	<a href="#top" class="flex items-center gap-2.5 text-ink">
+		<span
+			class="grid h-[38px] w-[38px] place-items-center rounded-[11px] bg-linear-to-br from-accent to-accent-2 font-display text-base font-extrabold text-white shadow-[0_6px_16px_-6px_rgba(79,91,242,0.7)]"
+		>
+			AP
+		</span>
+		<span class="font-display text-lg font-extrabold tracking-[-0.02em]">Potocka</span>
+	</a>
+
+	<div class="hidden md:flex items-center gap-[18px] lg:gap-[30px]">
+		{
+			navLinks.map((link) => (
+				<a href={link.href} class="text-[14.5px] font-semibold text-muted-700">
+					{link.label}
+				</a>
+			))
+		}
+		<a
+			href="#kontakt"
+			class="inline-flex h-[42px] items-center rounded-full bg-ink px-5 text-sm font-semibold text-white transition-transform duration-200 hover:-translate-y-px"
+		>
+			Bezpłatna konsultacja
+		</a>
+	</div>
+
+	<button
+		id="menu-toggle"
+		aria-label="Menu"
+		aria-expanded="false"
+		aria-controls="mobile-menu"
+		class="grid h-11 w-11 place-items-center rounded-xl bg-[#F1F2F7] md:hidden"
+	>
+		<Icon name="menu" size={24} />
+	</button>
+</nav>
+
+<div
+	id="mobile-menu"
+	hidden
+	class="fixed inset-0 z-[70] flex flex-col bg-bg px-[clamp(18px,4vw,56px)] py-3.5 animate-sheet-up"
+>
+	<div class="flex items-center justify-between">
+		<span class="font-display text-lg font-extrabold">Potocka</span>
+		<button
+			id="menu-close"
+			aria-label="Zamknij"
+			class="grid h-11 w-11 place-items-center rounded-xl border-none bg-[#F1F2F7]"
+		>
+			<Icon name="close" size={22} />
+		</button>
+	</div>
+	<div class="mt-8 flex flex-col gap-1.5">
+		{
+			navLinks.map((link) => (
+				<a
+					href={link.href}
+					data-menu-link
+					class="border-b border-border py-3 font-display text-[30px] font-bold text-ink"
+				>
+					{link.label}
+				</a>
+			))
+		}
+	</div>
+	<a
+		href="#kontakt"
+		data-menu-link
+		class="mt-auto flex h-14 items-center justify-center rounded-2xl bg-linear-to-br from-accent to-accent-2 text-[17px] font-bold text-white shadow-[0_16px_30px_-14px_rgba(79,91,242,0.8)]"
+	>
+		Umów bezpłatną konsultację
+	</a>
+</div>
+
+<script>
+	const toggleBtn = document.getElementById("menu-toggle")!;
+	const closeBtn = document.getElementById("menu-close")!;
+	const menu = document.getElementById("mobile-menu")!;
+	const menuLinks = menu.querySelectorAll<HTMLAnchorElement>("[data-menu-link]");
+
+	function openMenu() {
+		menu.hidden = false;
+		toggleBtn.setAttribute("aria-expanded", "true");
+		document.body.style.overflow = "hidden";
+	}
+
+	function closeMenu() {
+		menu.hidden = true;
+		toggleBtn.setAttribute("aria-expanded", "false");
+		document.body.style.overflow = "";
+	}
+
+	toggleBtn.addEventListener("click", openMenu);
+	closeBtn.addEventListener("click", closeMenu);
+	menuLinks.forEach((link) => link.addEventListener("click", closeMenu));
+</script>
