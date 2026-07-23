@@ -1,0 +1,32 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+import MobileStickyCta from "../components/layout/MobileStickyCta.astro";
+import Hero from "../components/sections/Hero.astro";
+import ToolsStrip from "../components/sections/ToolsStrip.astro";
+import Services from "../components/sections/Services.astro";
+import ValueProps from "../components/sections/ValueProps.astro";
+import About from "../components/sections/About.astro";
+import Pricing from "../components/sections/Pricing.astro";
+import Process from "../components/sections/Process.astro";
+import Faq from "../components/sections/Faq.astro";
+import Contact from "../components/sections/Contact.astro";
+---
+
+<Layout>
+	<Header />
+	<main>
+		<Hero />
+		<ToolsStrip />
+		<Services />
+		<ValueProps />
+		<About />
+		<Pricing />
+		<Process />
+		<Faq />
+		<Contact />
+	</main>
+	<Footer />
+	<MobileStickyCta />
+</Layout>
