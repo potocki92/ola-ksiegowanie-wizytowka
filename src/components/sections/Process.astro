@@ -1,0 +1,44 @@
+---
+const steps = [
+	{
+		title: "Bezpłatna konsultacja",
+		description: "Poznajemy Twoją działalność i wspólnie wybieramy formę opodatkowania.",
+	},
+	{
+		title: "Umowa i pełnomocnictwo",
+		description: "Podpisujemy umowę i UPL-1 zdalnie, żebym mogła działać w Twoim imieniu.",
+	},
+	{
+		title: "Przekazanie dokumentów",
+		description: "Wysyłasz faktury zdjęciem lub mailem — kiedy Ci wygodnie, bez terminarza.",
+	},
+	{
+		title: "Spokój i terminy",
+		description: "Rozliczam, pilnuję terminów i informuję o kwotach do zapłaty.",
+	},
+];
+---
+
+<section class="bg-[#F5F6FB] px-[clamp(18px,4vw,56px)] py-[clamp(60px,8vw,110px)]">
+	<div class="mx-auto max-w-[1220px]">
+		<div class="mx-auto mb-[clamp(36px,4vw,56px)] max-w-[22ch] text-center">
+			<div class="mb-3.5 text-[13px] font-bold tracking-[1px] text-accent uppercase">Jak zaczynamy</div>
+			<h2 class="text-[clamp(28px,4.4vw,52px)] leading-[1.04] tracking-[-0.03em]">
+				Cztery kroki i masz księgowość z głowy
+			</h2>
+		</div>
+		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4.5">
+			{
+				steps.map((step, i) => (
+					<div class="rounded-[20px] border border-border-2 bg-white p-6.5">
+						<div class="mb-4.5 grid h-11 w-11 place-items-center rounded-[13px] bg-linear-to-br from-accent to-accent-2 font-display font-extrabold text-white">
+							{i + 1}
+						</div>
+						<h3 class="text-lg">{step.title}</h3>
+						<p class="mt-2.5 text-[14.5px] leading-[1.55] text-muted-400">{step.description}</p>
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>
