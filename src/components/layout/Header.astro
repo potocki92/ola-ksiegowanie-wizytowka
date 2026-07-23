@@ -1,5 +1,7 @@
 ---
 import Icon from "../ui/Icon.astro";
+import Logo from "../ui/Logo.astro";
+import Button from "../ui/Button.astro";
 
 const navLinks = [
 	{ href: "#uslugi", label: "Usługi" },
@@ -10,10 +12,10 @@ const navLinks = [
 ---
 
 <div
-	class="hidden md:block border-b border-black/[0.06] bg-white"
+	class="hidden md:block border-b border-black/6 bg-white"
 >
 	<div
-		class="mx-auto flex max-w-[1220px] items-center justify-center gap-2.5 px-6 py-2.5 text-[13px] font-semibold text-muted-600"
+		class="mx-auto flex max-w-305 items-center justify-center gap-2.5 px-6 py-2.5 text-[13px] font-semibold text-muted-600"
 	>
 		<span class="h-1.5 w-1.5 rounded-full bg-success"></span>
 		Przyjmuję nowych klientów na 2026 · pierwsza konsultacja bezpłatnie
@@ -21,18 +23,11 @@ const navLinks = [
 </div>
 
 <nav
-	class="sticky top-0 z-[60] flex items-center justify-between px-[clamp(18px,4vw,56px)] py-3.5 bg-bg/78 backdrop-blur-xl border-b border-black/[0.06]"
+	class="sticky top-0 z-60 flex items-center justify-between px-[clamp(18px,4vw,56px)] py-3.5 bg-bg/78 backdrop-blur-xl border-b border-black/6"
 >
-	<a href="#top" class="flex items-center gap-2.5 text-ink">
-		<span
-			class="grid h-[38px] w-[38px] place-items-center rounded-[11px] bg-linear-to-br from-accent to-accent-2 font-display text-base font-extrabold text-white shadow-[0_6px_16px_-6px_rgba(79,91,242,0.7)]"
-		>
-			AP
-		</span>
-		<span class="font-display text-lg font-extrabold tracking-[-0.02em]">Potocka</span>
-	</a>
+	<Logo href="#top" size="md" />
 
-	<div class="hidden md:flex items-center gap-[18px] lg:gap-[30px]">
+	<div class="hidden md:flex items-center gap-4.5 lg:gap-7.5">
 		{
 			navLinks.map((link) => (
 				<a href={link.href} class="text-[14.5px] font-semibold text-muted-700">
@@ -40,12 +35,7 @@ const navLinks = [
 				</a>
 			))
 		}
-		<a
-			href="#kontakt"
-			class="inline-flex h-[42px] items-center rounded-full bg-ink px-5 text-sm font-semibold text-white transition-transform duration-200 hover:-translate-y-px"
-		>
-			Bezpłatna konsultacja
-		</a>
+		<Button href="#kontakt" variant="nav">Bezpłatna konsultacja</Button>
 	</div>
 
 	<button
@@ -62,7 +52,7 @@ const navLinks = [
 <div
 	id="mobile-menu"
 	hidden
-	class="fixed inset-0 z-[70] flex flex-col bg-bg px-[clamp(18px,4vw,56px)] py-3.5 animate-sheet-up"
+	class="fixed inset-0 z-70 flex flex-col bg-bg px-[clamp(18px,4vw,56px)] py-3.5 animate-sheet-up"
 >
 	<div class="flex items-center justify-between">
 		<span class="font-display text-lg font-extrabold">Potocka</span>
