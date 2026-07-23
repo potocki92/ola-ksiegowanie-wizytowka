@@ -1,0 +1,100 @@
+---
+interface FaqItem {
+	q: string;
+	a: string;
+}
+
+const faqs: FaqItem[] = [
+	{
+		q: "Jaką formę opodatkowania wybrać?",
+		a: "To zależy od branży, kosztów i planów na przyszłość. Na bezpłatnej konsultacji policzę Ci warianty — zasady ogólne, podatek liniowy i ryczałt — i wskażę, przy którym realnie zapłacisz najmniej.",
+	},
+	{
+		q: "Czy muszę przyjeżdżać do biura?",
+		a: "Nie. Całość prowadzę zdalnie, w całej Polsce. Umowę i pełnomocnictwo podpisujemy online, a dokumenty przesyłasz zdjęciem lub mailem.",
+	},
+	{
+		q: "Jak przekazuję dokumenty?",
+		a: "Najwygodniej jak Ci pasuje — zdjęciem z telefonu, skanem lub mailem. Nie musisz niczego segregować ani dowozić; resztę ogarniam po swojej stronie.",
+	},
+	{
+		q: "Pomożesz mi założyć firmę?",
+		a: "Tak. Przeprowadzę Cię przez wybór PKD, formę opodatkowania i rejestrację w CEIDG oraz zgłoszenia do ZUS. Przy dalszej współpracy założenie JDG jest w cenie prowadzenia.",
+	},
+	{
+		q: "Prowadzę już firmę w innym biurze — da się przejść?",
+		a: "Oczywiście. Pomogę bezpłatnie przejąć dokumentację i dopełnić formalności. Zmiana biura jest prostsza, niż się wydaje, i możesz jej dokonać w trakcie roku.",
+	},
+	{
+		q: "Ile to kosztuje?",
+		a: "Prowadzenie JDG zaczyna się od 200 zł miesięcznie. Ostateczną stawkę ustalam po konsultacji — zależy od formy opodatkowania, VAT-u i liczby dokumentów.",
+	},
+];
+---
+
+<section id="faq" class="px-[clamp(18px,4vw,56px)] py-[clamp(60px,8vw,120px)]">
+	<div class="mx-auto grid max-w-[1220px] items-start gap-7 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-[clamp(32px,5vw,72px)]">
+		<div>
+			<div class="mb-3.5 text-[13px] font-bold tracking-[1px] text-accent uppercase">FAQ</div>
+			<h2 class="text-[clamp(28px,4vw,48px)] leading-[1.05] tracking-[-0.03em]">Częste pytania</h2>
+			<p class="mt-4 max-w-[30ch] text-[15px] leading-[1.6] text-muted-600">
+				Nie znalazłeś odpowiedzi? Napisz — odpowiadam tego samego dnia.
+			</p>
+		</div>
+		<div>
+			{
+				faqs.map((faq, i) => (
+					<div class="mb-3 overflow-hidden rounded-[18px] border border-border-2 bg-white shadow-[0_8px_24px_-22px_rgba(11,11,18,0.3)]">
+						<button
+							data-faq-toggle
+							aria-expanded={i === 0 ? "true" : "false"}
+							aria-controls={`faq-answer-${i}`}
+							class="flex min-h-16 w-full items-center justify-between gap-5 border-none bg-none px-5.5 py-4.5 text-left font-display text-[clamp(15px,1.5vw,18px)] font-bold text-ink"
+						>
+							<span>{faq.q}</span>
+							<span
+								data-faq-icon
+								class="flex-shrink-0 font-sans text-[26px] leading-none font-normal text-accent transition-transform duration-[250ms]"
+								style={i === 0 ? "transform: rotate(45deg)" : undefined}
+							>
+								+
+							</span>
+						</button>
+						<p
+							id={`faq-answer-${i}`}
+							data-faq-answer
+							hidden={i !== 0}
+							class="max-w-[62ch] px-5.5 pb-5.5 text-[15px] leading-[1.65] text-muted-600"
+						>
+							{faq.a}
+						</p>
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<script>
+	const buttons = document.querySelectorAll<HTMLButtonElement>("[data-faq-toggle]");
+
+	buttons.forEach((button) => {
+		button.addEventListener("click", () => {
+			const isOpen = button.getAttribute("aria-expanded") === "true";
+			const icon = button.querySelector<HTMLElement>("[data-faq-icon]");
+			const answer = button.nextElementSibling as HTMLElement | null;
+
+			buttons.forEach((other) => {
+				if (other === button) return;
+				other.setAttribute("aria-expanded", "false");
+				other.querySelector<HTMLElement>("[data-faq-icon]")!.style.transform = "none";
+				(other.nextElementSibling as HTMLElement | null)?.setAttribute("hidden", "");
+			});
+
+			button.setAttribute("aria-expanded", String(!isOpen));
+			if (icon) icon.style.transform = isOpen ? "none" : "rotate(45deg)";
+			if (!isOpen) answer?.removeAttribute("hidden");
+			else answer?.setAttribute("hidden", "");
+		});
+	});
+</script>
