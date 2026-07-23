@@ -1,0 +1,87 @@
+---
+interface TimelineEntry {
+	year: string;
+	title: string;
+	org: string;
+}
+
+const timeline: TimelineEntry[] = [
+	{
+		year: "2021",
+		title: "Licencjat — finanse i rachunkowość spółek",
+		org: "Uniwersytet Ekonomiczny we Wrocławiu",
+	},
+	{
+		year: "2022",
+		title: "Kurs kadrowo-płacowy",
+		org: "Stowarzyszenie Księgowych w Polsce",
+	},
+	{
+		year: "2023",
+		title: "Magister — specjalność doradztwo podatkowe",
+		org: "Uniwersytet Ekonomiczny we Wrocławiu",
+	},
+	{
+		year: "2025",
+		title: "I stopień certyfikacji zawodu księgowego",
+		org: "Stowarzyszenie Księgowych w Polsce",
+	},
+	{
+		year: "2025",
+		title: "Zaawansowany kurs Kadry i Płace",
+		org: "Fundacja Rozwoju Rachunkowości",
+	},
+	{
+		year: "2026",
+		title: "Specjalista ds. środków trwałych",
+		org: "Stowarzyszenie Księgowych w Polsce",
+	},
+];
+
+const badges = ["Certyfikat SKwP I stopień", "Kadry i płace", "Środki trwałe"];
+---
+
+<section id="o-mnie" class="px-[clamp(18px,4vw,56px)] py-[clamp(60px,8vw,120px)]">
+	<div class="mx-auto grid max-w-[1220px] items-start gap-8 md:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] md:gap-[clamp(40px,5vw,80px)]">
+		<div>
+			<div class="mb-3.5 text-[13px] font-bold tracking-[1px] text-accent uppercase">O mnie</div>
+			<h2 class="text-[clamp(30px,4vw,52px)] leading-[1.04] tracking-[-0.03em]">Aleksandra Potocka</h2>
+			<p class="mt-5.5 max-w-[44ch] text-base leading-[1.65] text-muted-600">
+				Jestem magistrem Uniwersytetu Ekonomicznego we Wrocławiu — kierunek finanse i
+				rachunkowość, ze specjalnością doradztwo podatkowe. Od sześciu lat pracuję w biurach
+				rachunkowych i działach kadr: od KPiR i ksiąg handlowych, przez rozliczenia VAT, po pełną
+				obsługę kadrowo-płacową.
+			</p>
+			<p class="mt-4 max-w-[44ch] text-base leading-[1.65] text-muted-600">
+				Wiedzę stale potwierdzam certyfikacją Stowarzyszenia Księgowych w Polsce. Prowadzę
+				własną, w pełni zdalną obsługę — dla osób, które chcą księgowej z nazwiskiem, a nie
+				infolinii.
+			</p>
+			<div class="mt-6.5 flex flex-wrap gap-2.5">
+				{
+					badges.map((badge) => (
+						<span class="rounded-full bg-surface-tint px-3.5 py-2 text-[13.5px] font-bold text-link">
+							{badge}
+						</span>
+					))
+				}
+			</div>
+		</div>
+		<div class="rounded-3xl border border-border-2 bg-white p-[clamp(22px,2.4vw,36px)] shadow-[0_20px_44px_-30px_rgba(11,11,18,0.3)]">
+			<div class="mb-1.5 text-[12.5px] font-bold tracking-[0.7px] text-muted-100 uppercase">
+				Wykształcenie i certyfikaty
+			</div>
+			{
+				timeline.map((entry) => (
+					<div class="grid grid-cols-[56px_1fr] gap-4.5 border-b border-border-4 py-4">
+						<div class="font-display text-[15px] font-extrabold text-accent">{entry.year}</div>
+						<div>
+							<div class="text-[15px] font-bold leading-[1.3]">{entry.title}</div>
+							<div class="mt-0.5 text-[13px] text-muted-300">{entry.org}</div>
+						</div>
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>
