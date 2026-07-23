@@ -1,0 +1,33 @@
+---
+interface Props {
+	id?: string;
+	as?: "section" | "header";
+	padding?: "normal" | "compact" | "none";
+	maxWidth?: string;
+	glow?: string;
+	class?: string;
+}
+
+const {
+	id,
+	as: Tag = "section",
+	padding = "normal",
+	maxWidth = "max-w-305",
+	glow,
+	class: className,
+} = Astro.props;
+
+const paddingMap: Record<NonNullable<Props["padding"]>, string> = {
+	normal: "px-[clamp(18px,4vw,56px)] py-[clamp(60px,8vw,120px)]",
+	compact: "px-[clamp(18px,4vw,56px)] py-[clamp(28px,3vw,40px)]",
+	none: "",
+};
+const paddingClass = paddingMap[padding];
+---
+
+<Tag id={id} class:list={["relative", paddingClass, className]}>
+	{glow && <div class:list={["pointer-events-none absolute inset-0", glow]} />}
+	<div class:list={["relative mx-auto", maxWidth]}>
+		<slot />
+	</div>
+</Tag>
