@@ -1,0 +1,21 @@
+---
+import Icon from "../ui/Icon.astro";
+---
+
+<div
+	class="fixed inset-x-0 bottom-0 z-[55] flex gap-2.5 border-t border-black/[0.07] bg-bg/90 px-4 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))] backdrop-blur-lg md:hidden"
+>
+	<a
+		href="tel:+48533032455"
+		aria-label="Zadzwoń"
+		class="grid h-[54px] w-[54px] flex-shrink-0 place-items-center rounded-[15px] border border-border-3 bg-white text-ink"
+	>
+		<Icon name="phone" size={22} strokeWidth={1.9} />
+	</a>
+	<a
+		href="#kontakt"
+		class="flex h-[54px] flex-1 items-center justify-center rounded-[15px] bg-linear-to-br from-accent to-accent-2 text-base font-bold text-white shadow-[0_14px_26px_-12px_rgba(79,91,242,0.8)]"
+	>
+		Bezpłatna konsultacja
+	</a>
+</div>
