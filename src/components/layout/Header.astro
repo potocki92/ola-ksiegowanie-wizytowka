@@ -11,16 +11,7 @@ const navLinks = [
 ];
 ---
 
-<div
-	class="hidden md:block border-b border-black/6 bg-white"
->
-	<div
-		class="mx-auto flex max-w-305 items-center justify-center gap-2.5 px-6 py-2.5 text-[13px] font-semibold text-muted-600"
-	>
-		<span class="h-1.5 w-1.5 rounded-full bg-success"></span>
-		Przyjmuję nowych klientów na 2026 · pierwsza konsultacja bezpłatnie
-	</div>
-</div>
+
 
 <nav
 	class="sticky top-0 z-60 flex items-center justify-between px-[clamp(18px,4vw,56px)] py-3.5 bg-bg/78 backdrop-blur-xl border-b border-black/6"
@@ -30,7 +21,11 @@ const navLinks = [
 	<div class="hidden md:flex items-center gap-4.5 lg:gap-7.5">
 		{
 			navLinks.map((link) => (
-				<a href={link.href} class="text-[14.5px] font-semibold text-muted-700">
+				<a
+					href={link.href}
+					data-nav-link={link.href.slice(1)}
+					class="nav-link nav-underline text-[14.5px] font-semibold text-muted-700 transition-colors duration-200 hover:text-ink"
+				>
 					{link.label}
 				</a>
 			))
@@ -70,7 +65,8 @@ const navLinks = [
 				<a
 					href={link.href}
 					data-menu-link
-					class="border-b border-border py-3 font-display text-[30px] font-bold text-ink"
+					data-nav-link={link.href.slice(1)}
+						class="nav-link border-b border-border py-3 font-display text-[30px] font-bold text-ink"
 				>
 					{link.label}
 				</a>
@@ -107,4 +103,41 @@ const navLinks = [
 	toggleBtn.addEventListener("click", openMenu);
 	closeBtn.addEventListener("click", closeMenu);
 	menuLinks.forEach((link) => link.addEventListener("click", closeMenu));
+</script>
+
+<script>
+	// Scrollspy: highlight the nav link whose section is currently in view.
+	const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-nav-link]"));
+	const sections = [...new Set(navLinks.map((l) => l.dataset.navLink!))]
+		.map((id) => document.getElementById(id))
+		.filter((el): el is HTMLElement => el !== null)
+		.sort((a, b) => a.offsetTop - b.offsetTop);
+
+	const LINE = 100; // px below the viewport top (clears the sticky navbar)
+
+	function updateActive() {
+		let currentId: string | null = null;
+		for (const section of sections) {
+			if (section.getBoundingClientRect().top - LINE <= 0) currentId = section.id;
+		}
+		for (const link of navLinks) {
+			link.classList.toggle("is-active", link.dataset.navLink === currentId);
+		}
+	}
+
+	let ticking = false;
+	function onScroll() {
+		if (ticking) return;
+		ticking = true;
+		requestAnimationFrame(() => {
+			updateActive();
+			ticking = false;
+		});
+	}
+
+	if (sections.length) {
+		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("resize", onScroll);
+		updateActive();
+	}
 </script>
