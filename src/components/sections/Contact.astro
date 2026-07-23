@@ -1,0 +1,116 @@
+---
+import Icon from "../ui/Icon.astro";
+---
+
+<section id="kontakt" class="px-[clamp(18px,4vw,56px)] py-[clamp(40px,6vw,96px)]">
+	<div
+		class="relative mx-auto max-w-[1220px] overflow-hidden rounded-[clamp(24px,3vw,36px)] bg-linear-to-br from-muted-900 to-ink p-[clamp(28px,4vw,72px)] text-white"
+	>
+		<div
+			class="pointer-events-none absolute inset-0 bg-[radial-gradient(45%_55%_at_90%_0%,rgba(123,108,246,0.28),transparent_70%)]"
+		>
+		</div>
+		<div class="relative grid gap-8 md:grid-cols-2 md:gap-[clamp(40px,5vw,72px)]">
+			<div>
+				<div class="mb-4 text-[13px] font-bold tracking-[1px] text-accent-soft uppercase">Kontakt</div>
+				<h2 class="text-[clamp(30px,4.6vw,54px)] leading-[1.02] tracking-[-0.03em]">
+					Zacznijmy od bezpłatnej rozmowy
+				</h2>
+				<p class="mt-5 max-w-[40ch] text-[16.5px] leading-[1.6] text-white/72">
+					Opowiedz mi w kilku zdaniach o swojej działalności. Odezwę się z konkretną wyceną i
+					propozycją formy opodatkowania — bez zobowiązań.
+				</p>
+				<div class="mt-[clamp(28px,3.4vw,40px)] flex flex-col gap-3.5">
+					<a href="tel:+48533032455" class="flex items-center gap-3.5 text-white">
+						<span class="grid h-[46px] w-[46px] flex-shrink-0 place-items-center rounded-[13px] bg-accent-soft/14">
+							<Icon name="phone" size={20} strokeWidth={1.8} class="text-accent-soft" />
+						</span>
+						<span>
+							<span class="block text-xs tracking-[0.5px] text-white/55 uppercase">Telefon</span>
+							<span class="font-display text-[19px] font-bold">533 032 455</span>
+						</span>
+					</a>
+					<a href="mailto:ola.skora49@gmail.com" class="flex items-center gap-3.5 text-white">
+						<span class="grid h-[46px] w-[46px] flex-shrink-0 place-items-center rounded-[13px] bg-accent-soft/14">
+							<Icon name="mail" size={20} strokeWidth={1.8} class="text-accent-soft" />
+						</span>
+						<span class="min-w-0">
+							<span class="block text-xs tracking-[0.5px] text-white/55 uppercase">E-mail</span>
+							<span class="font-display text-[19px] font-bold break-all">ola.skora49@gmail.com</span>
+						</span>
+					</a>
+					<div class="flex items-center gap-3.5">
+						<span class="grid h-[46px] w-[46px] flex-shrink-0 place-items-center rounded-[13px] bg-accent-soft/14">
+							<Icon name="map-pin" size={20} strokeWidth={1.8} class="text-accent-soft" />
+						</span>
+						<span>
+							<span class="block text-xs tracking-[0.5px] text-white/55 uppercase">Zasięg</span>
+							<span class="font-display text-[19px] font-bold">Jelenia Góra · online, cała Polska</span>
+						</span>
+					</div>
+				</div>
+			</div>
+
+			<form
+				id="contact-form"
+				class="flex flex-col gap-3.5 rounded-[20px] border border-white/13 bg-white/5 p-[clamp(22px,3vw,34px)]"
+			>
+				<label class="flex flex-col gap-1.5">
+					<span class="text-[13px] font-semibold text-white/72">Imię i nazwisko</span>
+					<input
+						type="text"
+						name="name"
+						required
+						autocomplete="name"
+						placeholder="Jan Kowalski"
+						class="h-[50px] rounded-xl border border-white/18 bg-white/6 px-4 font-[inherit] text-[15px] text-white outline-none transition-[border-color,box-shadow] duration-200"
+					/>
+				</label>
+				<label class="flex flex-col gap-1.5">
+					<span class="text-[13px] font-semibold text-white/72">E-mail lub telefon</span>
+					<input
+						type="text"
+						name="contact"
+						required
+						autocomplete="email"
+						placeholder="jan@firma.pl"
+						class="h-[50px] rounded-xl border border-white/18 bg-white/6 px-4 font-[inherit] text-[15px] text-white outline-none transition-[border-color,box-shadow] duration-200"
+					/>
+				</label>
+				<label class="flex flex-col gap-1.5">
+					<span class="text-[13px] font-semibold text-white/72">Czego potrzebujesz?</span>
+					<textarea
+						name="message"
+						rows="4"
+						placeholder="Np. zakładam JDG na ryczałcie, chcę przejść na Twoją obsługę…"
+						class="resize-y rounded-xl border border-white/18 bg-white/6 px-4 py-3.5 font-[inherit] text-[15px] text-white outline-none transition-[border-color,box-shadow] duration-200"
+					></textarea>
+				</label>
+				<button
+					type="submit"
+					class="mt-1 h-[54px] rounded-2xl bg-linear-to-br from-accent to-accent-2 font-[inherit] text-[15px] font-bold text-white transition-transform duration-200 hover:-translate-y-0.5"
+				>
+					Wyślij zapytanie
+				</button>
+				<p data-form-note class="text-center text-xs text-white/50">
+					Wysyłając formularz akceptujesz przetwarzanie danych w celu kontaktu.
+				</p>
+			</form>
+		</div>
+	</div>
+</section>
+
+<script>
+	const form = document.getElementById("contact-form") as HTMLFormElement | null;
+	const note = form?.querySelector<HTMLParagraphElement>("[data-form-note]");
+	const defaultNote = note?.textContent ?? "";
+
+	form?.addEventListener("submit", (e) => {
+		e.preventDefault();
+		form.reset();
+		if (note) note.textContent = "Dziękuję! Odezwę się najszybciej jak to możliwe.";
+		window.setTimeout(() => {
+			if (note) note.textContent = defaultNote;
+		}, 6000);
+	});
+</script>
