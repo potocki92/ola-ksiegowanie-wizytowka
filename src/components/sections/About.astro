@@ -1,4 +1,7 @@
 ---
+import Section from "../ui/Section.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+
 interface TimelineEntry {
 	year: string;
 	title: string;
@@ -41,11 +44,16 @@ const timeline: TimelineEntry[] = [
 const badges = ["Certyfikat SKwP I stopień", "Kadry i płace", "Środki trwałe"];
 ---
 
-<section id="o-mnie" class="px-[clamp(18px,4vw,56px)] py-[clamp(60px,8vw,120px)]">
-	<div class="mx-auto grid max-w-[1220px] items-start gap-8 md:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] md:gap-[clamp(40px,5vw,80px)]">
+<Section id="o-mnie">
+	<div class="grid items-start gap-8 md:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] md:gap-[clamp(40px,5vw,80px)]">
 		<div>
-			<div class="mb-3.5 text-[13px] font-bold tracking-[1px] text-accent uppercase">O mnie</div>
-			<h2 class="text-[clamp(30px,4vw,52px)] leading-[1.04] tracking-[-0.03em]">Aleksandra Potocka</h2>
+			<SectionHeading
+				eyebrow="O mnie"
+				heading="Aleksandra Potocka"
+				variant="inline"
+				headingWidth="none"
+				headingClass="text-[clamp(30px,4vw,52px)] leading-[1.04] tracking-[-0.03em]"
+			/>
 			<p class="mt-5.5 max-w-[44ch] text-base leading-[1.65] text-muted-600">
 				Jestem magistrem Uniwersytetu Ekonomicznego we Wrocławiu — kierunek finanse i
 				rachunkowość, ze specjalnością doradztwo podatkowe. Od sześciu lat pracuję w biurach
@@ -84,4 +92,4 @@ const badges = ["Certyfikat SKwP I stopień", "Kadry i płace", "Środki trwałe
 			}
 		</div>
 	</div>
-</section>
+</Section>
