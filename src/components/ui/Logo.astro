@@ -1,0 +1,43 @@
+---
+interface Props {
+	size?: "sm" | "md" | "lg";
+	showName?: boolean;
+	name?: string;
+	href?: string;
+	class?: string;
+}
+
+const {
+	size = "md",
+	showName = true,
+	name = "Potocka",
+	href,
+	class: className,
+} = Astro.props;
+
+const badgeSize = {
+	sm: "h-[34px] w-[34px] rounded-[10px] text-sm",
+	md: "h-[38px] w-[38px] rounded-[11px] text-base shadow-[0_6px_16px_-6px_rgba(79,91,242,0.7)]",
+	lg: "h-[38px] w-[38px] rounded-[11px] text-base",
+}[size];
+
+const nameSize = {
+	sm: "text-base",
+	md: "text-lg",
+	lg: "text-lg",
+}[size];
+
+const Tag = href ? "a" : "div";
+---
+
+<Tag href={href} class:list={["flex items-center gap-2.5 text-ink", className]}>
+	<span
+		class:list={[
+			"grid place-items-center bg-linear-to-br from-accent to-accent-2 font-display font-extrabold text-white",
+			badgeSize,
+		]}
+	>
+		AP
+	</span>
+	{showName && <span class:list={["font-display font-extrabold tracking-[-0.02em]", nameSize]}>{name}</span>}
+</Tag>
