@@ -2,7 +2,6 @@
 import Icon from "../ui/Icon.astro";
 import Section from "../ui/Section.astro";
 import Button from "../ui/Button.astro";
-import IconTile from "../ui/IconTile.astro";
 import Image from "../ui/Image.astro";
 
 const trustBadges = ["UE Wrocław", "6 lat praktyki", "100% online"];
@@ -60,54 +59,17 @@ const trustBadges = ["UE Wrocław", "6 lat praktyki", "100% online"];
 
 		<div class="relative order-2 w-full animate-rise-in-delayed md:order-0">
 			<div
-				class="relative aspect-4/5 overflow-hidden rounded-[28px] bg-linear-to-br from-surface-tint via-bg to-[#e2d4c1] shadow-[0_40px_80px_-40px_rgba(11,11,18,0.45)] md:aspect-auto md:h-[clamp(420px,46vw,560px)]"
+				class="relative aspect-4/5 overflow-hidden rounded-[28px] md:aspect-auto md:h-[clamp(440px,48vw,580px)]"
 			>
 				<Image
-					src="/pszozena.png"
+					src="/portret.png"
 					alt="mgr Aleksandra Potocka – księgowa"
-					width={800}
-					height={1000}
+					width={1024}
+					height={1536}
 					loading="eager"
 					fetchpriority="high"
-					class="h-full w-full object-cover object-center"
+					class="h-full w-full object-cover object-[center_22%]"
 				/>
-
-				<div
-					class="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-black/35 to-transparent"
-				>
-				</div>
-
-				<div
-					class="absolute right-4 bottom-4 left-4 flex items-center gap-3 rounded-2xl border border-white/60 bg-white/85 px-3.5 py-3 shadow-[0_18px_40px_-20px_rgba(11,11,18,0.5)] backdrop-blur-md sm:right-auto"
-				>
-					<span
-						class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-linear-to-br from-accent to-accent-2 font-display text-[15px] font-extrabold text-white shadow-[0_8px_18px_-8px_rgba(107,81,67,0.8)]"
-						>AP</span
-					>
-					<div>
-						<div class="font-display text-[16px] font-extrabold tracking-[-0.02em] text-ink">
-							mgr Aleksandra Potocka
-						</div>
-						<div class="mt-0.5 flex items-center gap-1.5 text-[13px] font-semibold text-muted-600">
-							<span class="h-1.5 w-1.5 rounded-full bg-success"></span>
-							Księgowa online
-						</div>
-					</div>
-				</div>
-
-				<div
-					class="absolute top-4 right-4 hidden items-center gap-2.5 rounded-2xl bg-linear-to-br from-accent to-accent-2 px-3.5 py-2.5 text-white shadow-[0_18px_40px_-20px_rgba(107,81,67,0.8)] sm:flex"
-				>
-					<IconTile
-						icon="calendar-check"
-						size="h-9 w-9"
-						bg="bg-white/18"
-						iconClass="text-white"
-						iconSize={18}
-						iconStrokeWidth={1.9}
-					/>
-					<div class="text-[13.5px] font-bold">Terminy dopilnowane ✓</div>
-				</div>
 			</div>
 		</div>
 	</div>
