@@ -54,38 +54,41 @@
 	--font-sans: "Hanken Grotesk", sans-serif;
 	--font-display: "Plus Jakarta Sans", sans-serif;
 
-	--color-bg: #fbfbfd;
-	--color-ink: #0b0b12;
+	--color-bg: #f6f1ea;
+	--color-ink: #2f2824;
 
-	--color-accent: #4f5bf2;
-	--color-accent-2: #7b6cf6;
-	--color-accent-3: #8b78ff;
-	--color-accent-soft: #a9b2ff;
-	--color-link: #3a42c9;
-	--color-link-hover: #2a32a8;
+	/* accent = primary (brąz); accent-2 = ciemniejszy brąz (koniec gradientu CTA);
+	   accent-3 = róż (gradienty tekstu na jasnym tle); accent-soft = jasny róż (ikony na ciemnych kartach) */
+	--color-accent: #6b5143;
+	--color-accent-2: #564036;
+	--color-accent-3: #c88f9d;
+	--color-accent-soft: #dcb3bd;
+	--color-link: #6b5143;
+	--color-link-hover: #564036;
 
-	--color-success: #10b981;
-	--color-success-soft: #e6f8f1;
-	--color-success-mint: #5eead4;
+	--color-success: #3f5b52;
+	--color-success-soft: #e6ede9;
+	--color-success-mint: #8bb5a6;
 
-	--color-muted-900: #171a2e;
-	--color-muted-800: #0c0e1c;
-	--color-muted-700: #3c4152;
-	--color-muted-600: #4a4e5c;
-	--color-muted-500: #585e71;
-	--color-muted-400: #5a5f70;
-	--color-muted-300: #7b8094;
-	--color-muted-200: #8a8fa3;
-	--color-muted-100: #9096a8;
-	--color-muted-50: #9aa0b4;
+	/* ciepłe taupe/piaskowe — muted-900/800 to tła ciemnych kart */
+	--color-muted-900: #382a22;
+	--color-muted-800: #241a14;
+	--color-muted-700: #4a4038;
+	--color-muted-600: #564d46;
+	--color-muted-500: #635a53;
+	--color-muted-400: #6b625d;
+	--color-muted-300: #857c74;
+	--color-muted-200: #978d84;
+	--color-muted-100: #a89e93;
+	--color-muted-50: #b8ada1;
 
-	--color-border: #ecedf3;
-	--color-border-2: #eef0f6;
-	--color-border-3: #e4e6ef;
-	--color-border-4: #f0f1f6;
-	--color-border-5: #dddfea;
+	--color-border: #ded2c4;
+	--color-border-2: #e4d9cb;
+	--color-border-3: #d6c9b9;
+	--color-border-4: #e9e0d4;
+	--color-border-5: #cfc2b1;
 
-	--color-surface-tint: #eef0ff;
+	--color-surface-tint: #efe6da;
 
 	--animate-rise-in: riseIn 0.8s ease both;
 	--animate-rise-in-delayed: riseIn 1s ease 0.12s both;
@@ -163,7 +166,7 @@
 	input:focus,
 	textarea:focus {
 		border-color: var(--color-accent) !important;
-		box-shadow: 0 0 0 4px rgba(79, 91, 242, 0.14);
+		box-shadow: 0 0 0 4px rgba(107, 81, 67, 0.16);
 	}
 
 	h1,

@@ -17,7 +17,7 @@ import IconTile from "../ui/IconTile.astro";
 			class="relative col-span-2 row-span-2 flex flex-col overflow-hidden rounded-3xl bg-linear-to-br from-muted-900 to-muted-800 p-[clamp(26px,2.6vw,38px)] text-white"
 		>
 			<div
-				class="pointer-events-none absolute -top-10 -right-10 h-55 w-55 rounded-full bg-[radial-gradient(circle,rgba(123,108,246,0.4),transparent_70%)]"
+				class="pointer-events-none absolute -top-10 -right-10 h-55 w-55 rounded-full bg-[radial-gradient(circle,rgba(200,143,157,0.4),transparent_70%)]"
 			>
 			</div>
 			<IconTile
@@ -108,7 +108,7 @@ import IconTile from "../ui/IconTile.astro";
 				</p>
 			</div>
 			<div
-				class="flex w-47.5 shrink-0 flex-col gap-3 rounded-2xl border border-border-2 bg-[#F7F8FC] p-4"
+				class="flex w-47.5 shrink-0 flex-col gap-3 rounded-2xl border border-border-2 bg-[#f3ede3] p-4"
 			>
 				<div class="flex items-center gap-2.5">
 					<span class="grid h-5.5 w-5.5 place-items-center rounded-full bg-success text-[12px] font-extrabold text-white">
@@ -150,7 +150,7 @@ import IconTile from "../ui/IconTile.astro";
 				</p>
 			</div>
 			<div
-				class="flex w-47.5 shrink-0 flex-col gap-3 rounded-2xl border border-border-2 bg-[#F7F8FC] p-4"
+				class="flex w-47.5 shrink-0 flex-col gap-3 rounded-2xl border border-border-2 bg-[#f3ede3] p-4"
 			>
 				<div class="flex items-center gap-2.5">
 					<span class="grid h-7.5 w-7.5 place-items-center rounded-full bg-surface-tint text-[11px] font-extrabold text-accent">
@@ -169,10 +169,43 @@ import IconTile from "../ui/IconTile.astro";
 			</div>
 		</div>
 
+		<!-- Rozliczenia roczne PIT (wide) -->
+		<div
+			class="col-span-2 flex items-center gap-6 rounded-3xl border border-border-2 bg-white p-[clamp(24px,2.4vw,34px)] shadow-[0_12px_30px_-24px_rgba(11,11,18,0.22)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_24px_44px_-26px_rgba(11,11,18,0.26)]"
+		>
+			<div class="min-w-0 flex-1">
+				<IconTile
+					icon="file-text"
+					size="h-11 w-11"
+					iconSize={22}
+					iconStrokeWidth={1.9}
+					class="mb-4"
+				/>
+				<h3 class="text-[clamp(21px,2.2vw,26px)] tracking-[-0.02em]">Rozliczenia roczne PIT</h3>
+				<p class="mt-2.5 text-[14.5px] leading-[1.55] text-muted-400">
+					Roczne zeznanie PIT-37, PIT-36 czy PIT-28 — także dla osób bez stałej obsługi. Ulgi i
+					odliczenia policzę za Ciebie.
+				</p>
+			</div>
+			<div
+				class="flex w-47.5 shrink-0 flex-col gap-3 rounded-2xl border border-border-2 bg-[#f3ede3] p-4"
+			>
+				<div class="flex items-center justify-between">
+					<span class="text-[12.5px] font-bold">PIT-37 · 2025</span>
+					<span class="text-[12px] font-bold text-success">złożony ✓</span>
+				</div>
+				<div class="h-px bg-border-2"></div>
+				<div class="flex justify-between text-[12.5px]">
+					<span class="font-semibold text-muted-100">Cena</span>
+					<span class="font-bold">od 100 zł</span>
+				</div>
+			</div>
+		</div>
+
 		<!-- CTA (wide) -->
 		<a
 			href="#kontakt"
-			class="group relative col-span-2 flex items-center gap-6 overflow-hidden rounded-3xl bg-linear-to-br from-accent to-accent-2 p-[clamp(24px,2.4vw,34px)] text-white shadow-[0_18px_40px_-24px_rgba(79,91,242,0.7)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_28px_50px_-24px_rgba(79,91,242,0.85)]"
+			class="group relative col-span-4 flex items-center gap-6 overflow-hidden rounded-3xl bg-linear-to-br from-accent to-accent-2 p-[clamp(24px,2.4vw,34px)] text-white shadow-[0_18px_40px_-24px_rgba(107,81,67,0.7)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_28px_50px_-24px_rgba(107,81,67,0.85)]"
 		>
 			<div class="pointer-events-none absolute -top-10 -right-10 h-40 w-40 rounded-full bg-white/10"></div>
 			<div class="relative min-w-0 flex-1">
