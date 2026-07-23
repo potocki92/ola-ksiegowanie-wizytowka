@@ -1,5 +1,8 @@
 ---
-import Icon, { type IconName } from "../ui/Icon.astro";
+import { type IconName } from "../ui/Icon.astro";
+import Section from "../ui/Section.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import IconTile from "../ui/IconTile.astro";
 
 interface ValueCard {
 	icon: IconName;
@@ -28,30 +31,35 @@ const cards: ValueCard[] = [
 ];
 ---
 
-<section class="relative overflow-hidden bg-ink px-[clamp(18px,4vw,56px)] py-[clamp(60px,8vw,120px)] text-white">
-	<div
-		class="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_50%_at_85%_0%,rgba(123,108,246,0.22),transparent_70%)]"
-	>
+<Section
+	padding="none"
+	class="overflow-hidden bg-ink px-[clamp(18px,4vw,56px)] py-[clamp(60px,8vw,120px)] text-white"
+	glow="bg-[radial-gradient(50%_50%_at_85%_0%,rgba(123,108,246,0.22),transparent_70%)]"
+>
+	<SectionHeading
+		eyebrow="Jak pracuję"
+		heading="Nie jesteś numerem w kolejce dużego biura"
+		tone="dark"
+		headingWidth="md"
+	/>
+	<div class="grid gap-3.5 md:grid-cols-3 md:gap-5">
+		{
+			cards.map((card) => (
+				<div class="rounded-[22px] border border-white/9 bg-white/4.5 p-[clamp(24px,2.4vw,34px)] transition-all duration-250 hover:-translate-y-1 hover:bg-white/7">
+					<IconTile
+						icon={card.icon}
+						size="h-12.5 w-12.5"
+						radius="rounded-2xl"
+						bg="bg-accent-soft/14"
+						iconClass="text-accent-soft"
+						iconSize={24}
+						iconStrokeWidth={1.8}
+						class="mb-5"
+					/>
+					<h3 class="text-xl">{card.title}</h3>
+					<p class="mt-3 text-[15px] leading-[1.6] text-white/68">{card.description}</p>
+				</div>
+			))
+		}
 	</div>
-	<div class="relative mx-auto max-w-[1220px]">
-		<div class="mb-[clamp(36px,4vw,56px)] max-w-[34ch]">
-			<div class="mb-3.5 text-[13px] font-bold tracking-[1px] text-accent-soft uppercase">Jak pracuję</div>
-			<h2 class="text-[clamp(30px,4.6vw,56px)] leading-[1.02] tracking-[-0.03em]">
-				Nie jesteś numerem w kolejce dużego biura
-			</h2>
-		</div>
-		<div class="grid gap-3.5 md:grid-cols-3 md:gap-5">
-			{
-				cards.map((card) => (
-					<div class="rounded-[22px] border border-white/9 bg-white/[0.045] p-[clamp(24px,2.4vw,34px)] transition-all duration-[250ms] hover:-translate-y-1 hover:bg-white/7">
-						<div class="mb-5 inline-grid h-[50px] w-[50px] place-items-center rounded-2xl bg-accent-soft/14">
-							<Icon name={card.icon} size={24} strokeWidth={1.8} class="text-accent-soft" />
-						</div>
-						<h3 class="text-xl">{card.title}</h3>
-						<p class="mt-3 text-[15px] leading-[1.6] text-white/68">{card.description}</p>
-					</div>
-				))
-			}
-		</div>
-	</div>
-</section>
+</Section>
