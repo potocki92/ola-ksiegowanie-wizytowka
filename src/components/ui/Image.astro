@@ -1,0 +1,49 @@
+---
+interface Props {
+	src: string;
+	alt: string;
+	width?: number;
+	height?: number;
+	loading?: "eager" | "lazy";
+	fetchpriority?: "high" | "low" | "auto";
+	class?: string;
+	wrapperClass?: string;
+}
+
+const {
+	src,
+	alt,
+	width,
+	height,
+	loading = "lazy",
+	fetchpriority = "auto",
+	class: className = "h-full w-full object-cover object-center",
+	wrapperClass,
+} = Astro.props;
+---
+
+{
+	wrapperClass ? (
+		<div class={wrapperClass}>
+			<img
+				src={src}
+				alt={alt}
+				width={width}
+				height={height}
+				loading={loading}
+				fetchpriority={fetchpriority}
+				class={className}
+			/>
+		</div>
+	) : (
+		<img
+			src={src}
+			alt={alt}
+			width={width}
+			height={height}
+			loading={loading}
+			fetchpriority={fetchpriority}
+			class={className}
+		/>
+	)
+}
