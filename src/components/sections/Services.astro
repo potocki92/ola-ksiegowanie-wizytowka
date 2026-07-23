@@ -1,158 +1,172 @@
 ---
-import Icon from "../ui/Icon.astro";
+import Section from "../ui/Section.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import IconTile from "../ui/IconTile.astro";
 ---
 
-<section id="uslugi" class="px-[clamp(18px,4vw,56px)] py-[clamp(60px,8vw,120px)]">
-	<div class="mx-auto max-w-[1220px]">
-		<div class="mb-[clamp(36px,4vw,56px)] max-w-[40ch]">
-			<div class="mb-3.5 text-[13px] font-bold tracking-[1px] text-accent uppercase">Usługi</div>
-			<h2 class="text-[clamp(30px,4.6vw,56px)] leading-[1.02] tracking-[-0.03em]">
-				Wszystko, czego potrzebuje Twoja firma — w jednym miejscu
-			</h2>
+<Section id="uslugi">
+	<SectionHeading
+		eyebrow="Usługi"
+		heading="Wszystko, czego potrzebuje Twoja firma — w jednym miejscu"
+		headingWidth="lg"
+	/>
+
+	<div class="flex flex-col gap-3.5 md:grid md:grid-cols-4 md:auto-rows-[minmax(150px,auto)] md:gap-4 lg:auto-rows-[minmax(168px,auto)]">
+		<!-- BIG: Prowadzenie JDG -->
+		<div
+			class="relative col-span-2 row-span-2 flex flex-col overflow-hidden rounded-3xl bg-linear-to-br from-muted-900 to-muted-800 p-[clamp(26px,2.6vw,38px)] text-white"
+		>
+			<div
+				class="pointer-events-none absolute -top-10 -right-10 h-55 w-55 rounded-full bg-[radial-gradient(circle,rgba(123,108,246,0.4),transparent_70%)]"
+			>
+			</div>
+			<IconTile
+				icon="briefcase"
+				size="h-11.5 w-11.5"
+				radius="rounded-[13px]"
+				bg="bg-white/10"
+				iconClass="text-accent-soft"
+				iconSize={22}
+				iconStrokeWidth={1.8}
+				class="mb-5"
+			/>
+			<h3 class="text-[clamp(24px,2.6vw,32px)] tracking-[-0.02em]">Prowadzenie JDG</h3>
+			<p class="mt-3 max-w-[38ch] text-[15.5px] leading-[1.6] text-white/68">
+				Kompleksowe rozliczenia jednoosobowej działalności. Dobieram formę opodatkowania, która
+				realnie obniża Twój podatek.
+			</p>
+			<div class="mt-5 flex flex-wrap gap-2">
+				{
+					["Zasady ogólne", "Podatek liniowy", "Ryczałt"].map((tag) => (
+						<span class="rounded-full border border-white/12 bg-white/8 px-3.5 py-1.5 text-[13px] font-semibold">
+							{tag}
+						</span>
+					))
+				}
+			</div>
+			<div class="mt-auto pt-6.5">
+				<div class="rounded-2xl border border-white/10 bg-white/5.5 p-4.5">
+					<div class="flex items-center justify-between">
+						<span class="text-sm font-bold">Faktura FV/2026/03</span>
+						<span class="rounded-full bg-success-mint/12 px-2.5 py-1 text-[11px] font-bold text-success-mint">
+							rozliczona
+						</span>
+					</div>
+					<div class="mt-3.5 flex gap-2.5">
+						<div class="flex-1 rounded-xl bg-white/5 p-3">
+							<div class="text-[11px] font-semibold text-white/50">Ryczałt 8,5%</div>
+							<div class="mt-0.5 font-display text-xl font-extrabold">357 zł</div>
+						</div>
+						<div class="flex-1 rounded-xl bg-white/5 p-3">
+							<div class="text-[11px] font-semibold text-white/50">Liniowy 19%</div>
+							<div class="mt-0.5 font-display text-xl font-extrabold">798 zł</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
-		<div class="flex flex-col gap-3.5 md:grid md:grid-cols-4 md:auto-rows-[minmax(150px,auto)] md:gap-4 lg:auto-rows-[minmax(168px,auto)]">
-			<!-- BIG: Prowadzenie JDG -->
+		<!-- stat -->
+		<div
+			class="flex flex-col justify-center rounded-3xl border border-border-2 bg-white p-[clamp(22px,2.2vw,30px)] shadow-[0_12px_30px_-24px_rgba(11,11,18,0.25)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_24px_44px_-26px_rgba(11,11,18,0.28)]"
+		>
 			<div
-				class="relative col-span-2 row-span-2 flex flex-col overflow-hidden rounded-3xl bg-linear-to-br from-muted-900 to-muted-800 p-[clamp(26px,2.6vw,38px)] text-white"
+				class="bg-linear-to-r from-accent to-accent-3 bg-clip-text font-display text-[clamp(30px,3.2vw,44px)] font-extrabold tracking-[-0.03em] text-transparent"
 			>
-				<div
-					class="pointer-events-none absolute -top-10 -right-10 h-[220px] w-[220px] rounded-full bg-[radial-gradient(circle,rgba(123,108,246,0.4),transparent_70%)]"
-				>
-				</div>
-				<div class="mb-5 inline-grid h-[46px] w-[46px] place-items-center rounded-[13px] bg-white/10">
-					<Icon name="briefcase" size={22} strokeWidth={1.8} class="text-accent-soft" />
-				</div>
-				<h3 class="text-[clamp(24px,2.6vw,32px)] tracking-[-0.02em]">Prowadzenie JDG</h3>
-				<p class="mt-3 max-w-[38ch] text-[15.5px] leading-[1.6] text-white/68">
-					Kompleksowe rozliczenia jednoosobowej działalności. Dobieram formę opodatkowania, która
-					realnie obniża Twój podatek.
+				od 250 zł
+			</div>
+			<div class="mt-1 text-sm font-medium text-muted-400">miesięcznie za prowadzenie JDG</div>
+		</div>
+
+		<!-- stat -->
+		<div
+			class="flex flex-col justify-center rounded-3xl border border-border-2 bg-white p-[clamp(22px,2.2vw,30px)] shadow-[0_12px_30px_-24px_rgba(11,11,18,0.25)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_24px_44px_-26px_rgba(11,11,18,0.28)]"
+		>
+			<div
+				class="bg-linear-to-r from-accent to-accent-3 bg-clip-text font-display text-[clamp(30px,3.2vw,44px)] font-extrabold tracking-[-0.03em] text-transparent"
+			>
+				100%
+			</div>
+			<div class="mt-1 text-sm font-medium text-muted-400">obsługi zdalnej, w całej Polsce</div>
+		</div>
+
+		<!-- Zakładanie JDG (wide) -->
+		<div
+			class="col-span-2 flex items-center gap-6 rounded-3xl border border-border-2 bg-white p-[clamp(24px,2.4vw,34px)] shadow-[0_12px_30px_-24px_rgba(11,11,18,0.22)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_24px_44px_-26px_rgba(11,11,18,0.26)]"
+		>
+			<div class="min-w-0 flex-1">
+				<IconTile
+					icon="plus"
+					size="h-11 w-11"
+					iconSize={22}
+					iconStrokeWidth={1.9}
+					class="mb-4"
+				/>
+				<h3 class="text-[clamp(21px,2.2vw,26px)] tracking-[-0.02em]">Zakładanie JDG</h3>
+				<p class="mt-2.5 text-[14.5px] leading-[1.55] text-muted-400">
+					Wybór PKD, formy opodatkowania, rejestracja w CEIDG i zgłoszenia do ZUS. Bez błędów,
+					które później kosztują.
 				</p>
-				<div class="mt-5 flex flex-wrap gap-2">
-					{
-						["Zasady ogólne", "Podatek liniowy", "Ryczałt"].map((tag) => (
-							<span class="rounded-full border border-white/12 bg-white/8 px-3.5 py-1.5 text-[13px] font-semibold">
-								{tag}
-							</span>
-						))
-					}
+			</div>
+			<div
+				class="flex w-47.5 shrink-0 flex-col gap-3 rounded-2xl border border-border-2 bg-[#F7F8FC] p-4"
+			>
+				<div class="flex items-center gap-2.5">
+					<span class="grid h-5.5 w-5.5 place-items-center rounded-full bg-success text-[12px] font-extrabold text-white">
+						✓
+					</span>
+					<span class="text-[13px] font-semibold">Kody PKD</span>
 				</div>
-				<div class="mt-auto pt-6.5">
-					<div class="rounded-2xl border border-white/10 bg-white/[0.055] p-[18px]">
-						<div class="flex items-center justify-between">
-							<span class="text-sm font-bold">Faktura FV/2026/03</span>
-							<span class="rounded-full bg-success-mint/12 px-2.5 py-1 text-[11px] font-bold text-success-mint">
-								rozliczona
-							</span>
-						</div>
-						<div class="mt-3.5 flex gap-2.5">
-							<div class="flex-1 rounded-xl bg-white/5 p-3">
-								<div class="text-[11px] font-semibold text-white/50">Ryczałt 8,5%</div>
-								<div class="mt-0.5 font-display text-xl font-extrabold">357 zł</div>
-							</div>
-							<div class="flex-1 rounded-xl bg-white/5 p-3">
-								<div class="text-[11px] font-semibold text-white/50">Liniowy 19%</div>
-								<div class="mt-0.5 font-display text-xl font-extrabold">798 zł</div>
-							</div>
-						</div>
-					</div>
+				<div class="flex items-center gap-2.5">
+					<span class="grid h-5.5 w-5.5 place-items-center rounded-full bg-success text-[12px] font-extrabold text-white">
+						✓
+					</span>
+					<span class="text-[13px] font-semibold">Wniosek CEIDG</span>
+				</div>
+				<div class="flex items-center gap-2.5">
+					<span class="grid h-5.5 w-5.5 place-items-center rounded-full bg-accent text-[11px] font-extrabold text-white">
+						ZUS
+					</span>
+					<span class="text-[13px] font-semibold text-muted-100">w cenie</span>
 				</div>
 			</div>
+		</div>
 
-			<!-- stat -->
-			<div
-				class="flex flex-col justify-center rounded-3xl border border-border-2 bg-white p-[clamp(22px,2.2vw,30px)] shadow-[0_12px_30px_-24px_rgba(11,11,18,0.25)] transition-all duration-[250ms] hover:-translate-y-1 hover:shadow-[0_24px_44px_-26px_rgba(11,11,18,0.28)]"
-			>
-				<div
-					class="bg-linear-to-r from-accent to-accent-3 bg-clip-text font-display text-[clamp(30px,3.2vw,44px)] font-extrabold tracking-[-0.03em] text-transparent"
-				>
-					od 200 zł
-				</div>
-				<div class="mt-1 text-sm font-medium text-muted-400">miesięcznie za prowadzenie JDG</div>
+		<!-- Kadry i płace (wide) -->
+		<div
+			class="col-span-2 flex items-center gap-6 rounded-3xl border border-border-2 bg-white p-[clamp(24px,2.4vw,34px)] shadow-[0_12px_30px_-24px_rgba(11,11,18,0.22)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_24px_44px_-26px_rgba(11,11,18,0.26)]"
+		>
+			<div class="min-w-0 flex-1">
+				<IconTile
+					icon="users"
+					size="h-11 w-11"
+					iconSize={22}
+					iconStrokeWidth={1.9}
+					class="mb-4"
+				/>
+				<h3 class="text-[clamp(21px,2.2vw,26px)] tracking-[-0.02em]">Kadry i płace</h3>
+				<p class="mt-2.5 text-[14.5px] leading-[1.55] text-muted-400">
+					Listy płac, umowy, akta osobowe, ZUS, PPK i PFRON — dla pracowników i zleceniobiorców.
+				</p>
 			</div>
-
-			<!-- stat -->
 			<div
-				class="flex flex-col justify-center rounded-3xl border border-border-2 bg-white p-[clamp(22px,2.2vw,30px)] shadow-[0_12px_30px_-24px_rgba(11,11,18,0.25)] transition-all duration-[250ms] hover:-translate-y-1 hover:shadow-[0_24px_44px_-26px_rgba(11,11,18,0.28)]"
+				class="flex w-47.5 shrink-0 flex-col gap-3 rounded-2xl border border-border-2 bg-[#F7F8FC] p-4"
 			>
-				<div
-					class="bg-linear-to-r from-accent to-accent-3 bg-clip-text font-display text-[clamp(30px,3.2vw,44px)] font-extrabold tracking-[-0.03em] text-transparent"
-				>
-					100%
-				</div>
-				<div class="mt-1 text-sm font-medium text-muted-400">obsługi zdalnej, w całej Polsce</div>
-			</div>
-
-			<!-- Zakładanie JDG (wide) -->
-			<div
-				class="col-span-2 flex items-center gap-6 rounded-3xl border border-border-2 bg-white p-[clamp(24px,2.4vw,34px)] shadow-[0_12px_30px_-24px_rgba(11,11,18,0.22)] transition-all duration-[250ms] hover:-translate-y-1 hover:shadow-[0_24px_44px_-26px_rgba(11,11,18,0.26)]"
-			>
-				<div class="min-w-0 flex-1">
-					<div class="mb-4 inline-grid h-11 w-11 place-items-center rounded-xl bg-surface-tint">
-						<Icon name="plus" size={22} strokeWidth={1.9} class="text-accent" />
-					</div>
-					<h3 class="text-[clamp(21px,2.2vw,26px)] tracking-[-0.02em]">Zakładanie JDG</h3>
-					<p class="mt-2.5 text-[14.5px] leading-[1.55] text-muted-400">
-						Wybór PKD, formy opodatkowania, rejestracja w CEIDG i zgłoszenia do ZUS. Bez błędów,
-						które później kosztują.
-					</p>
-				</div>
-				<div
-					class="flex w-[190px] flex-shrink-0 flex-col gap-3 rounded-2xl border border-border-2 bg-[#F7F8FC] p-4"
-				>
-					<div class="flex items-center gap-2.5">
-						<span class="grid h-[22px] w-[22px] place-items-center rounded-full bg-success text-[12px] font-extrabold text-white">
-							✓
-						</span>
-						<span class="text-[13px] font-semibold">Kody PKD</span>
-					</div>
-					<div class="flex items-center gap-2.5">
-						<span class="grid h-[22px] w-[22px] place-items-center rounded-full bg-success text-[12px] font-extrabold text-white">
-							✓
-						</span>
-						<span class="text-[13px] font-semibold">Wniosek CEIDG</span>
-					</div>
-					<div class="flex items-center gap-2.5">
-						<span class="grid h-[22px] w-[22px] place-items-center rounded-full bg-accent text-[11px] font-extrabold text-white">
-							ZUS
-						</span>
-						<span class="text-[13px] font-semibold text-muted-100">w cenie</span>
+				<div class="flex items-center gap-2.5">
+					<span class="grid h-7.5 w-7.5 place-items-center rounded-full bg-surface-tint text-[11px] font-extrabold text-accent">
+						KN
+					</span>
+					<div class="min-w-0 flex-1">
+						<div class="text-[12.5px] font-bold">Katarzyna N.</div>
+						<div class="text-[11px] text-muted-100">Umowa o pracę</div>
 					</div>
 				</div>
-			</div>
-
-			<!-- Kadry i płace (wide) -->
-			<div
-				class="col-span-2 flex items-center gap-6 rounded-3xl border border-border-2 bg-white p-[clamp(24px,2.4vw,34px)] shadow-[0_12px_30px_-24px_rgba(11,11,18,0.22)] transition-all duration-[250ms] hover:-translate-y-1 hover:shadow-[0_24px_44px_-26px_rgba(11,11,18,0.26)]"
-			>
-				<div class="min-w-0 flex-1">
-					<div class="mb-4 inline-grid h-11 w-11 place-items-center rounded-xl bg-surface-tint">
-						<Icon name="users" size={22} strokeWidth={1.9} class="text-accent" />
-					</div>
-					<h3 class="text-[clamp(21px,2.2vw,26px)] tracking-[-0.02em]">Kadry i płace</h3>
-					<p class="mt-2.5 text-[14.5px] leading-[1.55] text-muted-400">
-						Listy płac, umowy, akta osobowe, ZUS, PPK i PFRON — dla pracowników i zleceniobiorców.
-					</p>
-				</div>
-				<div
-					class="flex w-[190px] flex-shrink-0 flex-col gap-3 rounded-2xl border border-border-2 bg-[#F7F8FC] p-4"
-				>
-					<div class="flex items-center gap-2.5">
-						<span class="grid h-[30px] w-[30px] place-items-center rounded-full bg-surface-tint text-[11px] font-extrabold text-accent">
-							KN
-						</span>
-						<div class="min-w-0 flex-1">
-							<div class="text-[12.5px] font-bold">Katarzyna N.</div>
-							<div class="text-[11px] text-muted-100">Umowa o pracę</div>
-						</div>
-					</div>
-					<div class="h-px bg-border-2"></div>
-					<div class="flex justify-between text-[12.5px]">
-						<span class="font-semibold text-muted-100">ZUS</span>
-						<span class="font-bold text-success">wysłane ✓</span>
-					</div>
+				<div class="h-px bg-border-2"></div>
+				<div class="flex justify-between text-[12.5px]">
+					<span class="font-semibold text-muted-100">ZUS</span>
+					<span class="font-bold text-success">wysłane ✓</span>
 				</div>
 			</div>
 		</div>
 	</div>
-</section>
+</Section>
