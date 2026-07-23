@@ -1,0 +1,21 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="px-[clamp(18px,4vw,56px)] py-[clamp(32px,4vw,52px)] pb-[calc(clamp(32px,4vw,52px)+92px)] md:pb-[clamp(32px,4vw,52px)]">
+	<div
+		class="mx-auto flex max-w-[1220px] flex-wrap items-center justify-between gap-[18px] border-t border-border-2 pt-[clamp(28px,3vw,40px)]"
+	>
+		<div class="flex items-center gap-2.5">
+			<span
+				class="grid h-[34px] w-[34px] place-items-center rounded-[10px] bg-linear-to-br from-accent to-accent-2 font-display text-sm font-extrabold text-white"
+			>
+				AP
+			</span>
+			<span class="font-display text-base font-extrabold">Aleksandra Potocka · Księgowość</span>
+		</div>
+		<div class="text-[13px] font-medium text-muted-300">
+			© {year} · Księgowość online w całej Polsce
+		</div>
+	</div>
+</footer>
