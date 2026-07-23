@@ -1,0 +1,69 @@
+---
+interface Props {
+	eyebrow: string;
+	heading?: string;
+	lead?: string;
+	align?: "left" | "center";
+	tone?: "light" | "dark";
+	variant?: "stacked" | "inline";
+	headingWidth?: "sm" | "md" | "lg" | "none";
+	leadWidth?: string;
+	leadClass?: string;
+	headingClass?: string;
+	class?: string;
+	wrapperClass?: string;
+}
+
+const {
+	eyebrow,
+	heading,
+	lead,
+	align = "left",
+	tone = "light",
+	variant = "stacked",
+	headingWidth = "md",
+	leadWidth = "max-w-[46ch]",
+	leadClass,
+	headingClass = "text-[clamp(30px,4.6vw,56px)] leading-[1.02] tracking-[-0.03em]",
+	class: className,
+	wrapperClass,
+} = Astro.props;
+
+const eyebrowColor = tone === "dark" ? "text-accent-soft" : "text-accent";
+const leadColor = tone === "dark" ? "text-white/72" : "text-muted-600";
+
+const isCenter = align === "center";
+const alignClass = isCenter ? "text-center mx-auto" : "";
+const centerSelf = isCenter ? "mx-auto" : "";
+
+// Bottom spacing only for standalone headers sitting above a grid.
+const spacingClass = variant === "stacked" ? "mb-[clamp(36px,4vw,56px)]" : "";
+
+// Width is applied to the <h2> itself (heading font), not the wrapper,
+// so short display headings wrap to a few balanced lines instead of a
+// cramped column measured in the body font.
+const headingWidthMap: Record<NonNullable<Props["headingWidth"]>, string> = {
+	sm: "max-w-[15ch]",
+	md: "max-w-[20ch]",
+	lg: "max-w-[26ch]",
+	none: "",
+};
+const headingMax = headingWidthMap[headingWidth];
+---
+
+<div class:list={[spacingClass, alignClass, wrapperClass, className]}>
+	<div class:list={["mb-3.5 text-[13px] font-bold tracking-[1px] uppercase", eyebrowColor]}>
+		{eyebrow}
+	</div>
+	<h2 class:list={[headingClass, "text-balance", headingMax, centerSelf]}>
+		{heading ? heading : <slot />}
+	</h2>
+	{
+		lead && (
+			<p class:list={["mt-4 text-base leading-[1.6]", leadColor, leadWidth, centerSelf, leadClass]}>
+				{lead}
+			</p>
+		)
+	}
+	<slot name="after" />
+</div>
