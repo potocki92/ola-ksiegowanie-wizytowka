@@ -1,0 +1,33 @@
+---
+import Icon, { type IconName } from "./Icon.astro";
+
+interface Props {
+	icon: IconName;
+	size?: string;
+	radius?: string;
+	bg?: string;
+	iconClass?: string;
+	iconSize?: number;
+	iconStrokeWidth?: number;
+	inline?: boolean;
+	class?: string;
+}
+
+const {
+	icon,
+	size = "h-11.5 w-11.5",
+	radius = "rounded-xl",
+	bg = "bg-surface-tint",
+	iconClass = "text-accent",
+	iconSize = 22,
+	iconStrokeWidth = 1.9,
+	inline = true,
+	class: className,
+} = Astro.props;
+
+const display = inline ? "inline-grid" : "grid";
+---
+
+<span class:list={[display, "shrink-0 place-items-center", size, radius, bg, className]}>
+	<Icon name={icon} size={iconSize} strokeWidth={iconStrokeWidth} class={iconClass} />
+</span>
