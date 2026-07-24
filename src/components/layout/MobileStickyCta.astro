@@ -1,5 +1,9 @@
 ---
 import Icon from "../ui/Icon.astro";
+
+// Sekcja kontaktu istnieje tylko na stronie głównej — poza nią kotwica musi
+// prowadzić przez ścieżkę, inaczej przycisk nic nie robi.
+const isHome = Astro.url.pathname === "/";
 ---
 
 <div
@@ -13,7 +17,7 @@ import Icon from "../ui/Icon.astro";
 		<Icon name="phone" size={22} strokeWidth={1.9} />
 	</a>
 	<a
-		href="#kontakt"
+		href={isHome ? "#kontakt" : "/#kontakt"}
 		class="flex h-13.5 flex-1 items-center justify-center rounded-[15px] bg-linear-to-br from-accent to-accent-2 text-base font-bold text-white shadow-[0_14px_26px_-12px_rgba(79,91,242,0.8)]"
 	>
 		Bezpłatna konsultacja
