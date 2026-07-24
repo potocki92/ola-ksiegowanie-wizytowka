@@ -5,6 +5,7 @@ export type IconName =
 	| "check"
 	| "briefcase"
 	| "plus"
+	| "user"
 	| "users"
 	| "chat"
 	| "check-circle"
@@ -13,7 +14,8 @@ export type IconName =
 	| "phone"
 	| "mail"
 	| "map-pin"
-	| "file-text";
+	| "file-text"
+	| "user";
 
 interface Props {
 	name: IconName;
@@ -56,6 +58,14 @@ const { name, size = 24, strokeWidth = 2, class: className } = Astro.props;
 	}
 	{
 		name === "plus" && <path d="M12 5v14M5 12h14" />
+	}
+	{
+		name === "user" && (
+			<>
+				<circle cx="12" cy="8" r="3.6" />
+				<path d="M5 20.5a7 7 0 0 1 14 0" />
+			</>
+		)
 	}
 	{
 		name === "users" && (

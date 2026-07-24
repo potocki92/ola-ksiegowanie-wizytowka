@@ -1,33 +1,90 @@
 ---
+import type { HTMLAttributes } from "astro/types";
 import Icon, { type IconName } from "./Icon.astro";
 
-interface Props {
+type Size = "sm" | "md" | "lg";
+type Radius = "md" | "lg" | "full";
+type Tone = "accent" | "muted" | "dark" | "soft" | "soft-tint";
+
+interface Props extends HTMLAttributes<"span"> {
 	icon: IconName;
-	size?: string;
-	radius?: string;
-	bg?: string;
-	iconClass?: string;
+	size?: Size;
+	radius?: Radius;
+	tone?: Tone;
 	iconSize?: number;
 	iconStrokeWidth?: number;
-	inline?: boolean;
-	class?: string;
+	display?: "inline" | "block";
 }
 
 const {
 	icon,
-	size = "h-11.5 w-11.5",
-	radius = "rounded-xl",
-	bg = "bg-surface-tint",
-	iconClass = "text-accent",
-	iconSize = 22,
+	size = "md",
+	radius = "lg",
+	tone = "accent",
+	iconSize,
 	iconStrokeWidth = 1.9,
-	inline = true,
+	display = "inline",
 	class: className,
+	...attrs
 } = Astro.props;
 
-const display = inline ? "inline-grid" : "grid";
+const sizeClasses = {
+	sm: "h-9 w-9",
+	md: "h-11.5 w-11.5",
+	lg: "h-14 w-14",
+} satisfies Record<Size, string>;
+
+const iconSizes = {
+	sm: 18,
+	md: 22,
+	lg: 26,
+} satisfies Record<Size, number>;
+
+const radiusClasses = {
+	md: "rounded-lg",
+	lg: "rounded-xl",
+	full: "rounded-full",
+} satisfies Record<Radius, string>;
+
+const toneClasses = {
+	accent: {
+		background: "bg-surface-tint",
+		icon: "text-accent",
+	},
+	muted: {
+		background: "bg-white/10",
+		icon: "text-white/70",
+	},
+	dark: {
+		background: "bg-muted-900",
+		icon: "text-white",
+	},
+	soft: {
+		background: "bg-white/10",
+		icon: "text-accent-soft",
+	},
+	"soft-tint": {
+		background: "bg-accent-soft/14",
+		icon: "text-accent-soft",
+	},
+} satisfies Record<Tone, { background: string; icon: string }>;
 ---
 
-<span class:list={[display, "shrink-0 place-items-center", size, radius, bg, className]}>
-	<Icon name={icon} size={iconSize} strokeWidth={iconStrokeWidth} class={iconClass} />
+<span
+	{...attrs}
+	class:list={[
+		display === "inline" ? "inline-grid" : "grid",
+		"shrink-0 place-items-center",
+		sizeClasses[size],
+		radiusClasses[radius],
+		toneClasses[tone].background,
+		className,
+	]}
+>
+	<Icon
+		name={icon}
+		size={iconSize ?? iconSizes[size]}
+		strokeWidth={iconStrokeWidth}
+		class={toneClasses[tone].icon}
+	/>
 </span>
