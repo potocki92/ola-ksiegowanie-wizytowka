@@ -1,21 +1,29 @@
 # Architecture
 
-Static Astro site today; per [AGENTS.md](./AGENTS.md) it's meant to grow into
+Mostly-static Astro site; per [AGENTS.md](./AGENTS.md) it's meant to grow into
 a larger platform (customer accounts, invoices, PocketBase-backed data,
-dashboard). Only what's actually used is set up so far — PocketBase and Zod
-are intentionally not installed until a feature needs them.
+dashboard). Only what's actually used is set up so far — PocketBase is
+intentionally not installed until a feature needs it. Zod arrived with the
+contact form, which needed validation at a trust boundary.
+
+Every page is prerendered at build time. The one exception is the contact
+endpoint, which opts out via `export const prerender = false` and ships as a
+serverless function through `@astrojs/vercel`.
 
 ## Structure
 
 ```
 src/
-├── assets/fonts/     self-hosted woff2 files (Bricolage Grotesque, Hanken Grotesk)
+├── assets/fonts/     self-hosted woff2 files (Plus Jakarta Sans, Hanken Grotesk)
 ├── components/
-│   ├── ui/           generic presentational pieces (e.g. Icon.astro)
+│   ├── ui/           generic presentational pieces (Icon, Button, form/*)
 │   ├── layout/        page chrome: Header, Footer, MobileStickyCta
 │   └── sections/      one component per homepage section (Hero, Services, Faq, ...)
+├── features/
+│   └── contact/       form validation, email templates, Brevo transport
 ├── layouts/           Layout.astro — head/meta/SEO/JSON-LD, imports global.css
 ├── pages/             file-based routes; index.astro composes the sections
+│   └── api/contact.ts on-demand endpoint (the only non-static route)
 └── styles/            global.css — Tailwind import, @theme design tokens, @font-face
 ```
 
@@ -42,6 +50,38 @@ src/
   `AccountingService` JSON-LD block live in `Layout.astro`. `astro.config.mjs`
   has a `site` TODO — set it once a production domain exists so canonical
   URLs and the sitemap resolve to absolute URLs.
+
+## Contact form
+
+The first vertical slice through the layering AGENTS.md prescribes. Flow:
+
+```
+ContactForm.astro  →  POST /api/contact  →  contact.service  →  email/provider  →  Brevo
+```
+
+- `contact.schema.ts` — Zod schema; the endpoint trusts nothing from the browser
+  and revalidates every field server-side.
+- `contact.config.ts` — reads and validates env vars. Reads both `process.env`
+  and `import.meta.env`, because `astro dev` populates the latter while Vercel
+  populates the former at runtime.
+- `email/provider.ts` — the only module aware of Brevo. Plain `fetch`, no SDK.
+  Swapping in Resend once a custom domain exists means rewriting this file
+  alone; `EmailMessage` stays put.
+- `email/layout.ts` — table-based HTML shell plus `escapeHtml`. Submitted text
+  is interpolated into email HTML, so escaping is a security boundary, not
+  formatting.
+
+Two emails go out per submission and they are not equal in weight. The owner
+notification is the only channel by which a lead actually arrives, so its
+failure surfaces to the user as an error. The sender's confirmation is a
+courtesy — it is sent afterwards and its failure is logged but never fails the
+request, otherwise a client would refill a form whose message already landed.
+
+Anti-spam is a honeypot field, a minimum fill time, and a per-IP counter. The
+counter lives in serverless memory, so it is a guard against crude floods
+rather than real rate limiting; a durable one would need Vercel KV.
+
+Environment variables are documented in [.env.example](./.env.example).
 
 ## Future phases
 

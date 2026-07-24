@@ -1,0 +1,141 @@
+---
+import Logo from "./Logo.astro";
+
+interface Props {
+	href?: string;
+	size?: "sm" | "lg";
+	animated?: boolean;
+	class?: string;
+}
+
+const { href, size = "lg", animated = true, class: className } = Astro.props;
+
+const NAME = "ALEKSANDRA POTOCKA";
+const TAGLINE = "KSIĘGOWOŚĆ";
+
+// Rozbicie na tablicę znaków. `.bl-name` jest flexem, a w kontenerze flex
+// węzły z samych spacji nie tworzą anonimowych elementów — dzięki temu
+// formatowanie szablonu nie może przypadkiem dołożyć odstępu przed pierwszą
+// literą ani po ostatniej.
+const letters = [...NAME];
+
+// Bez `href` (stopka, overlay menu) `<a>` byłoby niefokusowalne, więc
+// renderujemy `<div role="img">` — nazwa dostępna ma się wtedy na czym oprzeć.
+const Tag = href ? "a" : "div";
+const label = href
+	? "Aleksandra Potocka — Księgowość, strona główna"
+	: "Aleksandra Potocka — Księgowość";
+---
+
+<Tag
+	href={href}
+	role={href ? undefined : "img"}
+	aria-label={label}
+	data-brand-lockup={animated ? "" : undefined}
+	class:list={["brand-lockup", `is-${size}`, className]}
+>
+	<Logo size={size === "lg" ? "lg" : "sm"} />
+	<span class="bl-stack">
+		<span class="bl-name" aria-hidden="true">
+			{letters.map((ch) => <span class="bl-letter" set:html={ch === " " ? "&nbsp;" : ch} />)}
+		</span>
+		<span class="bl-tagline" aria-hidden="true">
+			<i></i><span class="bl-tagline-text">{TAGLINE}</span><i></i>
+		</span>
+	</span>
+</Tag>
+
+<style>
+	.brand-lockup {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		text-decoration: none;
+	}
+
+	.bl-stack {
+		display: flex;
+		flex-direction: column;
+		gap: 3px;
+		min-width: 0;
+		transition: gap 0.25s ease;
+	}
+
+	.bl-name {
+		display: flex;
+		align-items: baseline;
+		font-family: var(--font-logo);
+		font-size: clamp(10px, 2.6vw, 14px);
+		letter-spacing: clamp(0.18em, 0.8vw, 0.28em);
+		line-height: 1.25;
+		color: var(--color-brand-navy);
+		white-space: nowrap;
+		overflow: hidden;
+		max-height: 1.4em;
+		transition:
+			max-height 0.25s ease,
+			opacity 0.2s ease;
+	}
+
+	.bl-letter {
+		display: block;
+		flex: 0 0 auto;
+		overflow: hidden;
+		max-width: 1.6em;
+		opacity: 1;
+		transition:
+			max-width 0.22s ease,
+			opacity 0.16s ease;
+	}
+
+	.bl-tagline {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-family: var(--font-logo);
+		font-size: clamp(7px, 1.8vw, 9px);
+		letter-spacing: clamp(0.24em, 1.2vw, 0.4em);
+		line-height: 1.25;
+		color: var(--color-brand-gold);
+		white-space: nowrap;
+	}
+
+	/* Tracking dokłada odstęp także po ostatniej literze — bez kompensaty
+	   prawa kreska odjeżdża wyraźnie dalej niż lewa. */
+	.bl-tagline-text {
+		margin-right: calc(-1 * clamp(0.24em, 1.2vw, 0.4em));
+	}
+
+	.bl-tagline i {
+		display: block;
+		flex: 0 0 auto;
+		width: clamp(10px, 2.5vw, 18px);
+		height: 1px;
+		background: currentColor;
+	}
+
+	/* Przy 320 px 18 wersalików z trackingiem zjada niemal całą szerokość
+	   paska: przy znaczku 50 px zostaje raptem 5 px zapasu. To za mało na
+	   moment przed wczytaniem Tenor Sans — `font-display: swap` rysuje
+	   wtedy szerszym krojem zastępczym i pasek mógłby chwilowo wyjść poza
+	   ekran. Znaczek ustępuje pierwszy, bo tracking jest tym, co nadaje
+	   logotypowi charakter. Zapas rośnie wtedy do ~15 px. */
+	@media (max-width: 400px) {
+		.brand-lockup.is-lg :global(.logo-mark) {
+			--logo-mark: 40px;
+		}
+	}
+
+	/* Wariant stopki i menu mobilnego — stałe, mniejsze rozmiary. */
+	.brand-lockup.is-sm .bl-name {
+		font-size: 11px;
+		letter-spacing: 0.22em;
+	}
+	.brand-lockup.is-sm .bl-tagline {
+		font-size: 7.5px;
+		letter-spacing: 0.32em;
+	}
+	.brand-lockup.is-sm .bl-tagline-text {
+		margin-right: -0.32em;
+	}
+</style>

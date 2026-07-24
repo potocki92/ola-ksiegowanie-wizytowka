@@ -1,0 +1,171 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+import MobileStickyCta from "../components/layout/MobileStickyCta.astro";
+import Section from "../components/ui/Section.astro";
+
+// UWAGA DO UZUPEŁNIENIA PRZED PUBLIKACJĄ:
+// poniższe dane rejestrowe są wymagane w klauzuli informacyjnej RODO,
+// a nie da się ich wyprowadzić z zawartości strony.
+const ADMINISTRATOR = {
+	name: "Aleksandra Potocka",
+	businessName: "{{DO UZUPEŁNIENIA: pełna nazwa działalności}}",
+	address: "{{DO UZUPEŁNIENIA: adres siedziby}}",
+	nip: "{{DO UZUPEŁNIENIA: NIP}}",
+	email: "a.potocka.rozliczenia@gmail.com",
+	phone: "533 032 455",
+};
+
+const updatedAt = "24 lipca 2026";
+---
+
+<Layout
+	title="Polityka prywatności — Aleksandra Potocka, Księgowość"
+	description="Zasady przetwarzania danych osobowych przekazanych przez formularz kontaktowy: administrator, cel, podstawa prawna, okres przechowywania i prawa osoby, której dane dotyczą."
+>
+	<Header />
+
+	<main>
+		<Section class="py-[clamp(48px,6vw,96px)]" maxWidth="max-w-3xl">
+			<h1
+				class="text-[clamp(32px,5vw,52px)] leading-[1.05] tracking-[-0.03em]"
+			>
+				Polityka prywatności
+			</h1>
+
+			<p class="mt-4 text-[15px] text-muted-500">
+				Ostatnia aktualizacja: {updatedAt}
+			</p>
+
+			<div
+				class="mt-[clamp(32px,4vw,48px)] flex flex-col gap-8 text-[16px] leading-relaxed text-muted-600 [&_h2]:text-[clamp(20px,2.4vw,26px)] [&_h2]:tracking-[-0.02em] [&_h2]:text-ink [&_li]:mt-2 [&_p]:mt-3"
+			>
+				<section>
+					<h2>1. Kto przetwarza Twoje dane</h2>
+					<p>
+						Administratorem danych osobowych jest {ADMINISTRATOR.name},
+						prowadząca działalność gospodarczą pod nazwą {
+							ADMINISTRATOR.businessName
+						}, z siedzibą: {ADMINISTRATOR.address}, NIP: {
+							ADMINISTRATOR.nip
+						}.
+					</p>
+					<p>
+						Kontakt w sprawie danych osobowych: <a
+							href={`mailto:${ADMINISTRATOR.email}`}>{ADMINISTRATOR.email}</a
+						> lub telefonicznie {ADMINISTRATOR.phone}.
+					</p>
+				</section>
+
+				<section>
+					<h2>2. Jakie dane zbieramy</h2>
+					<p>
+						Wyłącznie te, które sam podasz w formularzu kontaktowym:
+					</p>
+					<ul class="ml-5 list-disc">
+						<li>imię i nazwisko,</li>
+						<li>adres e-mail,</li>
+						<li>numer telefonu — pole nieobowiązkowe,</li>
+						<li>treść wiadomości.</li>
+					</ul>
+					<p>
+						Nie zbieramy danych automatycznie w celach marketingowych.
+						Strona nie korzysta z plików cookies służących profilowaniu ani
+						z narzędzi śledzących.
+					</p>
+				</section>
+
+				<section>
+					<h2>3. Po co i na jakiej podstawie</h2>
+					<p>
+						Dane wykorzystujemy wyłącznie po to, żeby odpowiedzieć na
+						Twoją wiadomość i — jeśli zdecydujesz się na współpracę —
+						przedstawić warunki usługi.
+					</p>
+					<ul class="ml-5 list-disc">
+						<li>
+							<strong>art. 6 ust. 1 lit. b RODO</strong> — podjęcie działań
+							na Twoje żądanie przed zawarciem umowy;
+						</li>
+						<li>
+							<strong>art. 6 ust. 1 lit. f RODO</strong> — prawnie
+							uzasadniony interes administratora, jakim jest prowadzenie
+							korespondencji i obrona przed ewentualnymi roszczeniami.
+						</li>
+					</ul>
+					<p>
+						Podanie danych jest dobrowolne, ale bez adresu e-mail nie
+						będziemy w stanie odpowiedzieć.
+					</p>
+				</section>
+
+				<section>
+					<h2>4. Jak długo je przechowujemy</h2>
+					<p>
+						Korespondencję, która nie zakończyła się współpracą,
+						przechowujemy do 12 miesięcy od ostatniego kontaktu, a potem
+						usuwamy. Jeśli dojdzie do zawarcia umowy, dane przechowujemy
+						przez okres wymagany przepisami podatkowymi i o rachunkowości.
+					</p>
+				</section>
+
+				<section>
+					<h2>5. Komu je przekazujemy</h2>
+					<p>
+						Danych nie sprzedajemy i nie udostępniamy w celach
+						marketingowych. Powierzamy je wyłącznie podmiotom, które
+						obsługują infrastrukturę strony, na podstawie umów powierzenia
+						przetwarzania:
+					</p>
+					<ul class="ml-5 list-disc">
+						<li>
+							<strong>Sendinblue SAS (Brevo)</strong> — obsługa wysyłki
+							wiadomości e-mail z formularza;
+						</li>
+						<li>
+							<strong>Vercel Inc.</strong> — hosting strony internetowej.
+						</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>6. Twoje prawa</h2>
+					<p>Masz prawo do:</p>
+					<ul class="ml-5 list-disc">
+						<li>dostępu do swoich danych i otrzymania ich kopii,</li>
+						<li>sprostowania danych nieprawidłowych,</li>
+						<li>usunięcia danych,</li>
+						<li>ograniczenia przetwarzania,</li>
+						<li>przenoszenia danych,</li>
+						<li>
+							wniesienia sprzeciwu wobec przetwarzania opartego na prawnie
+							uzasadnionym interesie.
+						</li>
+					</ul>
+					<p>
+						Żeby skorzystać z któregokolwiek z nich, napisz na <a
+							href={`mailto:${ADMINISTRATOR.email}`}>{ADMINISTRATOR.email}</a
+						>.
+					</p>
+					<p>
+						Przysługuje Ci również skarga do Prezesa Urzędu Ochrony Danych
+						Osobowych (ul. Stawki 2, 00-193 Warszawa), jeśli uznasz, że
+						przetwarzamy Twoje dane niezgodnie z prawem.
+					</p>
+				</section>
+
+				<section>
+					<h2>7. Zautomatyzowane decyzje</h2>
+					<p>
+						Nie podejmujemy wobec Ciebie decyzji w sposób zautomatyzowany
+						i nie stosujemy profilowania.
+					</p>
+				</section>
+			</div>
+		</Section>
+	</main>
+
+	<Footer />
+	<MobileStickyCta />
+</Layout>

@@ -50,12 +50,38 @@
 	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+/* Tenor Sans — wyłącznie logotyp. Krój ma jedną grubość (400), więc bez
+   zakresu `font-weight` jak przy pozostałych rodzinach. */
+@font-face {
+	font-family: "Tenor Sans";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("../assets/fonts/tenor-sans-latin-ext.woff2") format("woff2");
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+	font-family: "Tenor Sans";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("../assets/fonts/tenor-sans-latin.woff2") format("woff2");
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 @theme {
 	--font-sans: "Hanken Grotesk", sans-serif;
 	--font-display: "Plus Jakarta Sans", sans-serif;
+	--font-logo: "Tenor Sans", serif;
 
 	--color-bg: #fbfbfd;
 	--color-ink: #0b0b12;
+
+	/* Kolory wyłącznie logotypu — reszta strony zostaje na indygo.
+	   Złoto jest przyciemnione względem wizytówki (#b3924f): daje 4,78:1
+	   zamiast 2,88:1, a z odległości wciąż czyta się jako złoto. */
+	--color-brand-navy: #16233a;
+	--color-brand-gold: #8a6d2f;
 
 	--color-accent: #4f5bf2;
 	--color-accent-2: #7b6cf6;

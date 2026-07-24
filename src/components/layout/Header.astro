@@ -1,14 +1,21 @@
 ---
 import Icon from "../ui/Icon.astro";
-import Logo from "../ui/Logo.astro";
+import BrandLockup from "../ui/BrandLockup.astro";
 import Button from "../ui/Button.astro";
 
 const navLinks = [
-	{ href: "#uslugi", label: "Usługi" },
-	{ href: "#o-mnie", label: "O mnie" },
-	{ href: "#cennik", label: "Cennik" },
-	{ href: "#faq", label: "FAQ" },
+	{ id: "uslugi", label: "Usługi" },
+	{ id: "o-mnie", label: "O mnie" },
+	{ id: "cennik", label: "Cennik" },
+	{ id: "faq", label: "FAQ" },
 ];
+
+// Sekcje istnieją tylko na stronie głównej. Na podstronach (np. polityce
+// prywatności) gołe `#uslugi` nie prowadziłoby donikąd, więc kotwice dostają
+// prefiks ścieżki. `data-nav-link` zostaje samym id — scrollspy niżej opiera
+// się na nim i prefiks by go rozstroił.
+const isHome = Astro.url.pathname === "/";
+const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 ---
 
 
@@ -16,21 +23,21 @@ const navLinks = [
 <nav
 	class="sticky top-0 z-60 flex items-center justify-between px-[clamp(18px,4vw,56px)] py-3.5 bg-bg/78 backdrop-blur-xl border-b border-black/6"
 >
-	<Logo href="#top" size="md" />
+	<BrandLockup href={isHome ? "#top" : "/"} size="lg" />
 
 	<div class="hidden md:flex items-center gap-4.5 lg:gap-7.5">
 		{
 			navLinks.map((link) => (
 				<a
-					href={link.href}
-					data-nav-link={link.href.slice(1)}
+					href={anchor(link.id)}
+					data-nav-link={link.id}
 					class="nav-link nav-underline text-[14.5px] font-semibold text-muted-700 transition-colors duration-200 hover:text-ink"
 				>
 					{link.label}
 				</a>
 			))
 		}
-		<Button href="#kontakt" variant="nav">Bezpłatna konsultacja</Button>
+		<Button href={anchor("kontakt")} variant="nav">Bezpłatna konsultacja</Button>
 	</div>
 
 	<button
@@ -50,7 +57,7 @@ const navLinks = [
 	class="fixed inset-0 z-70 flex flex-col bg-bg px-[clamp(18px,4vw,56px)] py-3.5 animate-sheet-up"
 >
 	<div class="flex items-center justify-between">
-		<span class="font-display text-lg font-extrabold">Potocka</span>
+		<BrandLockup animated={false} size="sm" />
 		<button
 			id="menu-close"
 			aria-label="Zamknij"
@@ -63,9 +70,9 @@ const navLinks = [
 		{
 			navLinks.map((link) => (
 				<a
-					href={link.href}
+					href={link.id}
 					data-menu-link
-					data-nav-link={link.href.slice(1)}
+					data-nav-link={link.id}
 						class="nav-link border-b border-border py-3 font-display text-[30px] font-bold text-ink"
 				>
 					{link.label}
