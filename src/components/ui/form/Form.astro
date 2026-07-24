@@ -1,0 +1,32 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Gap = "sm" | "md" | "lg";
+
+interface Props extends HTMLAttributes<"form"> {
+	gap?: Gap;
+}
+
+const {
+	gap = "md",
+	class: className,
+	...attrs
+} = Astro.props;
+
+const gapClasses = {
+	sm: "gap-3",
+	md: "gap-5",
+	lg: "gap-7",
+} satisfies Record<Gap, string>;
+---
+
+<form
+	{...attrs}
+	class:list={[
+		"flex flex-col rounded-[20px] border border-white/13 bg-white/5 p-[clamp(22px,3vw,34px)]",
+		gapClasses[gap],
+		className,
+	]}
+>
+	<slot />
+</form>

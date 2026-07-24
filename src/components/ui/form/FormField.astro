@@ -1,0 +1,34 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Label from "./Label.astro";
+
+interface Props extends HTMLAttributes<"label"> {
+	label: string;
+	for: string;
+	required?: boolean;
+}
+
+const {
+	label,
+	for: htmlFor,
+	required = false,
+	class: className,
+	...attrs
+} = Astro.props;
+---
+
+<Label for={htmlFor} class={className} {...attrs}>
+	<span class="text-[13px] font-semibold text-white/80">
+		{label}
+
+		{
+			required && (
+				<span class="text-accent-soft" aria-hidden="true">
+					{" *"}
+				</span>
+			)
+		}
+	</span>
+
+	<slot />
+</Label>

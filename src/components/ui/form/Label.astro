@@ -1,0 +1,20 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"label">;
+
+const {
+	class: className,
+	...attrs
+} = Astro.props;
+---
+
+<label
+	{...attrs}
+	class:list={[
+		"flex flex-col gap-1.5",
+		className,
+	]}
+>
+	<slot />
+</label>
