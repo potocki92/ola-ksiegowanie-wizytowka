@@ -114,17 +114,20 @@ const label = href
 		background: currentColor;
 	}
 
-	/* Przy 320 px 18 wersalików z trackingiem zjada niemal całą szerokość
-	   paska: przy znaczku 50 px zostaje raptem 5 px zapasu. To za mało na
-	   moment przed wczytaniem Tenor Sans — `font-display: swap` rysuje
-	   wtedy szerszym krojem zastępczym i pasek mógłby chwilowo wyjść poza
-	   ekran. Znaczek ustępuje pierwszy, bo tracking jest tym, co nadaje
-	   logotypowi charakter. Zapas rośnie wtedy do ~15 px. */
-	@media (max-width: 400px) {
-		.brand-lockup.is-lg :global(.logo-mark) {
-			--logo-mark: 40px;
-		}
-	}
+	/* Przy 320 px 18 wersalików z trackingiem zjada większość szerokości paska.
+	   Rachunek: 320 − 36 (padding `nav`) − 44 (`#menu-toggle`) − 40 (znaczek)
+	   − 12 (gap) = 188 px na `.bl-stack`. Zmierzone z metryk kroju przy
+	   `font-size: 10px` i `letter-spacing: 2.56px` — `.bl-name` zajmuje
+	   172,6 px, czyli zostaje ~15 px zapasu.
+
+	   Znaczek jest tu celowo trzymany na 40 px (patrz `.is-lg` w Logo.astro) —
+	   to on kupuje ten zapas i dlatego nie ma osobnej reguły dla wąskich
+	   ekranów. Uwaga na przyszłość: powiększenie znaczka wraca do problemu
+	   1:1, bo przy 50 px zostają raptem 5 px.
+
+	   Wbrew intuicji wąskim gardłem NIE jest krój zastępczy z `font-display:
+	   swap`: `serif` (Times New Roman) daje 163,6 px, czyli 9 px MNIEJ niż
+	   sam Tenor Sans. Najszerszy jest logotyp już po wczytaniu fontu. */
 
 	/* Wariant stopki i menu mobilnego — stałe, mniejsze rozmiary. */
 	.brand-lockup.is-sm .bl-name {
@@ -138,4 +141,94 @@ const label = href
 	.brand-lockup.is-sm .bl-tagline-text {
 		margin-right: -0.32em;
 	}
+
+	/* --- stan zwinięty --- */
+
+	.bl-letter.is-gone {
+		max-width: 0;
+		opacity: 0;
+	}
+
+	.brand-lockup.is-collapsed .bl-name {
+		max-height: 0;
+		opacity: 0;
+	}
+	.brand-lockup.is-collapsed .bl-stack {
+		gap: 0;
+	}
+
+	/* Znaczek celowo NIE zmienia rozmiaru przy zwijaniu. To on (40 px), a nie
+	   dwuliniowy lockup (~31 px), wyznacza wysokość lockupu — gdyby malał,
+	   `sticky` nagłówek zmieniałby wysokość w trakcie scrolla i przepychał
+	   treść pod sobą. Litery chowają się wewnątrz stałej wysokości. */
+
+	@media (prefers-reduced-motion: reduce) {
+		.bl-letter,
+		.bl-name,
+		.bl-stack,
+		.brand-lockup :global(.logo-mark) {
+			transition: none;
+		}
+	}
 </style>
+
+<script>
+	// Litery znikają od ostatniej do pierwszej, proporcjonalnie do pozycji
+	// scrolla. Ten sam wzór odtwarza je przy przewijaniu w górę, więc nie ma
+	// osobnej ścieżki kodu dla obu kierunków.
+	const lockups = document.querySelectorAll<HTMLElement>("[data-brand-lockup]");
+
+	if (lockups.length) {
+		const TRAVEL = 160; // px scrolla na pełne zwinięcie
+		const COLLAPSE_AT = 160;
+		const RELEASE_AT = 140; // histereza — patrz niżej
+
+		const instances = Array.from(lockups).map((el) => ({
+			el,
+			letters: Array.from(el.querySelectorAll<HTMLElement>(".bl-letter")),
+			visible: -1,
+			collapsed: false,
+		}));
+
+		const update = () => {
+			const y = window.scrollY;
+			const p = Math.min(1, Math.max(0, y / TRAVEL));
+
+			for (const inst of instances) {
+				const total = inst.letters.length;
+				const visible = Math.ceil((1 - p) * total);
+
+				// Dotykamy DOM tylko przy faktycznej zmianie — typowy tick
+				// scrolla nie robi nic.
+				if (visible !== inst.visible) {
+					for (let i = 0; i < total; i++) {
+						inst.letters[i].classList.toggle("is-gone", i >= visible);
+					}
+					inst.visible = visible;
+				}
+
+				// Próg niesymetryczny: zwijamy przy 160, rozwijamy dopiero przy
+				// 140. Bez tego zatrzymanie scrolla dokładnie na progu
+				// powodowałoby migotanie wysokości paska.
+				const collapsed = inst.collapsed ? y >= RELEASE_AT : y >= COLLAPSE_AT;
+				if (collapsed !== inst.collapsed) {
+					inst.el.classList.toggle("is-collapsed", collapsed);
+					inst.collapsed = collapsed;
+				}
+			}
+		};
+
+		let ticking = false;
+		const onScroll = () => {
+			if (ticking) return;
+			ticking = true;
+			requestAnimationFrame(() => {
+				update();
+				ticking = false;
+			});
+		};
+
+		window.addEventListener("scroll", onScroll, { passive: true });
+		update(); // stan początkowy — np. po przeładowaniu w połowie strony
+	}
+</script>

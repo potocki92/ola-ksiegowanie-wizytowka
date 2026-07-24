@@ -149,8 +149,13 @@
 }
 
 @layer base {
+	/* Pasek nawigacji ma stałą wysokość: 28 px paddingu (`py-3.5`) + 1 px
+	   ramki + najwyższe dziecko — 42 px (przycisk `nav`) na desktopie, 44 px
+	   (`#menu-toggle`, `h-11`) na mobile. Czyli 71 / 73 px. Wcześniej wartość
+	   była dobrana pod pasek ZWINIĘTY (~60 px); dziś nic się nie zwija, więc
+	   73 px + ~10 px luzu, żeby nagłówek sekcji nie kleił się do paska. */
 	html {
-		scroll-padding-top: 70px;
+		scroll-padding-top: 84px;
 	}
 
 	@media (prefers-reduced-motion: no-preference) {

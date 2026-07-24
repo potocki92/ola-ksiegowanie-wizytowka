@@ -148,3 +148,8 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 		updateActive();
 	}
 </script>
+
+<!-- Pasek celowo NIE zmienia wysokości przy zwijaniu logotypu. `nav` jest
+     `sticky`, więc nadal zajmuje miejsce w flow — każda zmiana jego wysokości
+     przepycha w trakcie scrolla całą treść pod spodem. Litery logotypu chowają
+     się wewnątrz stałej wysokości paska. -->
