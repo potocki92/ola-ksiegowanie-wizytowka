@@ -70,7 +70,7 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 		{
 			navLinks.map((link) => (
 				<a
-					href={link.id}
+					href={anchor(link.id)}
 					data-menu-link
 					data-nav-link={link.id}
 						class="nav-link border-b border-border py-3 font-display text-[30px] font-bold text-ink"
@@ -81,7 +81,7 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 		}
 	</div>
 	<a
-		href="#kontakt"
+		href={anchor("kontakt")}
 		data-menu-link
 		class="mt-auto flex h-14 items-center justify-center rounded-2xl bg-linear-to-br from-accent to-accent-2 text-[17px] font-bold text-white shadow-[0_16px_30px_-14px_rgba(79,91,242,0.8)]"
 	>
