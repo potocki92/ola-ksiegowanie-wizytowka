@@ -3,93 +3,201 @@ import Button from "../../ui/Button.astro";
 import Form from "../../ui/form/Form.astro";
 import TextField from "../../ui/form/TextField.astro";
 import TextAreaField from "../../ui/form/TextAreaField.astro";
+import ContactSuccess from "./ContactSuccess.astro";
 ---
 
-<Form data-contact-form method="POST" gap="md">
-	<TextField
-		label="Imię i nazwisko"
-		name="name"
-		type="text"
-		icon="user"
-		required
-		autocomplete="name"
-		placeholder="Jan Kowalski"
-	/>
+<div data-contact-block>
+	<Form data-contact-form action="/api/contact" method="POST" gap="md">
+		<TextField
+			label="Imię i nazwisko"
+			name="name"
+			type="text"
+			icon="user"
+			required
+			autocomplete="name"
+			placeholder="Jan Kowalski"
+		/>
 
-	<TextField
-		label="E-mail"
-		name="email"
-		type="email"
-		icon="mail"
-		required
-		autocomplete="email"
-		placeholder="jan@firma.pl"
-	/>
+		<TextField
+			label="E-mail"
+			name="email"
+			type="email"
+			icon="mail"
+			required
+			autocomplete="email"
+			placeholder="jan@firma.pl"
+		/>
 
-	<TextField
-		label="Telefon"
-		name="phone"
-		type="tel"
-		icon="phone"
-		autocomplete="tel"
-		placeholder="533 032 455"
-	/>
+		<TextField
+			label="Telefon"
+			name="phone"
+			type="tel"
+			icon="phone"
+			autocomplete="tel"
+			placeholder="533 032 455"
+		/>
 
-	<TextAreaField
-		label="Czego potrzebujesz?"
-		name="message"
-		icon="chat"
-		rows={4}
-		required
-		placeholder="Np. zakładam JDG na ryczałcie, chcę przejść na Twoją obsługę…"
-	/>
+		<TextAreaField
+			label="Czego potrzebujesz?"
+			name="message"
+			icon="chat"
+			rows={4}
+			required
+			placeholder="Np. zakładam JDG na ryczałcie, chcę przejść na Twoją obsługę…"
+		/>
 
-	<Button
-		type="submit"
-		variant="primary"
-		class="mt-1 h-13.5 cursor-pointer font-[inherit]"
-	>
-		Wyślij zapytanie
-	</Button>
+		{/*
+			Pułapka na boty. Człowiek tego pola nie zobaczy i nie dojdzie do niego
+			tabulatorem, więc każda wartość oznacza automat. Celowo `absolute`
+			poza ekranem, a nie `display:none` — część botów pomija pola ukryte
+			w oczywisty sposób.
+		*/}
+		<div
+			aria-hidden="true"
+			class="pointer-events-none absolute -left-[9999px] h-0 w-0 overflow-hidden"
+		>
+			<label for="company">Nazwa firmy</label>
+			<input
+				id="company"
+				name="company"
+				type="text"
+				tabindex="-1"
+				autocomplete="off"
+			/>
+		</div>
 
-	<p
-		data-form-note
-		class="text-center text-xs text-white/50"
-		aria-live="polite"
-	>
-		Wysyłając formularz, akceptujesz przetwarzanie danych w celu kontaktu.
-	</p>
-</Form>
+		{/* Czas wypełniania — uzupełniany skryptem przy wysyłce. */}
+		<input data-elapsed type="hidden" name="elapsed" value="" />
+
+		<Button
+			data-submit
+			type="submit"
+			variant="primary"
+			class="mt-1 h-13.5 cursor-pointer font-[inherit] disabled:pointer-events-none disabled:opacity-60"
+		>
+			Wyślij zapytanie
+		</Button>
+
+		{/*
+			Komunikat błędu jest osobnym regionem — wcześniej rolę tę pełniła
+			notka o danych, przez co informacja prawna znikała w trakcie wysyłki.
+			Bez utility wyświetlania, inaczej `[hidden]` z preflightu przegrywa.
+		*/}
+		<p
+			data-form-error
+			role="alert"
+			hidden
+			class="rounded-xl border border-[rgba(255,107,107,0.32)] bg-[rgba(255,107,107,0.12)] px-4 py-3 text-center text-[13.5px] leading-relaxed text-[#ffc2c2]"
+		>
+		</p>
+
+		<p class="text-center text-xs leading-relaxed text-white/50">
+			Dane z formularza wykorzystamy wyłącznie w celu odpowiedzi na Twoją
+			wiadomość. Szczegóły w <a
+				href="/polityka-prywatnosci"
+				class="text-white/70 underline underline-offset-2 hover:text-white"
+				>Polityce prywatności</a
+			>.
+		</p>
+
+		<noscript>
+			<p class="text-center text-[13px] leading-relaxed text-white/60">
+				Wysyłka formularza wymaga włączonego JavaScriptu. Napisz na <a
+					href="mailto:a.potocka.rozliczenia@gmail.com"
+					class="text-accent-soft underline">a.potocka.rozliczenia@gmail.com</a
+				> lub zadzwoń: <a href="tel:+48533032455" class="text-accent-soft underline"
+					>533 032 455</a
+				>.
+			</p>
+		</noscript>
+	</Form>
+
+	<ContactSuccess />
+</div>
 
 <script>
-	const forms =
-		document.querySelectorAll<HTMLFormElement>("[data-contact-form]");
+	const FALLBACK_ERROR =
+		"Nie udało się wysłać wiadomości. Zadzwoń: 533 032 455 lub napisz na a.potocka.rozliczenia@gmail.com";
 
-	forms.forEach((form) => {
-		const note =
-			form.querySelector<HTMLParagraphElement>("[data-form-note]");
+	interface ContactResponse {
+		ok?: boolean;
+		error?: string;
+		fields?: Record<string, string[] | undefined>;
+	}
 
-		const defaultNote = note?.textContent ?? "";
+	const blocks = document.querySelectorAll<HTMLElement>("[data-contact-block]");
 
-		let resetTimer: number | undefined;
+	blocks.forEach((block) => {
+		const form = block.querySelector<HTMLFormElement>("[data-contact-form]");
+		const success = block.querySelector<HTMLElement>("[data-contact-success]");
+		const errorBox = block.querySelector<HTMLElement>("[data-form-error]");
+		const submit = block.querySelector<HTMLButtonElement>("[data-submit]");
+		const elapsed = block.querySelector<HTMLInputElement>("[data-elapsed]");
 
-		form.addEventListener("submit", (event) => {
+		if (!form || !success || !errorBox || !submit) {
+			return;
+		}
+
+		const mountedAt = Date.now();
+		const defaultLabel = submit.textContent ?? "Wyślij zapytanie";
+
+		const showError = (message?: string) => {
+			errorBox.textContent = message || FALLBACK_ERROR;
+			errorBox.hidden = false;
+		};
+
+		form.addEventListener("submit", async (event) => {
 			event.preventDefault();
 
-			form.reset();
-
-			if (!note) {
+			// Natywna walidacja HTML zdejmuje z serwera oczywiste przypadki
+			// i pokazuje błąd przy właściwym polu.
+			if (!form.checkValidity()) {
+				form.reportValidity();
 				return;
 			}
 
-			note.textContent = "Dziękuję! Odezwę się najszybciej jak to możliwe.";
+			errorBox.hidden = true;
+			submit.disabled = true;
+			submit.textContent = "Wysyłam…";
 
-			// Bez tego szybkie ponowne wysłanie skróciłoby czas komunikatu.
-			window.clearTimeout(resetTimer);
+			if (elapsed) {
+				elapsed.value = String(Date.now() - mountedAt);
+			}
 
-			resetTimer = window.setTimeout(() => {
-				note.textContent = defaultNote;
-			}, 6000);
+			try {
+				const response = await fetch(form.action, {
+					method: "POST",
+					headers: { "content-type": "application/json" },
+					body: JSON.stringify(Object.fromEntries(new FormData(form))),
+				});
+
+				const data: ContactResponse | null = await response
+					.json()
+					.catch(() => null);
+
+				if (!response.ok || !data?.ok) {
+					const fieldError = Object.values(data?.fields ?? {})
+						.flat()
+						.find(Boolean);
+
+					showError(fieldError ?? data?.error);
+					return;
+				}
+
+				// `form.hidden` by nie zadziałało: Form.astro nakłada `flex`,
+				// które wygrywa z `[hidden]` z preflightu Tailwinda.
+				form.style.display = "none";
+				success.hidden = false;
+
+				// Bez przeniesienia fokusu użytkownik czytnika ekranu nie
+				// dowiedziałby się, że formularz zniknął.
+				success.focus();
+			} catch {
+				showError();
+			} finally {
+				submit.disabled = false;
+				submit.textContent = defaultLabel;
+			}
 		});
 	});
 </script>

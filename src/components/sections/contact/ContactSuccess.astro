@@ -1,0 +1,48 @@
+---
+import Icon from "../../ui/Icon.astro";
+---
+
+{/*
+  Uwaga na `hidden`: element główny celowo nie dostaje żadnego utility
+  wyświetlania (`flex`, `grid`, `block`). Preflight Tailwinda ukrywa `[hidden]`
+  selektorem `:where(...)` o zerowej specyficzności, więc dowolna klasa display
+  wygrałaby z nim i karta byłaby widoczna od razu. Układ robi wrapper w środku.
+*/}
+<div
+	data-contact-success
+	hidden
+	tabindex="-1"
+	class="rounded-[20px] border border-white/13 bg-white/5 p-[clamp(28px,3.5vw,40px)] text-center outline-none"
+>
+	<div class="flex flex-col items-center gap-4">
+		<span
+			class="flex h-14 w-14 items-center justify-center rounded-full bg-linear-to-br from-accent to-accent-2 text-white shadow-[0_18px_34px_-14px_rgba(79,91,242,0.75)]"
+		>
+			<Icon name="check" size={26} strokeWidth={2.4} />
+		</span>
+
+		<div>
+			<h3
+				class="text-[clamp(20px,2.4vw,26px)] leading-tight tracking-[-0.02em] text-white"
+			>
+				Dziękuję za wiadomość!
+			</h3>
+
+			<p class="mt-2.5 text-[15px] leading-relaxed text-white/65">
+				Twoje zapytanie do mnie dotarło. Odezwę się najszybciej jak to
+				możliwe, zwykle w ciągu jednego dnia roboczego. Potwierdzenie
+				wysłałam na Twój adres e-mail — sprawdź też folder ze spamem.
+			</p>
+		</div>
+
+		<p class="text-[14px] text-white/50 gap-2 flex items-center">
+			Sprawa pilna?
+			<a
+				href="tel:+48533032455"
+				class="font-semibold text-accent-soft underline underline-offset-4 hover:text-white"
+			>
+				533 032 455
+			</a>
+		</p>
+	</div>
+</div>
