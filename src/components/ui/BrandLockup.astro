@@ -138,4 +138,97 @@ const label = href
 	.brand-lockup.is-sm .bl-tagline-text {
 		margin-right: -0.32em;
 	}
+
+	/* --- stan zwinięty --- */
+
+	.bl-letter.is-gone {
+		max-width: 0;
+		opacity: 0;
+	}
+
+	.brand-lockup.is-collapsed .bl-name {
+		max-height: 0;
+		opacity: 0;
+	}
+	.brand-lockup.is-collapsed .bl-stack {
+		gap: 0;
+	}
+
+	/* Znaczek też musi zmaleć — inaczej pasek nie zrobi się niższy. To jego
+	   wysokość (50 px), a nie dwuliniowy lockup (~31 px), wyznacza wysokość
+	   nagłówka. Reguła potomka wygrywa ze specyficznością `.logo-mark.is-lg`
+	   z Logo.astro. */
+	.brand-lockup.is-collapsed :global(.logo-mark) {
+		--logo-mark: 40px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.bl-letter,
+		.bl-name,
+		.bl-stack,
+		.brand-lockup :global(.logo-mark) {
+			transition: none;
+		}
+	}
 </style>
+
+<script>
+	// Litery znikają od ostatniej do pierwszej, proporcjonalnie do pozycji
+	// scrolla. Ten sam wzór odtwarza je przy przewijaniu w górę, więc nie ma
+	// osobnej ścieżki kodu dla obu kierunków.
+	const lockups = document.querySelectorAll<HTMLElement>("[data-brand-lockup]");
+
+	if (lockups.length) {
+		const TRAVEL = 160; // px scrolla na pełne zwinięcie
+		const COLLAPSE_AT = 160;
+		const RELEASE_AT = 140; // histereza — patrz niżej
+
+		const instances = Array.from(lockups).map((el) => ({
+			el,
+			letters: Array.from(el.querySelectorAll<HTMLElement>(".bl-letter")),
+			visible: -1,
+			collapsed: false,
+		}));
+
+		const update = () => {
+			const y = window.scrollY;
+			const p = Math.min(1, Math.max(0, y / TRAVEL));
+
+			for (const inst of instances) {
+				const total = inst.letters.length;
+				const visible = Math.ceil((1 - p) * total);
+
+				// Dotykamy DOM tylko przy faktycznej zmianie — typowy tick
+				// scrolla nie robi nic.
+				if (visible !== inst.visible) {
+					for (let i = 0; i < total; i++) {
+						inst.letters[i].classList.toggle("is-gone", i >= visible);
+					}
+					inst.visible = visible;
+				}
+
+				// Próg niesymetryczny: zwijamy przy 160, rozwijamy dopiero przy
+				// 140. Bez tego zatrzymanie scrolla dokładnie na progu
+				// powodowałoby migotanie wysokości paska.
+				const collapsed = inst.collapsed ? y >= RELEASE_AT : y >= COLLAPSE_AT;
+				if (collapsed !== inst.collapsed) {
+					inst.el.classList.toggle("is-collapsed", collapsed);
+					inst.collapsed = collapsed;
+				}
+			}
+		};
+
+		let ticking = false;
+		const onScroll = () => {
+			if (ticking) return;
+			ticking = true;
+			requestAnimationFrame(() => {
+				update();
+				ticking = false;
+			});
+		};
+
+		window.addEventListener("scroll", onScroll, { passive: true });
+		update(); // stan początkowy — np. po przeładowaniu w połowie strony
+	}
+</script>
