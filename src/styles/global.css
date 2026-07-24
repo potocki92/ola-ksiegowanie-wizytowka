@@ -151,11 +151,14 @@
 @layer base {
 	/* Pasek nawigacji ma stałą wysokość: 28 px paddingu (`py-3.5`) + 1 px
 	   ramki + najwyższe dziecko — 42 px (przycisk `nav`) na desktopie, 44 px
-	   (`#menu-toggle`, `h-11`) na mobile. Czyli 71 / 73 px. Wcześniej wartość
-	   była dobrana pod pasek ZWINIĘTY (~60 px); dziś nic się nie zwija, więc
-	   73 px + ~10 px luzu, żeby nagłówek sekcji nie kleił się do paska. */
+	   (`#menu-toggle`, `h-11`) na mobile. Czyli 71 / 73 px — wartość musi się
+	   z tym zgadzać co do piksela. Sekcje sąsiadują ze sobą bez odstępu, więc
+	   każdy nadmiar w scroll-padding-top zostawia lukę pod paskiem, w której
+	   widać dół POPRZEDNIEJ sekcji zamiast nagłówka docelowej. Dodatkowy luz
+	   jest zbędny — każda sekcja ma własny padding-top min. 60 px
+	   (`Section.astro`), więc nagłówek i tak nie klei się do paska. */
 	html {
-		scroll-padding-top: 84px;
+		scroll-padding-top: 73px;
 	}
 
 	@media (prefers-reduced-motion: no-preference) {
