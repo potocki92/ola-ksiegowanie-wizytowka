@@ -114,6 +114,18 @@ const label = href
 		background: currentColor;
 	}
 
+	/* Przy 320 px 18 wersalików z trackingiem zjada niemal całą szerokość
+	   paska: przy znaczku 50 px zostaje raptem 5 px zapasu. To za mało na
+	   moment przed wczytaniem Tenor Sans — `font-display: swap` rysuje
+	   wtedy szerszym krojem zastępczym i pasek mógłby chwilowo wyjść poza
+	   ekran. Znaczek ustępuje pierwszy, bo tracking jest tym, co nadaje
+	   logotypowi charakter. Zapas rośnie wtedy do ~15 px. */
+	@media (max-width: 400px) {
+		.brand-lockup.is-lg :global(.logo-mark) {
+			--logo-mark: 40px;
+		}
+	}
+
 	/* Wariant stopki i menu mobilnego — stałe, mniejsze rozmiary. */
 	.brand-lockup.is-sm .bl-name {
 		font-size: 11px;
