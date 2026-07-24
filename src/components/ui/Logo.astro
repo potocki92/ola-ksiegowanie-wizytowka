@@ -1,5 +1,11 @@
 ---
 import { Image } from "astro:assets";
+// Import z `src/assets`, nie ścieżka z `public/` — tylko wtedy Astro przepuści
+// plik przez sharp i wygeneruje WebP w gęstościach 2× i 3×. Poprzednie
+// `/logo.svg` było PNG-iem owiniętym w `<mask>` + `<filter>`; taki węzeł ląduje
+// w buforze offscreen, który mobilne przeglądarki rasteryzują w obniżonej
+// rozdzielczości — stąd rozmyty znaczek na telefonie.
+import logoSrc from "../../assets/logo.png";
 
 interface Props {
 	size?: "sm" | "md" | "lg";
@@ -10,7 +16,10 @@ const { size = "lg", class: className } = Astro.props;
 ---
 
 <span class:list={["logo-mark", `is-${size}`, className]}>
-	<Image src="/logo.svg" alt="" width={100} height={100} />
+	{/* Największy wariant to 40 px — `densities` daje z tego 80 i 120 px na
+	    ekranach o wyższym DPR. `eager`, bo znaczek jest nad zgięciem na każdej
+	    podstronie i domyślne `lazy` tylko opóźniałoby jego pojawienie się. */}
+	<Image src={logoSrc} alt="" width={40} height={40} densities={[2, 3]} loading="eager" />
 </span>
 
 <style>

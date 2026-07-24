@@ -149,17 +149,7 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 	}
 </script>
 
-<style>
-	/* Nagłówek reaguje na stan logotypu, nie odwrotnie — dzięki temu
-	   BrandLockup nic nie wie o nawigacji.
-
-	   Bez `:global()` wokół `.brand-lockup`: Astro dopisuje `data-astro-cid-*`
-	   tylko do ostatniego członu selektora, a tu jest nim `nav`. Argument
-	   `:has()` zostaje nietknięty, więc dopasuje klasę nadaną przez skrypt
-	   w BrandLockup. `:global()` w tym miejscu przeciwnie — przechodzi do
-	   finalnego CSS dosłownie i psuje regułę. */
-	nav:has(.brand-lockup.is-collapsed) {
-		padding-top: 0.625rem;
-		padding-bottom: 0.625rem;
-	}
-</style>
+<!-- Pasek celowo NIE zmienia wysokości przy zwijaniu logotypu. `nav` jest
+     `sticky`, więc nadal zajmuje miejsce w flow — każda zmiana jego wysokości
+     przepycha w trakcie scrolla całą treść pod spodem. Litery logotypu chowają
+     się wewnątrz stałej wysokości paska. -->

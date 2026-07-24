@@ -114,17 +114,20 @@ const label = href
 		background: currentColor;
 	}
 
-	/* Przy 320 px 18 wersalików z trackingiem zjada niemal całą szerokość
-	   paska: przy znaczku 50 px zostaje raptem 5 px zapasu. To za mało na
-	   moment przed wczytaniem Tenor Sans — `font-display: swap` rysuje
-	   wtedy szerszym krojem zastępczym i pasek mógłby chwilowo wyjść poza
-	   ekran. Znaczek ustępuje pierwszy, bo tracking jest tym, co nadaje
-	   logotypowi charakter. Zapas rośnie wtedy do ~15 px. */
-	@media (max-width: 400px) {
-		.brand-lockup.is-lg :global(.logo-mark) {
-			--logo-mark: 40px;
-		}
-	}
+	/* Przy 320 px 18 wersalików z trackingiem zjada większość szerokości paska.
+	   Rachunek: 320 − 36 (padding `nav`) − 44 (`#menu-toggle`) − 40 (znaczek)
+	   − 12 (gap) = 188 px na `.bl-stack`. Zmierzone z metryk kroju przy
+	   `font-size: 10px` i `letter-spacing: 2.56px` — `.bl-name` zajmuje
+	   172,6 px, czyli zostaje ~15 px zapasu.
+
+	   Znaczek jest tu celowo trzymany na 40 px (patrz `.is-lg` w Logo.astro) —
+	   to on kupuje ten zapas i dlatego nie ma osobnej reguły dla wąskich
+	   ekranów. Uwaga na przyszłość: powiększenie znaczka wraca do problemu
+	   1:1, bo przy 50 px zostają raptem 5 px.
+
+	   Wbrew intuicji wąskim gardłem NIE jest krój zastępczy z `font-display:
+	   swap`: `serif` (Times New Roman) daje 163,6 px, czyli 9 px MNIEJ niż
+	   sam Tenor Sans. Najszerszy jest logotyp już po wczytaniu fontu. */
 
 	/* Wariant stopki i menu mobilnego — stałe, mniejsze rozmiary. */
 	.brand-lockup.is-sm .bl-name {
@@ -154,13 +157,10 @@ const label = href
 		gap: 0;
 	}
 
-	/* Znaczek też musi zmaleć — inaczej pasek nie zrobi się niższy. To jego
-	   wysokość (50 px), a nie dwuliniowy lockup (~31 px), wyznacza wysokość
-	   nagłówka. Reguła potomka wygrywa ze specyficznością `.logo-mark.is-lg`
-	   z Logo.astro. */
-	.brand-lockup.is-collapsed :global(.logo-mark) {
-		--logo-mark: 40px;
-	}
+	/* Znaczek celowo NIE zmienia rozmiaru przy zwijaniu. To on (40 px), a nie
+	   dwuliniowy lockup (~31 px), wyznacza wysokość lockupu — gdyby malał,
+	   `sticky` nagłówek zmieniałby wysokość w trakcie scrolla i przepychał
+	   treść pod sobą. Litery chowają się wewnątrz stałej wysokości. */
 
 	@media (prefers-reduced-motion: reduce) {
 		.bl-letter,
