@@ -1,0 +1,26 @@
+---
+import ContactItem from "./ContactItem.astro";
+---
+
+<div class="mt-[clamp(28px,3.4vw,40px)] flex flex-col gap-3.5">
+	<ContactItem
+		icon="phone"
+		label="Telefon"
+		value="533 032 455"
+		href="tel:+48533032455"
+	/>
+
+	<ContactItem
+		icon="mail"
+		label="E-mail"
+		value="a.potocka.rozliczenia@gmail.com"
+		href="mailto:a.potocka.rozliczenia@gmail.com"
+		breakValue
+	/>
+
+	<ContactItem
+		icon="map-pin"
+		label="Zasięg"
+		value="Jelenia Góra, Bolesławiec · online, cała Polska"
+	/>
+</div>

@@ -1,0 +1,95 @@
+---
+import Button from "../../ui/Button.astro";
+import Form from "../../ui/form/Form.astro";
+import TextField from "../../ui/form/TextField.astro";
+import TextAreaField from "../../ui/form/TextAreaField.astro";
+---
+
+<Form data-contact-form method="POST" gap="md">
+	<TextField
+		label="Imię i nazwisko"
+		name="name"
+		type="text"
+		icon="user"
+		required
+		autocomplete="name"
+		placeholder="Jan Kowalski"
+	/>
+
+	<TextField
+		label="E-mail"
+		name="email"
+		type="email"
+		icon="mail"
+		required
+		autocomplete="email"
+		placeholder="jan@firma.pl"
+	/>
+
+	<TextField
+		label="Telefon"
+		name="phone"
+		type="tel"
+		icon="phone"
+		autocomplete="tel"
+		placeholder="533 032 455"
+	/>
+
+	<TextAreaField
+		label="Czego potrzebujesz?"
+		name="message"
+		icon="chat"
+		rows={4}
+		required
+		placeholder="Np. zakładam JDG na ryczałcie, chcę przejść na Twoją obsługę…"
+	/>
+
+	<Button
+		type="submit"
+		variant="primary"
+		class="mt-1 h-13.5 cursor-pointer font-[inherit]"
+	>
+		Wyślij zapytanie
+	</Button>
+
+	<p
+		data-form-note
+		class="text-center text-xs text-white/50"
+		aria-live="polite"
+	>
+		Wysyłając formularz, akceptujesz przetwarzanie danych w celu kontaktu.
+	</p>
+</Form>
+
+<script>
+	const forms =
+		document.querySelectorAll<HTMLFormElement>("[data-contact-form]");
+
+	forms.forEach((form) => {
+		const note =
+			form.querySelector<HTMLParagraphElement>("[data-form-note]");
+
+		const defaultNote = note?.textContent ?? "";
+
+		let resetTimer: number | undefined;
+
+		form.addEventListener("submit", (event) => {
+			event.preventDefault();
+
+			form.reset();
+
+			if (!note) {
+				return;
+			}
+
+			note.textContent = "Dziękuję! Odezwę się najszybciej jak to możliwe.";
+
+			// Bez tego szybkie ponowne wysłanie skróciłoby czas komunikatu.
+			window.clearTimeout(resetTimer);
+
+			resetTimer = window.setTimeout(() => {
+				note.textContent = defaultNote;
+			}, 6000);
+		});
+	});
+</script>
