@@ -18,19 +18,26 @@ const trustBadges = ["UE Wrocław", "6 lat praktyki", "100% online"];
 		class="flex flex-col items-center gap-9 md:grid md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:gap-[clamp(32px,4vw,64px)]"
 	>
 		<div class="order-1 animate-rise-in md:order-0">
+			<!-- Każde zdanie ma własny wiersz. Wcześniej oba leciały jednym
+			     strumieniem i „Ty" lądowało w wierszu z „…od A do Z.". „od A do Z"
+			     jest sklejone twardymi spacjami, bo to zwrot nierozdzielny. -->
 			<h1
-				class="text-[clamp(40px,6.4vw,80px)] leading-none tracking-[-0.035em]"
-				style="text-wrap: balance;"
+				class="text-[clamp(38px,5vw,58px)] leading-[1.06] tracking-[-0.035em] text-balance"
 			>
-				Księgowość od A do Z. <span
-					class="bg-linear-to-r from-accent to-accent-3 bg-clip-text text-transparent"
-					>Ty zawsze na pierwszym miejscu.</span
+				<span class="block">Księgowość od&nbsp;A&nbsp;do&nbsp;Z.</span>
+				<span
+					class="block bg-linear-to-r from-accent to-accent-3 bg-clip-text text-transparent"
 				>
+					Ty zawsze na pierwszym miejscu.
+				</span>
 			</h1>
 
-			<p class="mt-[clamp(18px,2.4vw,26px)] max-w-[52ch] text-[clamp(16px,1.35vw,19px)] leading-[1.6] text-muted-600">
-				Prowadzę jednoosobowe działalności gospodarcze na zasadach ogólnych, podatku liniowym i ryczałcie —
-				w pełni zdalnie, terminowo i z realnym kontaktem. Bez papierologii, kolejek i stresu.
+			<p
+				class="mt-[clamp(18px,2.4vw,26px)] max-w-[52ch] text-[clamp(16px,1.35vw,19px)] leading-[1.6] text-pretty text-muted-600"
+			>
+				Prowadzę jednoosobowe działalności gospodarcze na zasadach ogólnych, podatku liniowym
+				i&nbsp;ryczałcie&nbsp;— w&nbsp;pełni zdalnie, terminowo i&nbsp;z&nbsp;realnym kontaktem.
+				Bez papierologii, kolejek i&nbsp;stresu.
 			</p>
 
 			<div class="mt-[clamp(26px,3vw,38px)] flex flex-col flex-wrap gap-3 sm:flex-row">

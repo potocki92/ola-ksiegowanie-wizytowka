@@ -1,4 +1,6 @@
 ---
+import { fixOrphans, splitSentences } from "../../lib/typography";
+
 interface Props {
 	eyebrow: string;
 	heading?: string;
@@ -6,10 +8,10 @@ interface Props {
 	align?: "left" | "center";
 	tone?: "light" | "dark";
 	variant?: "stacked" | "inline";
+	size?: "lg" | "md";
 	headingWidth?: "sm" | "md" | "lg" | "none";
 	leadWidth?: string;
 	leadClass?: string;
-	headingClass?: string;
 	class?: string;
 	wrapperClass?: string;
 }
@@ -21,10 +23,10 @@ const {
 	align = "left",
 	tone = "light",
 	variant = "stacked",
+	size = "lg",
 	headingWidth = "md",
 	leadWidth = "max-w-[46ch]",
 	leadClass,
-	headingClass = "text-[clamp(30px,4.6vw,56px)] leading-[1.02] tracking-[-0.03em]",
 	class: className,
 	wrapperClass,
 } = Astro.props;
@@ -39,6 +41,16 @@ const centerSelf = isCenter ? "mx-auto" : "";
 // Bottom spacing only for standalone headers sitting above a grid.
 const spacingClass = variant === "stacked" ? "mb-[clamp(36px,4vw,56px)]" : "";
 
+// Dwa stopnie skali — nic pomiędzy. `lg` dla nagłówków na pełnej
+// szerokości sekcji, `md` dla nagłówków stojących w wąskiej kolumnie
+// obok innej treści. Wcześniej każda sekcja miała własny clamp
+// (48/52/54/56 px), co przy identycznej roli wyglądało przypadkowo.
+const sizeMap: Record<NonNullable<Props["size"]>, string> = {
+	lg: "text-[clamp(30px,4.4vw,54px)] leading-[1.05] tracking-[-0.03em]",
+	md: "text-[clamp(28px,3.8vw,46px)] leading-[1.06] tracking-[-0.03em]",
+};
+const sizeClass = sizeMap[size];
+
 // Width is applied to the <h2> itself (heading font), not the wrapper,
 // so short display headings wrap to a few balanced lines instead of a
 // cramped column measured in the body font.
@@ -48,20 +60,39 @@ const headingWidthMap: Record<NonNullable<Props["headingWidth"]>, string> = {
 	lg: "max-w-[26ch]",
 	none: "",
 };
-const headingMax = headingWidthMap[headingWidth];
+
+const headingLines = heading ? splitSentences(fixOrphans(heading)) : null;
+
+// Nagłówek wielozdaniowy sam wyznacza wiersze (jedno zdanie = jeden
+// wiersz), więc limit w `ch` tylko by je niepotrzebnie przełamał.
+const headingMax = headingLines && headingLines.length > 1 ? "" : headingWidthMap[headingWidth];
 ---
 
 <div class:list={[spacingClass, alignClass, wrapperClass, className]}>
 	<div class:list={["mb-3.5 text-[13px] font-bold tracking-[1px] uppercase", eyebrowColor]}>
 		{eyebrow}
 	</div>
-	<h2 class:list={[headingClass, "text-balance", headingMax, centerSelf]}>
-		{heading ? heading : <slot />}
+	<h2 class:list={[sizeClass, "text-balance", headingMax, centerSelf]}>
+		{
+			headingLines ? (
+				headingLines.map((line) => <span class="block">{line}</span>)
+			) : (
+				<slot />
+			)
+		}
 	</h2>
 	{
 		lead && (
-			<p class:list={["mt-4 text-base leading-[1.6]", leadColor, leadWidth, centerSelf, leadClass]}>
-				{lead}
+			<p
+				class:list={[
+					"mt-4 text-base leading-[1.6] text-pretty",
+					leadColor,
+					leadWidth,
+					centerSelf,
+					leadClass,
+				]}
+			>
+				{fixOrphans(lead)}
 			</p>
 		)
 	}

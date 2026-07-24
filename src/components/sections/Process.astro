@@ -1,4 +1,5 @@
 ---
+import { fixOrphans } from "../../lib/typography";
 import Section from "../ui/Section.astro";
 import SectionHeading from "../ui/SectionHeading.astro";
 
@@ -30,8 +31,8 @@ const steps = [
 		eyebrow="Jak zaczynamy"
 		heading="Cztery kroki i masz księgowość z głowy"
 		align="center"
+		size="lg"
 		headingWidth="md"
-		headingClass="text-[clamp(28px,4.6vw,56px)] leading-[1.04] tracking-[-0.03em]"
 	/>
 	<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4.5">
 		{
@@ -40,8 +41,12 @@ const steps = [
 					<div class="mb-4.5 grid h-11 w-11 place-items-center rounded-[13px] bg-linear-to-br from-accent to-accent-2 font-display font-extrabold text-white">
 						{i + 1}
 					</div>
-					<h3 class="text-lg">{step.title}</h3>
-					<p class="mt-2.5 text-[14.5px] leading-[1.55] text-muted-400">{step.description}</p>
+					<h3 class="text-[19px] leading-[1.3] tracking-[-0.01em] text-balance">
+						{fixOrphans(step.title)}
+					</h3>
+					<p class="mt-2.5 text-[14.5px] leading-[1.55] text-pretty text-muted-400">
+						{fixOrphans(step.description)}
+					</p>
 				</div>
 			))
 		}
