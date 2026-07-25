@@ -35,6 +35,9 @@ const jsonLd = {
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
+		<script is:inline>
+			document.documentElement.classList.add("js");
+		</script>
 		<link rel="icon" href="/favicon.ico" sizes="any" />
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
 		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
@@ -58,5 +61,8 @@ const jsonLd = {
 	</head>
 	<body class="max-w-full overflow-x-hidden bg-bg relative">
 		<slot />
+		<script>
+			import "../lib/scrollReveal";
+		</script>
 	</body>
 </html>
