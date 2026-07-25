@@ -100,7 +100,7 @@ ${content}
 <td style="border-top:1px solid ${COLOR.border};padding:22px 36px;font-family:${FONT_STACK};font-size:12px;line-height:1.6;color:${COLOR.mutedLight};">
 Aleksandra Potocka — Księgowość · Jelenia Góra, Bolesławiec · online, cała Polska<br />
 <a href="tel:+48533032455" style="color:${COLOR.muted};text-decoration:none;">533 032 455</a> ·
-<a href="mailto:a.potocka.rozliczenia@gmail.com" style="color:${COLOR.muted};text-decoration:none;">a.potocka.rozliczenia@gmail.com</a>
+<a href="mailto:kontakt@potockaksiegowosc.pl" style="color:${COLOR.muted};text-decoration:none;">kontakt@potockaksiegowosc.pl</a>
 </td>
 </tr>
 
