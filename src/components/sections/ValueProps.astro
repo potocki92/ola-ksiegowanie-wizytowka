@@ -44,10 +44,10 @@ const cards: ValueCard[] = [
 		size="lg"
 		headingWidth="md"
 	/>
-	<div class="grid gap-3.5 md:grid-cols-3 md:gap-5">
+	<div data-reveal-group class="grid gap-3.5 md:grid-cols-3 md:gap-5">
 		{
 			cards.map((card) => (
-				<div class="rounded-[22px] border border-white/9 bg-white/4.5 p-[clamp(24px,2.4vw,34px)] transition-all duration-250 hover:-translate-y-1 hover:bg-white/7">
+				<div data-reveal class="rounded-[22px] border border-white/9 bg-white/4.5 p-[clamp(24px,2.4vw,34px)] transition-all duration-250 hover:-translate-y-1 hover:bg-white/7">
 					<IconTile
 						icon={card.icon}
 						size="md"
