@@ -59,8 +59,17 @@ const jsonLd = {
 
 		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
 	</head>
-	<body class="max-w-full overflow-x-hidden bg-bg relative">
-		<slot />
+	<body class="bg-bg relative">
+		<!-- `overflow-x-hidden` żyje na tym wrapperze, NIE na <body>. Safari na
+		     iOS liczy pozycję `position: sticky` względem `<body>` w specjalny
+		     sposób powiązany z dynamicznym paskiem adresu — gdy `<body>` ma
+		     nie-`visible` overflow, zmiana kierunku scrolla (co zwija/rozwija
+		     pasek adresu) potrafi na klatkę zostawić navbar w złej pozycji i
+		     odsłonić białą lukę pod nim. Przeniesienie overflow na wewnętrzny
+		     div daje tę samą ochronę przed poziomym scrollem bez psucia sticky. -->
+		<div class="max-w-full overflow-x-hidden">
+			<slot />
+		</div>
 		<script>
 			import "../lib/scrollReveal";
 			import "../lib/parallax";
