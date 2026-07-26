@@ -1,5 +1,4 @@
 ---
-import Icon from "../ui/Icon.astro";
 import BrandLockup from "../ui/BrandLockup.astro";
 import Button from "../ui/Button.astro";
 
@@ -45,28 +44,22 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 		aria-label="Menu"
 		aria-expanded="false"
 		aria-controls="mobile-menu"
-		class="grid h-11 w-11 place-items-center rounded-xl bg-[#F1F2F7] md:hidden"
+		class="hamburger grid h-11 w-11 place-items-center rounded-xl bg-[#F1F2F7] md:hidden"
 	>
-		<Icon name="menu" size={24} />
+		<span class="hamburger-icon">
+			<span class="hamburger-line"></span>
+			<span class="hamburger-line"></span>
+			<span class="hamburger-line"></span>
+		</span>
 	</button>
 </nav>
 
 <div
 	id="mobile-menu"
-	hidden
-	class="fixed inset-0 z-70 flex flex-col bg-bg px-[clamp(18px,4vw,56px)] py-3.5 animate-sheet-up"
+	aria-hidden="true"
+	class="fixed inset-x-0 top-[73px] bottom-0 z-70 flex flex-col bg-bg px-[clamp(18px,4vw,56px)] py-3.5"
 >
-	<div class="flex items-center justify-between">
-		<BrandLockup animated={false} size="sm" />
-		<button
-			id="menu-close"
-			aria-label="Zamknij"
-			class="grid h-11 w-11 place-items-center rounded-xl border-none bg-[#F1F2F7]"
-		>
-			<Icon name="close" size={22} />
-		</button>
-	</div>
-	<div class="mt-8 flex flex-col gap-1.5">
+	<div class="mt-2 flex flex-col gap-1.5">
 		{
 			navLinks.map((link) => (
 				<a
@@ -91,24 +84,34 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 
 <script>
 	const toggleBtn = document.getElementById("menu-toggle")!;
-	const closeBtn = document.getElementById("menu-close")!;
 	const menu = document.getElementById("mobile-menu")!;
 	const menuLinks = menu.querySelectorAll<HTMLAnchorElement>("[data-menu-link]");
 
 	function openMenu() {
-		menu.hidden = false;
+		toggleBtn.classList.add("is-open");
+		menu.classList.add("is-open");
 		toggleBtn.setAttribute("aria-expanded", "true");
+		menu.setAttribute("aria-hidden", "false");
 		document.body.style.overflow = "hidden";
 	}
 
 	function closeMenu() {
-		menu.hidden = true;
+		toggleBtn.classList.remove("is-open");
+		menu.classList.remove("is-open");
 		toggleBtn.setAttribute("aria-expanded", "false");
+		menu.setAttribute("aria-hidden", "true");
 		document.body.style.overflow = "";
 	}
 
-	toggleBtn.addEventListener("click", openMenu);
-	closeBtn.addEventListener("click", closeMenu);
+	function toggleMenu() {
+		if (toggleBtn.classList.contains("is-open")) {
+			closeMenu();
+		} else {
+			openMenu();
+		}
+	}
+
+	toggleBtn.addEventListener("click", toggleMenu);
 	menuLinks.forEach((link) => link.addEventListener("click", closeMenu));
 </script>
 

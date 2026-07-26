@@ -115,7 +115,6 @@
 
 	--animate-rise-in: riseIn 0.8s ease both;
 	--animate-rise-in-delayed: riseIn 1s ease 0.12s both;
-	--animate-sheet-up: sheetUp 0.28s ease both;
 
 	@keyframes riseIn {
 		from {
@@ -134,16 +133,6 @@
 		}
 		50% {
 			transform: translateY(-7px);
-		}
-	}
-	@keyframes sheetUp {
-		from {
-			opacity: 0;
-			transform: translateY(12px);
-		}
-		to {
-			opacity: 1;
-			transform: none;
 		}
 	}
 }
@@ -289,6 +278,52 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 }
 [data-faq-answer] > div {
 	overflow: hidden;
+}
+
+/* --- Animacje: menu mobilne (hamburger → X, wysuwanie panelu) --- */
+.hamburger-icon {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	width: 20px;
+	height: 14px;
+}
+.hamburger-line {
+	display: block;
+	height: 2px;
+	width: 100%;
+	border-radius: 1px;
+	background: currentColor;
+	transition:
+		transform 0.3s ease,
+		opacity 0.2s ease;
+}
+.hamburger.is-open .hamburger-line:nth-child(1) {
+	transform: translateY(6px) rotate(45deg);
+}
+.hamburger.is-open .hamburger-line:nth-child(2) {
+	opacity: 0;
+}
+.hamburger.is-open .hamburger-line:nth-child(3) {
+	transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Panel startuje schowany całkowicie za paskiem nav (translateY o własną
+   wysokość) i wysuwa się w dół — stąd wysokość musi zostać `fixed`, a nie
+   liczona przez `auto`, żeby translateY(-100%) miało się od czego odbić. */
+#mobile-menu {
+	transform: translateY(-100%);
+	opacity: 0;
+	visibility: hidden;
+	transition:
+		transform 0.32s ease,
+		opacity 0.28s ease,
+		visibility 0.32s;
+}
+#mobile-menu.is-open {
+	transform: none;
+	opacity: 1;
+	visibility: visible;
 }
 
 /* --- Animacje: rysowany checkmark sukcesu kontaktu --- */
