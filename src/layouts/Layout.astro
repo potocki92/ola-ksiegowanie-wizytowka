@@ -59,17 +59,17 @@ const jsonLd = {
 
 		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
 	</head>
-	<body class="bg-bg relative">
-		<!-- `overflow-x-hidden` żyje na tym wrapperze, NIE na <body>. Safari na
-		     iOS liczy pozycję `position: sticky` względem `<body>` w specjalny
-		     sposób powiązany z dynamicznym paskiem adresu — gdy `<body>` ma
-		     nie-`visible` overflow, zmiana kierunku scrolla (co zwija/rozwija
-		     pasek adresu) potrafi na klatkę zostawić navbar w złej pozycji i
-		     odsłonić białą lukę pod nim. Przeniesienie overflow na wewnętrzny
-		     div daje tę samą ochronę przed poziomym scrollem bez psucia sticky. -->
-		<div class="max-w-full overflow-x-hidden">
-			<slot />
-		</div>
+	<!-- `overflow-x-hidden` musi zostać na <body>, nie na wewnętrznym
+	     wrapperze: `position: sticky` liczy się względem najbliższego przodka
+	     ze scrollowalnym boxem, a zwykły <div> z overflow innym niż `visible`
+	     tworzy taki box bez własnego, realnego scrolla — sticky wtedy przestaje
+	     działać w ogóle (potwierdzone: navbar przesuwał się razem z treścią
+	     zamiast się przyklejać). <body> jest wyjątkiem: jego overflow mapuje
+	     się na scroller viewportu, więc sticky działa normalnie. Biały błysk
+	     pod navbarem na iOS Safari naprawia `html { background }` w
+	     global.css — to nie miało związku z tym, gdzie leży overflow-x-hidden. -->
+	<body class="max-w-full overflow-x-hidden bg-bg relative">
+		<slot />
 		<script>
 			import "../lib/scrollReveal";
 			// TYMCZASOWO WYŁĄCZONE — test diagnostyczny: sprawdzamy, czy ciągłe
