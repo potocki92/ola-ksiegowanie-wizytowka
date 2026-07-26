@@ -14,7 +14,7 @@ serverless function through `@astrojs/vercel`.
 
 ```
 src/
-├── assets/fonts/     self-hosted woff2 files (Plus Jakarta Sans, Hanken Grotesk)
+├── assets/fonts/     self-hosted woff2 files (Tenor Sans, Hanken Grotesk)
 ├── components/
 │   ├── ui/           generic presentational pieces (Icon, Button, form/*)
 │   ├── layout/        page chrome: Header, Footer, MobileStickyCta
