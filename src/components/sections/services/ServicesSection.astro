@@ -4,6 +4,7 @@ import SectionHeading from "../../ui/SectionHeading.astro";
 import ServiceFeatureCard from "./ServiceFeatureCard.astro";
 import ServiceStat from "./ServiceStat.astro";
 import ServiceCard from "./ServiceCard.astro";
+import ServiceChecklistItem from "./ServiceChecklistItem.astro";
 import ServiceCta from "./ServiceCta.astro";
 ---
 
@@ -30,24 +31,9 @@ import ServiceCta from "./ServiceCta.astro";
 			<div
 				class="flex w-full flex-col gap-3 rounded-2xl border border-border-2 bg-[#F7F8FC] p-4"
 			>
-				<div class="flex items-center gap-2.5">
-					<span class="grid h-5.5 w-5.5 place-items-center rounded-full bg-success text-[12px] font-extrabold text-white">
-						✓
-					</span>
-					<span class="text-[13px] font-semibold">Kody PKD</span>
-				</div>
-				<div class="flex items-center gap-2.5">
-					<span class="grid h-5.5 w-5.5 place-items-center rounded-full bg-success text-[12px] font-extrabold text-white">
-						✓
-					</span>
-					<span class="text-[13px] font-semibold">Wniosek CEIDG</span>
-				</div>
-				<div class="flex items-center gap-2.5">
-					<span class="grid h-5.5 w-5.5 place-items-center rounded-full bg-success text-[12px] font-extrabold text-white">
-						✓
-					</span>
-					<span class="text-[13px] font-semibold">Założenie firmy w cenie</span>
-				</div>
+				<ServiceChecklistItem label="Kody PKD" />
+				<ServiceChecklistItem label="Wniosek CEIDG" />
+				<ServiceChecklistItem label="Założenie firmy w cenie" />
 			</div>
 		</ServiceCard>
 
