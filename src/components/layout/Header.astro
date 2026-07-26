@@ -54,29 +54,31 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 	</button>
 </nav>
 
-<div id="mobile-menu" aria-hidden="true" class="md:hidden bg-bg">
+<div id="mobile-menu" aria-hidden="true" class="md:hidden">
 	<div class="overflow-hidden">
-		<div class="flex flex-col gap-1.5 px-[clamp(18px,4vw,56px)] pt-2">
-			{
-				navLinks.map((link) => (
-					<a
-						href={anchor(link.id)}
-						data-menu-link
-						data-nav-link={link.id}
-							class="nav-link border-b border-border py-3 font-display text-[30px] font-bold text-ink"
-					>
-						{link.label}
-					</a>
-				))
-			}
+		<div class="mx-3.5 mt-2 mb-4 rounded-2xl border border-border bg-bg p-4 shadow-[0_20px_40px_-18px_rgba(20,22,40,0.35)]">
+			<div class="flex flex-col gap-1.5">
+				{
+					navLinks.map((link) => (
+						<a
+							href={anchor(link.id)}
+							data-menu-link
+							data-nav-link={link.id}
+								class="nav-link border-b border-border py-3 font-display text-[26px] font-bold text-ink"
+						>
+							{link.label}
+						</a>
+					))
+				}
+			</div>
+			<a
+				href={anchor("kontakt")}
+				data-menu-link
+				class="mt-4 flex h-14 items-center justify-center rounded-2xl bg-linear-to-br from-accent to-accent-2 text-[17px] font-bold text-white shadow-[0_16px_30px_-14px_rgba(79,91,242,0.8)]"
+			>
+				Umów bezpłatną konsultację
+			</a>
 		</div>
-		<a
-			href={anchor("kontakt")}
-			data-menu-link
-			class="mx-[clamp(18px,4vw,56px)] my-4 flex h-14 items-center justify-center rounded-2xl bg-linear-to-br from-accent to-accent-2 text-[17px] font-bold text-white shadow-[0_16px_30px_-14px_rgba(79,91,242,0.8)]"
-		>
-			Umów bezpłatną konsultację
-		</a>
 	</div>
 </div>
 
@@ -85,11 +87,17 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 	const menu = document.getElementById("mobile-menu")!;
 	const menuLinks = menu.querySelectorAll<HTMLAnchorElement>("[data-menu-link]");
 
+	function isOpen() {
+		return toggleBtn.classList.contains("is-open");
+	}
+
 	function openMenu() {
 		toggleBtn.classList.add("is-open");
 		menu.classList.add("is-open");
 		toggleBtn.setAttribute("aria-expanded", "true");
 		menu.setAttribute("aria-hidden", "false");
+		document.body.style.overflow = "hidden";
+		menuLinks[0]?.focus({ preventScroll: true });
 	}
 
 	function closeMenu() {
@@ -97,10 +105,11 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 		menu.classList.remove("is-open");
 		toggleBtn.setAttribute("aria-expanded", "false");
 		menu.setAttribute("aria-hidden", "true");
+		document.body.style.overflow = "";
 	}
 
 	function toggleMenu() {
-		if (toggleBtn.classList.contains("is-open")) {
+		if (isOpen()) {
 			closeMenu();
 		} else {
 			openMenu();
@@ -109,6 +118,20 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 
 	toggleBtn.addEventListener("click", toggleMenu);
 	menuLinks.forEach((link) => link.addEventListener("click", closeMenu));
+
+	document.addEventListener("keydown", (event) => {
+		if (event.key === "Escape" && isOpen()) {
+			closeMenu();
+			toggleBtn.focus({ preventScroll: true });
+		}
+	});
+
+	document.addEventListener("pointerdown", (event) => {
+		if (!isOpen()) return;
+		const target = event.target as Node;
+		if (menu.contains(target) || toggleBtn.contains(target)) return;
+		closeMenu();
+	});
 </script>
 
 <script>

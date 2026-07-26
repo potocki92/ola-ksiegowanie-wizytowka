@@ -315,7 +315,7 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 #mobile-menu {
 	display: grid;
 	grid-template-rows: 0fr;
-	transition: grid-template-rows 0.3s ease;
+	transition: grid-template-rows 0.3s ease-in-out;
 }
 #mobile-menu.is-open {
 	grid-template-rows: 1fr;
