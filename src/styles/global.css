@@ -280,7 +280,7 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 	overflow: hidden;
 }
 
-/* --- Animacje: menu mobilne (hamburger → X, wysuwanie panelu) --- */
+/* --- Animacje: menu mobilne (hamburger → X, rozwijanie panelu) --- */
 .hamburger-icon {
 	display: flex;
 	flex-direction: column;
@@ -308,22 +308,17 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 	transform: translateY(-6px) rotate(-45deg);
 }
 
-/* Panel startuje schowany całkowicie za paskiem nav (translateY o własną
-   wysokość) i wysuwa się w dół — stąd wysokość musi zostać `fixed`, a nie
-   liczona przez `auto`, żeby translateY(-100%) miało się od czego odbić. */
+/* Panel jest częścią normalnego przepływu strony (nie `fixed`) — rozwija się
+   pod navem i fizycznie odpycha treść pod spodem w dół, dokładnie jak
+   akordeon FAQ poniżej (`[data-faq-answer]`). `grid-template-rows: 0fr → 1fr`
+   pozwala animować wysokość liczoną z zawartości bez znajomości jej px. */
 #mobile-menu {
-	transform: translateY(-100%);
-	opacity: 0;
-	visibility: hidden;
-	transition:
-		transform 0.32s ease,
-		opacity 0.28s ease,
-		visibility 0.32s;
+	display: grid;
+	grid-template-rows: 0fr;
+	transition: grid-template-rows 0.3s ease;
 }
 #mobile-menu.is-open {
-	transform: none;
-	opacity: 1;
-	visibility: visible;
+	grid-template-rows: 1fr;
 }
 
 /* --- Animacje: rysowany checkmark sukcesu kontaktu --- */
