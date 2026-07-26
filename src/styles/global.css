@@ -250,6 +250,17 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 	transform: none;
 }
 
+/* --- Animacje: parallax --- */
+[data-parallax] {
+	will-change: transform;
+	transform: translate3d(0, calc(var(--parallax-p, 0) * var(--parallax-amp, 40px)), 0);
+}
+@media (max-width: 48rem) {
+	[data-parallax] {
+		--parallax-amp: 20px;
+	}
+}
+
 /* --- Globalny wyłącznik ruchu — MUSI zostać na końcu pliku --- */
 @media (prefers-reduced-motion: reduce) {
 	*,
@@ -262,6 +273,9 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 	}
 	html.js [data-reveal] {
 		opacity: 1 !important;
+		transform: none !important;
+	}
+	[data-parallax] {
 		transform: none !important;
 	}
 }
