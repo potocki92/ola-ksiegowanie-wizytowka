@@ -1,0 +1,129 @@
+---
+import Section from "../../ui/Section.astro";
+import SectionHeading from "../../ui/SectionHeading.astro";
+import ServiceFeatureCard from "./ServiceFeatureCard.astro";
+import ServiceStat from "./ServiceStat.astro";
+import ServiceCard from "./ServiceCard.astro";
+import ServiceChecklistItem from "./ServiceChecklistItem.astro";
+import ServiceCta from "./ServiceCta.astro";
+---
+
+<Section id="uslugi">
+	<SectionHeading
+		eyebrow="Usługi"
+		heading="Wszystko, czego potrzebuje Twoja firma — w jednym miejscu"
+		size="lg"
+		headingWidth="lg"
+	/>
+
+	<div data-reveal-group class="flex flex-col gap-3.5 md:grid md:grid-cols-4 md:auto-rows-[minmax(150px,auto)] md:gap-4 lg:auto-rows-[minmax(168px,auto)]">
+		<ServiceFeatureCard />
+
+		<ServiceStat value={250} prefix="od " suffix=" zł" label="miesięcznie za prowadzenie JDG" />
+
+		<ServiceStat value={100} suffix="%" label="obsługi zdalnej, w całej Polsce" />
+
+		<ServiceCard
+			icon="plus"
+			heading="Zakładanie JDG"
+			description="Wybór PKD, formy opodatkowania, rejestracja w CEIDG i zgłoszenia do ZUS. Bez błędów, które później kosztują."
+		>
+			<div
+				class="flex w-full flex-col gap-3 rounded-2xl border border-border-2 bg-[#F7F8FC] p-4"
+			>
+				<ServiceChecklistItem label="Kody PKD" />
+				<ServiceChecklistItem label="Wniosek CEIDG" />
+				<ServiceChecklistItem label="Założenie firmy w cenie" />
+			</div>
+		</ServiceCard>
+
+		<ServiceCard
+			icon="users"
+			heading={"Kadry i płace"}
+			description="Listy płac, umowy, akta osobowe, ZUS, PPK i PFRON — dla pracowników i zleceniobiorców."
+		>
+			<div
+				class="flex w-full flex-col gap-3 rounded-2xl border border-border-2 bg-[#F7F8FC] p-4"
+			>
+				<div class="flex items-center gap-2.5">
+					<span class="grid h-7.5 w-7.5 place-items-center rounded-full bg-surface-tint text-[11px] font-extrabold text-accent">
+						KN
+					</span>
+					<div class="min-w-0 flex-1">
+						<div class="text-[12.5px] font-bold">Katarzyna N.</div>
+						<div class="text-[11px] text-muted-100">Umowa o pracę</div>
+					</div>
+				</div>
+				<div class="h-px bg-border-2"></div>
+				<div class="flex justify-between text-[12.5px]">
+					<span class="font-semibold text-muted-100">ZUS</span>
+					<span class="font-bold text-success">wysłane ✓</span>
+				</div>
+			</div>
+		</ServiceCard>
+
+		<ServiceCard
+			icon="file-text"
+			heading="Rozliczenia roczne PIT"
+			description="Roczne zeznanie PIT-37, PIT-36 czy PIT-28 — także dla osób bez stałej obsługi. Ulgi i odliczenia policzę za Ciebie."
+		>
+			<div
+				class="flex w-full flex-col gap-3 rounded-2xl border border-border-2 bg-[#F7F8FC] p-4"
+			>
+				<div class="flex items-center justify-between">
+					<span class="text-[12.5px] font-bold">PIT-37 · 2025</span>
+					<span class="text-[12px] font-bold text-success">złożony ✓</span>
+				</div>
+				<div class="h-px bg-border-2"></div>
+				<div class="flex justify-between text-[12.5px]">
+					<span class="font-semibold text-muted-100">Cena</span>
+					<span class="font-bold">od 100 zł</span>
+				</div>
+			</div>
+		</ServiceCard>
+
+		<ServiceCta />
+	</div>
+</Section>
+
+<script>
+	// Count-up: odlicza `[data-count-to]` od 0 do wartości docelowej przy
+	// wejściu w viewport (raz). Reduced-motion → od razu wartość końcowa.
+	const counters = document.querySelectorAll<HTMLElement>("[data-count-to]");
+
+	if (counters.length) {
+		const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+		const run = (el: HTMLElement) => {
+			const target = Number(el.dataset.countTo);
+			if (!Number.isFinite(target)) return;
+			if (reduce) {
+				el.textContent = String(target);
+				return;
+			}
+			const DURATION = 1200;
+			const start = performance.now();
+			el.textContent = "0";
+			const tick = (now: number) => {
+				const t = Math.min(1, (now - start) / DURATION);
+				const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+				el.textContent = String(Math.round(eased * target));
+				if (t < 1) requestAnimationFrame(tick);
+			};
+			requestAnimationFrame(tick);
+		};
+
+		const observer = new IntersectionObserver(
+			(entries, obs) => {
+				for (const entry of entries) {
+					if (!entry.isIntersecting) continue;
+					run(entry.target as HTMLElement);
+					obs.unobserve(entry.target);
+				}
+			},
+			{ threshold: 0.6 },
+		);
+
+		counters.forEach((el) => observer.observe(el));
+	}
+</script>

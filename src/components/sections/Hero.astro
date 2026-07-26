@@ -1,5 +1,5 @@
 ---
-import Icon from "../ui/Icon.astro";
+import CheckItem from "../ui/CheckItem.astro";
 import Section from "../ui/Section.astro";
 import Button from "../ui/Button.astro";
 import Image from "../ui/Image.astro";
@@ -54,10 +54,13 @@ const trustBadges = ["UE Wrocław", "6 lat praktyki", "100% online"];
 					trustBadges.map((badge, i) => (
 						<>
 							{i > 0 && <span class="h-4 w-px self-center bg-border-5" />}
-							<span class="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-muted-600">
-								<Icon name="check" size={16} strokeWidth={2.4} class="text-success" />
+							<CheckItem
+								tone="success"
+								size={16}
+								class="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-muted-600"
+							>
 								{badge}
-							</span>
+							</CheckItem>
 						</>
 					))
 				}
