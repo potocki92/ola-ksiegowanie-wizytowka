@@ -157,8 +157,14 @@
 	   widać dół POPRZEDNIEJ sekcji zamiast nagłówka docelowej. Dodatkowy luz
 	   jest zbędny — każda sekcja ma własny padding-top min. 60 px
 	   (`Section.astro`), więc nagłówek i tak nie klei się do paska. */
+	/* Tło musi siedzieć na <html>, nie tylko na <body>: gdy pasek adresu
+	   Safari na iOS zwija się/rozwija W TRAKCIE scrolla, wizualny viewport
+	   na klatkę zmienia rozmiar zanim layout/paint nadąży, a nowo odsłonięty
+	   pasek Safari maluje kolorem <html>, nie <body>. Bez tła tutaj wychodzi
+	   biały błysk pod navbarem przy każdym scrollu w dowolnym kierunku. */
 	html {
 		scroll-padding-top: 73px;
+		background: var(--color-bg);
 	}
 
 	@media (prefers-reduced-motion: no-preference) {
@@ -211,6 +217,17 @@
 		outline: 2px solid var(--color-accent);
 		outline-offset: 2px;
 	}
+}
+
+/* Safari wymaga prefiksu dla backdrop-filter (repo nie ma browserslist,
+   więc Tailwind/Lightning CSS go nie dogenerowuje). Dotyczy navbara
+   (`backdrop-blur-xl`) i dolnego paska CTA na mobile (`backdrop-blur-lg`). */
+.backdrop-blur-lg,
+.backdrop-blur-xl {
+	-webkit-backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, )
+		var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, )
+		var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, )
+		var(--tw-backdrop-sepia, );
 }
 
 /* Aktywny link nawigacji (scrollspy) — poza @layer, żeby wygrał z utility koloru */
