@@ -261,6 +261,36 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 	}
 }
 
+/* --- Animacje: rozwijanie FAQ --- */
+[data-faq-answer] {
+	display: grid;
+	grid-template-rows: 0fr;
+	transition: grid-template-rows 0.3s ease;
+}
+[data-faq-answer].is-open {
+	grid-template-rows: 1fr;
+}
+[data-faq-answer] > div {
+	overflow: hidden;
+}
+
+/* --- Animacje: rysowany checkmark sukcesu kontaktu --- */
+@keyframes drawCheck {
+	from {
+		stroke-dashoffset: 1;
+	}
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+[data-contact-success] .check-draw path {
+	stroke-dasharray: 1;
+	stroke-dashoffset: 1;
+}
+[data-contact-success]:not([hidden]) .check-draw path {
+	animation: drawCheck 0.5s ease 0.1s forwards;
+}
+
 /* --- Globalny wyłącznik ruchu — MUSI zostać na końcu pliku --- */
 @media (prefers-reduced-motion: reduce) {
 	*,
@@ -277,5 +307,8 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 	}
 	[data-parallax] {
 		transform: none !important;
+	}
+	[data-contact-success] .check-draw path {
+		stroke-dashoffset: 0 !important;
 	}
 }

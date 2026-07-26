@@ -73,7 +73,7 @@ import IconTile from "../ui/IconTile.astro";
 			<div
 				class="bg-linear-to-r from-accent to-accent-3 bg-clip-text font-display text-[clamp(30px,3.2vw,44px)] font-extrabold tracking-[-0.03em] text-transparent"
 			>
-				od 250 zł
+				od <span data-count-to="250">250</span> zł
 			</div>
 			<div class="mt-1 text-sm font-medium text-muted-400">miesięcznie za prowadzenie JDG</div>
 		</div>
@@ -86,7 +86,7 @@ import IconTile from "../ui/IconTile.astro";
 			<div
 				class="bg-linear-to-r from-accent to-accent-3 bg-clip-text font-display text-[clamp(30px,3.2vw,44px)] font-extrabold tracking-[-0.03em] text-transparent"
 			>
-				100%
+				<span data-count-to="100">100</span>%
 			</div>
 			<div class="mt-1 text-sm font-medium text-muted-400">obsługi zdalnej, w całej Polsce</div>
 		</div>
@@ -229,3 +229,45 @@ import IconTile from "../ui/IconTile.astro";
 		</a>
 	</div>
 </Section>
+
+<script>
+	// Count-up: odlicza `[data-count-to]` od 0 do wartości docelowej przy
+	// wejściu w viewport (raz). Reduced-motion → od razu wartość końcowa.
+	const counters = document.querySelectorAll<HTMLElement>("[data-count-to]");
+
+	if (counters.length) {
+		const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+		const run = (el: HTMLElement) => {
+			const target = Number(el.dataset.countTo);
+			if (!Number.isFinite(target)) return;
+			if (reduce) {
+				el.textContent = String(target);
+				return;
+			}
+			const DURATION = 1200;
+			const start = performance.now();
+			el.textContent = "0";
+			const tick = (now: number) => {
+				const t = Math.min(1, (now - start) / DURATION);
+				const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+				el.textContent = String(Math.round(eased * target));
+				if (t < 1) requestAnimationFrame(tick);
+			};
+			requestAnimationFrame(tick);
+		};
+
+		const observer = new IntersectionObserver(
+			(entries, obs) => {
+				for (const entry of entries) {
+					if (!entry.isIntersecting) continue;
+					run(entry.target as HTMLElement);
+					obs.unobserve(entry.target);
+				}
+			},
+			{ threshold: 0.6 },
+		);
+
+		counters.forEach((el) => observer.observe(el));
+	}
+</script>

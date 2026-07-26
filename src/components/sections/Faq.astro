@@ -74,14 +74,18 @@ const faqs: FaqItem[] = [
 								+
 							</span>
 						</button>
-						<p
+						<div
 							id={`faq-answer-${i}`}
 							data-faq-answer
-							hidden={i !== 0}
-							class="max-w-[62ch] px-5.5 pb-5.5 text-[15px] leading-[1.65] text-muted-600"
+							class:list={[i === 0 && "is-open"]}
+							inert={i !== 0 ? true : undefined}
 						>
-							{faq.a}
-						</p>
+							<div>
+								<p class="max-w-[62ch] px-5.5 pb-5.5 text-[15px] leading-[1.65] text-muted-600">
+									{faq.a}
+								</p>
+							</div>
+						</div>
 					</div>
 				))
 			}
@@ -92,23 +96,29 @@ const faqs: FaqItem[] = [
 <script>
 	const buttons = document.querySelectorAll<HTMLButtonElement>("[data-faq-toggle]");
 
+	// Jedna funkcja ustawia stan pozycji: aria, rotacja ikony, wysokość i
+	// obecność w drzewie dostępności (inert). Kierunek jest ten sam przy
+	// otwieraniu i zamykaniu, więc nie ma osobnej ścieżki kodu.
+	const setOpen = (button: HTMLButtonElement, open: boolean) => {
+		const icon = button.querySelector<HTMLElement>("[data-faq-icon]");
+		const answer = button.nextElementSibling as HTMLElement | null;
+		button.setAttribute("aria-expanded", String(open));
+		if (icon) icon.style.transform = open ? "rotate(45deg)" : "none";
+		if (answer) {
+			answer.classList.toggle("is-open", open);
+			if (open) answer.removeAttribute("inert");
+			else answer.setAttribute("inert", "");
+		}
+	};
+
 	buttons.forEach((button) => {
 		button.addEventListener("click", () => {
 			const isOpen = button.getAttribute("aria-expanded") === "true";
-			const icon = button.querySelector<HTMLElement>("[data-faq-icon]");
-			const answer = button.nextElementSibling as HTMLElement | null;
-
+			// Akordeon: zamknij pozostałe, przełącz bieżącą.
 			buttons.forEach((other) => {
-				if (other === button) return;
-				other.setAttribute("aria-expanded", "false");
-				other.querySelector<HTMLElement>("[data-faq-icon]")!.style.transform = "none";
-				(other.nextElementSibling as HTMLElement | null)?.setAttribute("hidden", "");
+				if (other !== button) setOpen(other, false);
 			});
-
-			button.setAttribute("aria-expanded", String(!isOpen));
-			if (icon) icon.style.transform = isOpen ? "none" : "rotate(45deg)";
-			if (!isOpen) answer?.removeAttribute("hidden");
-			else answer?.setAttribute("hidden", "");
+			setOpen(button, !isOpen);
 		});
 	});
 </script>

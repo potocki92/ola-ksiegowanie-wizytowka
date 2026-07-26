@@ -1,5 +1,4 @@
 ---
-import Icon from "../../ui/Icon.astro";
 ---
 
 {/*
@@ -18,7 +17,20 @@ import Icon from "../../ui/Icon.astro";
 		<span
 			class="flex h-14 w-14 items-center justify-center rounded-full bg-linear-to-br from-accent to-accent-2 text-white shadow-[0_18px_34px_-14px_rgba(79,91,242,0.75)]"
 		>
-			<Icon name="check" size={26} strokeWidth={2.4} />
+			<svg
+				class="check-draw"
+				width="26"
+				height="26"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2.4"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				aria-hidden="true"
+			>
+				<path pathLength="1" d="M5 12.5l4.2 4.3L19 7" />
+			</svg>
 		</span>
 
 		<div>
