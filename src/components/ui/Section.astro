@@ -26,7 +26,7 @@ const paddingClass = paddingMap[padding];
 ---
 
 <Tag id={id} class:list={["relative", paddingClass, className]}>
-	{glow && <div class:list={["pointer-events-none absolute inset-0", glow]} />}
+	{glow && <div data-parallax style="--parallax-amp:-56px" class:list={["pointer-events-none absolute inset-0", glow]} />}
 	<div class:list={["relative mx-auto", maxWidth]}>
 		<slot />
 	</div>

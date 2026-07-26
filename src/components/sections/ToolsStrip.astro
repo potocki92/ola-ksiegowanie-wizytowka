@@ -8,7 +8,14 @@ const tools = ["Comarch Optima", "Symfonia", "Płatnik", "Subiekt GT", "Rachmist
 	<div data-reveal class="mb-4.5 text-center text-[12.5px] font-bold tracking-[1px] text-muted-100 uppercase">
 		Pracuję w programach, które znasz z rynku
 	</div>
-	<div data-reveal class="flex flex-wrap items-center justify-center gap-[clamp(18px,3vw,48px)]">
+
+	<!-- Desktop (i mobile z ograniczonym ruchem): statyczny wiersz. Pięć nazw
+	     mieści się w jednej linii już od ~640px, więc ciągły ruch nic by tu
+	     nie rozwiązywał — tylko rozpraszał i utrudniał zaznaczanie tekstu. -->
+	<div
+		data-reveal
+		class="tools-static flex flex-wrap items-center justify-center gap-[clamp(18px,3vw,48px)]"
+	>
 		{
 			tools.map((tool) => (
 				<span class="font-display text-[clamp(16px,1.7vw,22px)] font-bold text-muted-500">
@@ -17,4 +24,59 @@ const tools = ["Comarch Optima", "Symfonia", "Płatnik", "Subiekt GT", "Rachmist
 			))
 		}
 	</div>
+
+	<!-- Mobile: te same nazwy owijały się na 2–3 nierówne wiersze na wąskim
+	     ekranie. Przesuwająca się karuzela mieści je w jednej, czytelnej
+	     linii i lepiej znosi dołożenie kolejnych programów w przyszłości. -->
+	<div
+		data-reveal
+		class="tools-marquee [mask-image:linear-gradient(90deg,transparent,black_8%,black_92%,transparent)] [-webkit-mask-image:linear-gradient(90deg,transparent,black_8%,black_92%,transparent)]"
+	>
+		<div class="tools-marquee-track">
+			{
+				[...tools, ...tools].map((tool, i) => (
+					<span
+						class="font-display text-[17px] font-bold whitespace-nowrap text-muted-500"
+						aria-hidden={i >= tools.length}
+					>
+						{tool}
+					</span>
+				))
+			}
+		</div>
+	</div>
 </Section>
+
+<style>
+	.tools-marquee {
+		display: none;
+		overflow: hidden;
+	}
+	.tools-marquee-track {
+		display: flex;
+		width: max-content;
+		gap: 32px;
+		animation: tools-marquee 16s linear infinite;
+	}
+
+	@media (max-width: 47.9375rem) and (prefers-reduced-motion: no-preference) {
+		.tools-static {
+			display: none;
+		}
+		.tools-marquee {
+			display: block;
+		}
+	}
+
+	@keyframes tools-marquee {
+		from {
+			transform: translateX(0);
+		}
+		to {
+			/* Pół szerokości toru (dwie identyczne kopie) plus połowa odstępu na
+			   granicy kopii — bez tego pętla robi widoczny "skok" o szerokość
+			   jednej luki. */
+			transform: translateX(calc(-50% - 16px));
+		}
+	}
+</style>

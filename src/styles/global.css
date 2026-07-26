@@ -157,8 +157,14 @@
 	   widać dół POPRZEDNIEJ sekcji zamiast nagłówka docelowej. Dodatkowy luz
 	   jest zbędny — każda sekcja ma własny padding-top min. 60 px
 	   (`Section.astro`), więc nagłówek i tak nie klei się do paska. */
+	/* Tło musi siedzieć na <html>, nie tylko na <body>: gdy pasek adresu
+	   Safari na iOS zwija się/rozwija W TRAKCIE scrolla, wizualny viewport
+	   na klatkę zmienia rozmiar zanim layout/paint nadąży, a nowo odsłonięty
+	   pasek Safari maluje kolorem <html>, nie <body>. Bez tła tutaj wychodzi
+	   biały błysk pod navbarem przy każdym scrollu w dowolnym kierunku. */
 	html {
 		scroll-padding-top: 73px;
+		background: var(--color-bg);
 	}
 
 	@media (prefers-reduced-motion: no-preference) {
@@ -213,6 +219,17 @@
 	}
 }
 
+/* Safari wymaga prefiksu dla backdrop-filter (repo nie ma browserslist,
+   więc Tailwind/Lightning CSS go nie dogenerowuje). Dotyczy navbara
+   (`backdrop-blur-xl`) i dolnego paska CTA na mobile (`backdrop-blur-lg`). */
+.backdrop-blur-lg,
+.backdrop-blur-xl {
+	-webkit-backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, )
+		var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, )
+		var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, )
+		var(--tw-backdrop-sepia, );
+}
+
 /* Aktywny link nawigacji (scrollspy) — poza @layer, żeby wygrał z utility koloru */
 .nav-underline {
 	position: relative;
@@ -250,6 +267,47 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 	transform: none;
 }
 
+/* --- Animacje: parallax --- */
+[data-parallax] {
+	will-change: transform;
+	transform: translate3d(0, calc(var(--parallax-p, 0) * var(--parallax-amp, 40px)), 0);
+}
+@media (max-width: 48rem) {
+	[data-parallax] {
+		--parallax-amp: 20px;
+	}
+}
+
+/* --- Animacje: rozwijanie FAQ --- */
+[data-faq-answer] {
+	display: grid;
+	grid-template-rows: 0fr;
+	transition: grid-template-rows 0.3s ease;
+}
+[data-faq-answer].is-open {
+	grid-template-rows: 1fr;
+}
+[data-faq-answer] > div {
+	overflow: hidden;
+}
+
+/* --- Animacje: rysowany checkmark sukcesu kontaktu --- */
+@keyframes drawCheck {
+	from {
+		stroke-dashoffset: 1;
+	}
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+[data-contact-success] .check-draw path {
+	stroke-dasharray: 1;
+	stroke-dashoffset: 1;
+}
+[data-contact-success]:not([hidden]) .check-draw path {
+	animation: drawCheck 0.5s ease 0.1s forwards;
+}
+
 /* --- Globalny wyłącznik ruchu — MUSI zostać na końcu pliku --- */
 @media (prefers-reduced-motion: reduce) {
 	*,
@@ -263,5 +321,11 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 	html.js [data-reveal] {
 		opacity: 1 !important;
 		transform: none !important;
+	}
+	[data-parallax] {
+		transform: none !important;
+	}
+	[data-contact-success] .check-draw path {
+		stroke-dashoffset: 0 !important;
 	}
 }
