@@ -52,35 +52,35 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 			<span class="hamburger-line"></span>
 		</span>
 	</button>
-</nav>
 
-<div id="mobile-menu" aria-hidden="true" class="md:hidden">
-	<div class="overflow-hidden">
-		<div class="mx-3.5 mt-2 mb-4 rounded-2xl border border-border bg-bg p-4 shadow-[0_20px_40px_-18px_rgba(20,22,40,0.35)]">
-			<div class="flex flex-col gap-1.5">
-				{
-					navLinks.map((link) => (
-						<a
-							href={anchor(link.id)}
-							data-menu-link
-							data-nav-link={link.id}
-								class="nav-link border-b border-border py-3 font-display text-[26px] font-bold text-ink"
-						>
-							{link.label}
-						</a>
-					))
-				}
+	<div id="mobile-menu" aria-hidden="true" class="absolute inset-x-0 top-full md:hidden">
+		<div class="overflow-hidden">
+			<div class="mx-3.5 mt-2 mb-4 rounded-2xl border border-border bg-bg p-4 shadow-[0_20px_40px_-18px_rgba(20,22,40,0.35)]">
+				<div class="flex flex-col gap-1.5">
+					{
+						navLinks.map((link) => (
+							<a
+								href={anchor(link.id)}
+								data-menu-link
+								data-nav-link={link.id}
+									class="nav-link border-b border-border py-3 font-display text-[26px] font-bold text-ink"
+							>
+								{link.label}
+							</a>
+						))
+					}
+				</div>
+				<a
+					href={anchor("kontakt")}
+					data-menu-link
+					class="mt-4 flex h-14 items-center justify-center rounded-2xl bg-linear-to-br from-accent to-accent-2 text-[17px] font-bold text-white shadow-[0_16px_30px_-14px_rgba(79,91,242,0.8)]"
+				>
+					Umów bezpłatną konsultację
+				</a>
 			</div>
-			<a
-				href={anchor("kontakt")}
-				data-menu-link
-				class="mt-4 flex h-14 items-center justify-center rounded-2xl bg-linear-to-br from-accent to-accent-2 text-[17px] font-bold text-white shadow-[0_16px_30px_-14px_rgba(79,91,242,0.8)]"
-			>
-				Umów bezpłatną konsultację
-			</a>
 		</div>
 	</div>
-</div>
+</nav>
 
 <script>
 	const toggleBtn = document.getElementById("menu-toggle")!;
