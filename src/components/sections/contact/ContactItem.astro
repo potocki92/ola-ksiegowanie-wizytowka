@@ -21,12 +21,11 @@ const Tag = href ? "a" : "div";
 ---
 
 <Tag href={href} class="flex items-center gap-3.5 text-white">
-	<Icon
-		name={icon}
-		size={22}
-		strokeWidth={1.8}
-		class="shrink-0 text-accent-soft"
-	/>
+	<span
+		class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/13 bg-white/5"
+	>
+		<Icon name={icon} size={20} strokeWidth={1.8} class="text-accent-soft" />
+	</span>
 
 	<span class="min-w-0">
 		<span class="block text-xs tracking-[0.5px] text-white/55 uppercase">
