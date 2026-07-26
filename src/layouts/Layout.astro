@@ -72,7 +72,10 @@ const jsonLd = {
 		</div>
 		<script>
 			import "../lib/scrollReveal";
-			import "../lib/parallax";
+			// TYMCZASOWO WYŁĄCZONE — test diagnostyczny: sprawdzamy, czy ciągłe
+			// aktualizowanie transformu przez parallax (rAF na każdej klatce
+			// scrolla) jest przyczyną białego błysku pod navbarem na iOS Safari.
+			// import "../lib/parallax";
 		</script>
 	</body>
 </html>
