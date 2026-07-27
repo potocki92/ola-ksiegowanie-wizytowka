@@ -1,0 +1,39 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Icon from "./Icon.astro";
+
+type Tone = "success" | "success-mint";
+
+interface Props extends HTMLAttributes<"span"> {
+	as?: "li" | "span" | "div";
+	tone?: Tone;
+	size?: number;
+	strokeWidth?: number;
+	iconClass?: string;
+}
+
+const {
+	as: Tag = "span",
+	tone,
+	size = 14,
+	strokeWidth = 2.4,
+	iconClass,
+	class: className,
+	...attrs
+} = Astro.props;
+
+const toneClasses = {
+	success: "text-success",
+	"success-mint": "text-success-mint",
+} satisfies Record<Tone, string>;
+---
+
+<Tag {...attrs} class={className}>
+	<Icon
+		name="check"
+		size={size}
+		strokeWidth={strokeWidth}
+		class:list={["shrink-0", tone && toneClasses[tone], iconClass]}
+	/>
+	<slot />
+</Tag>
