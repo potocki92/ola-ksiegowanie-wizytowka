@@ -116,6 +116,8 @@ import ContactSuccess from "./ContactSuccess.astro";
 </div>
 
 <script>
+	import { track } from "@vercel/analytics";
+
 	const FALLBACK_ERROR =
 		"Nie udało się wysłać wiadomości. Zadzwoń: 533 032 455 lub napisz na kontakt@potockaksiegowosc.pl";
 
@@ -183,6 +185,8 @@ import ContactSuccess from "./ContactSuccess.astro";
 					showError(fieldError ?? data?.error);
 					return;
 				}
+
+				track("formularz_wyslany");
 
 				// `form.hidden` by nie zadziałało: Form.astro nakłada `flex`,
 				// które wygrywa z `[hidden]` z preflightu Tailwinda.
