@@ -147,6 +147,8 @@ const monthlyDocumentsOptions = ["Jeszcze nie wiem", "Do 10", "11–20", "21–5
 </div>
 
 <script>
+	import { track } from "@vercel/analytics";
+
 	const FALLBACK_ERROR =
 		"Nie udało się wysłać wiadomości. Zadzwoń: 533 032 455 lub napisz na kontakt@potockaksiegowosc.pl";
 
@@ -214,6 +216,8 @@ const monthlyDocumentsOptions = ["Jeszcze nie wiem", "Do 10", "11–20", "21–5
 					showError(fieldError ?? data?.error);
 					return;
 				}
+
+				track("formularz_wyslany");
 
 				// `form.hidden` by nie zadziałało: Form.astro nakłada `flex`,
 				// które wygrywa z `[hidden]` z preflightu Tailwinda.
