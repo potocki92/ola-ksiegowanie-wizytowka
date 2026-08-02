@@ -21,9 +21,9 @@ Dzień dobry${firstName ? `, ${escapeHtml(firstName)}` : ""}!
 </p>
 
 <p style="margin:0 0 18px;font-family:${FONT_STACK};font-size:15px;line-height:1.65;color:${COLOR.ink};">
-Dziękuję za wiadomość — dotarła do mnie i już na nią patrzę. Odezwę się najszybciej,
-jak to możliwe, zwykle w ciągu jednego dnia roboczego. Napiszę z konkretną wyceną
-i informacją o możliwym zakresie współpracy.
+Dziękuję za wiadomość — dotarła do mnie i już na nią patrzę. Odpowiadam najpóźniej
+w następnym dniu roboczym, z konkretną wyceną i informacją o możliwym zakresie
+współpracy.
 </p>
 
 <p style="margin:0 0 10px;font-family:${FONT_STACK};font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:${COLOR.mutedLight};">
@@ -49,8 +49,8 @@ zignoruj ją, nie podejmiemy żadnych działań.
 	const text = [
 		`Dzień dobry${firstName ? `, ${firstName}` : ""}!`,
 		"",
-		"Dziękuję za wiadomość — dotarła do mnie i już na nią patrzę. Odezwę się",
-		"najszybciej, jak to możliwe, zwykle w ciągu jednego dnia roboczego.",
+		"Dziękuję za wiadomość — dotarła do mnie i już na nią patrzę. Odpowiadam",
+		"najpóźniej w następnym dniu roboczym.",
 		"",
 		"Treść Twojego zapytania:",
 		message.message,
@@ -69,7 +69,7 @@ zignoruj ją, nie podejmiemy żadnych działań.
 		html: renderEmailLayout({
 			heading: "Dziękuję za wiadomość",
 			subheading: "Potwierdzenie wysłania formularza",
-			preheader: "Twoje zapytanie do mnie dotarło. Odezwę się w ciągu jednego dnia roboczego.",
+			preheader: "Twoje zapytanie do mnie dotarło. Odpowiadam najpóźniej w następnym dniu roboczym.",
 			content,
 		}),
 		text,
