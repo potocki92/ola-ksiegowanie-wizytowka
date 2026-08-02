@@ -1,0 +1,46 @@
+---
+import { type IconName } from "../ui/Icon.astro";
+import IconTile from "../ui/IconTile.astro";
+import Section from "../ui/Section.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import Button from "../ui/Button.astro";
+
+interface Group {
+	icon: IconName;
+	label: string;
+}
+
+const groups: Group[] = [
+	{ icon: "briefcase", label: "Jednoosobowe działalności usługowe" },
+	{ icon: "user", label: "Freelancerzy i specjaliści" },
+	{ icon: "users", label: "Małe firmy zatrudniające pracowników lub zleceniobiorców" },
+	{ icon: "plus", label: "Przedsiębiorcy rozpoczynający działalność" },
+	{ icon: "calendar-check", label: "Osoby przechodzące z innego biura rachunkowego" },
+	{ icon: "map-pin", label: "Działalności obsługiwane w pełni zdalnie na terenie Polski" },
+];
+
+const isHome = Astro.url.pathname === "/";
+const kontaktHref = isHome ? "#kontakt" : "/#kontakt";
+---
+
+<Section id="dla-kogo" padding="compact">
+	<SectionHeading eyebrow="Dla kogo pracuję" heading="Sprawdź, czy to Ty" size="md" headingWidth="md" />
+
+	<div class="grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+		{
+			groups.map((group) => (
+				<div class="flex items-center gap-3">
+					<IconTile icon={group.icon} size="sm" iconSize={18} />
+					<span class="text-[14.5px] font-medium text-muted-600">{group.label}</span>
+				</div>
+			))
+		}
+	</div>
+
+	<div class="mt-7 flex flex-wrap items-center gap-3.5">
+		<p class="text-[14.5px] text-muted-400">
+			Nie masz pewności, czy obsługuję Twoją działalność? Napisz i opisz swoją sytuację.
+		</p>
+		<Button href={kontaktHref} variant="primary">Napisz do mnie →</Button>
+	</div>
+</Section>

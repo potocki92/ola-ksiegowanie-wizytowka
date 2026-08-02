@@ -33,6 +33,8 @@ ${renderDataRow(
 	`<a href="mailto:${escapeHtml(message.email)}" style="color:${COLOR.accent};text-decoration:none;">${escapeHtml(message.email)}</a>`,
 )}
 ${renderDataRow("Telefon", phoneHtml)}
+${message.inquiryType ? renderDataRow("Rodzaj zapytania", escapeHtml(message.inquiryType)) : ""}
+${message.monthlyDocuments ? renderDataRow("Liczba dokumentów miesięcznie", escapeHtml(message.monthlyDocuments)) : ""}
 </table>
 
 <p style="margin:0 0 10px;font-family:${FONT_STACK};font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:${COLOR.mutedLight};">
@@ -46,6 +48,8 @@ ${renderQuoteBlock(escapeHtmlWithBreaks(message.message))}`;
 		`Imię i nazwisko: ${message.name}`,
 		`E-mail: ${message.email}`,
 		`Telefon: ${message.phone ?? "nie podano"}`,
+		...(message.inquiryType ? [`Rodzaj zapytania: ${message.inquiryType}`] : []),
+		...(message.monthlyDocuments ? [`Liczba dokumentów miesięcznie: ${message.monthlyDocuments}`] : []),
 		"",
 		"Wiadomość:",
 		message.message,

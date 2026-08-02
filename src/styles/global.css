@@ -61,22 +61,27 @@
 	--color-bg: #fbfbfd;
 	--color-ink: #0b0b12;
 
-	/* Kolory wyłącznie logotypu — reszta strony zostaje na indygo.
-	   Złoto jest przyciemnione względem wizytówki (#b3924f): daje 4,78:1
-	   zamiast 2,88:1, a z odległości wciąż czyta się jako złoto. */
+	/* Granat i złoto z logotypu są teraz głównymi kolorami całej strony, nie
+	   tylko logo. Złoto jest przyciemnione względem wizytówki (#b3924f): daje
+	   4,78:1 zamiast 2,88:1, a z odległości wciąż czyta się jako złoto.
+	   Fiolet/indygo zostaje jako drugorzędny akcent, ale mocno stonowany —
+	   patrz --color-accent-3. */
 	--color-brand-navy: #16233a;
 	--color-brand-gold: #8a6d2f;
+	--color-gold-soft: #f4ecd8;
 
-	--color-accent: #4f5bf2;
-	--color-accent-2: #7b6cf6;
-	--color-accent-3: #8b78ff;
-	--color-accent-soft: #a9b2ff;
-	--color-link: #3a42c9;
-	--color-link-hover: #2a32a8;
+	--color-accent: #2f4468;
+	--color-accent-2: #3c5686;
+	--color-accent-3: #6b6f9e;
+	--color-accent-soft: #aab4cc;
+	--color-link: #2c4468;
+	--color-link-hover: #1c2c48;
 
 	--color-success: #10b981;
 	--color-success-soft: #e6f8f1;
 	--color-success-mint: #5eead4;
+
+	--color-danger-soft: #ffc2c2;
 
 	--color-muted-900: #171a2e;
 	--color-muted-800: #0c0e1c;
@@ -95,7 +100,9 @@
 	--color-border-4: #f0f1f6;
 	--color-border-5: #dddfea;
 
-	--color-surface-tint: #eef0ff;
+	--color-surface-tint: #eef1f6;
+	--color-surface-1: #f6f7fb;
+	--color-surface-2: #f1f2f7;
 
 	--animate-rise-in: riseIn 0.8s ease both;
 	--animate-rise-in-delayed: riseIn 1s ease 0.12s both;
@@ -174,9 +181,10 @@
 	}
 
 	input:focus,
-	textarea:focus {
+	textarea:focus,
+	select:focus {
 		border-color: var(--color-accent) !important;
-		box-shadow: 0 0 0 4px rgba(79, 91, 242, 0.14);
+		box-shadow: 0 0 0 4px rgba(47, 68, 104, 0.14);
 	}
 
 	h1,

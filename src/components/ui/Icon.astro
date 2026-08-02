@@ -15,6 +15,7 @@ export type IconName =
 	| "mail"
 	| "map-pin"
 	| "file-text"
+	| "chevron-down"
 	| "user";
 
 interface Props {
@@ -127,5 +128,8 @@ const { name, size = 24, strokeWidth = 2, class: className } = Astro.props;
 				<path d="M14 2v6h6M8 13h8M8 17h6" />
 			</>
 		)
+	}
+	{
+		name === "chevron-down" && <path d="m6 9 6 6 6-6" />
 	}
 </svg>

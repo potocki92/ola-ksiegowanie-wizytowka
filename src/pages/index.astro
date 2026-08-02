@@ -12,19 +12,36 @@ import Pricing from "../components/sections/Pricing.astro";
 import Process from "../components/sections/Process.astro";
 import Faq from "../components/sections/Faq.astro";
 import ContactSection from "../components/sections/contact/ContactSection.astro";
+import ForWhom from "../components/sections/ForWhom.astro";
+import Testimonials from "../components/sections/Testimonials.astro";
+import { faqs } from "../data/faq";
+
+const faqPageNode = {
+	"@type": "FAQPage",
+	mainEntity: faqs.map((item) => ({
+		"@type": "Question",
+		name: item.q,
+		acceptedAnswer: {
+			"@type": "Answer",
+			text: item.a,
+		},
+	})),
+};
 ---
 
-<Layout>
+<Layout extraJsonLd={[faqPageNode]}>
 	<Header />
 	<main>
 		<Hero />
 		<ToolsStrip />
 		<ServicesSection />
+		<ForWhom />
 		<ValueProps />
 		<About />
 		<Pricing />
 		<Process />
 		<Faq />
+		<Testimonials />
 		<ContactSection />
 	</main>
 	<Footer />
