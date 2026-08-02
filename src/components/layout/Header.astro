@@ -19,32 +19,9 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 
 
 
-<nav
-	class="sticky top-0 z-60 flex items-center justify-between px-[clamp(18px,4vw,56px)] py-3.5 bg-bg/78 backdrop-blur-xl border-b border-black/6"
->
-	<BrandLockup href={isHome ? "#top" : "/"} size="lg" />
-
-	<div class="hidden md:flex items-center gap-4.5 lg:gap-7.5">
-		{
-			navLinks.map((link) => (
-				<a
-					href={anchor(link.id)}
-					data-nav-link={link.id}
-					class="nav-link nav-underline text-[14.5px] font-semibold text-muted-700 transition-colors duration-200 hover:text-ink"
-				>
-					{link.label}
-				</a>
-			))
-		}
-		<Button href={anchor("kontakt")} variant="nav">Bezpłatna konsultacja</Button>
-	</div>
-
-	<button
-		id="menu-toggle"
-		aria-label="Menu"
-		aria-expanded="false"
-		aria-controls="mobile-menu"
-		class="grid h-11 w-11 place-items-center rounded-xl bg-surface-2 md:hidden"
+<header class="sticky top-0 z-60">
+	<nav
+		class="flex items-center justify-between px-[clamp(18px,4vw,56px)] py-3.5 bg-bg/78 backdrop-blur-xl border-b border-black/6"
 	>
 		<BrandLockup href={isHome ? "#top" : "/"} size="lg" />
 
@@ -64,9 +41,11 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 		</div>
 
 		<button
-			id="menu-close"
-			aria-label="Zamknij"
-			class="grid h-11 w-11 place-items-center rounded-xl border-none bg-surface-2"
+			id="menu-toggle"
+			aria-label="Menu"
+			aria-expanded="false"
+			aria-controls="mobile-drawer"
+			class="grid h-11 w-11 place-items-center rounded-xl bg-surface-2 md:hidden"
 		>
 			<span class="burger" aria-hidden="true">
 				<span class="burger-line"></span>
@@ -96,20 +75,16 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 					href={anchor("kontakt")}
 					data-menu-link
 					style={`--i:${navLinks.length}`}
-					class="drawer-link mt-2 mb-6 flex h-14 items-center justify-center rounded-2xl bg-linear-to-br from-accent to-accent-2 text-[17px] font-bold text-white shadow-[0_16px_30px_-14px_rgba(79,91,242,0.8)]"
+					class="drawer-link mt-2 mb-6 flex h-14 items-center justify-center rounded-2xl bg-linear-to-br from-accent to-accent-2 text-[17px] font-bold text-white shadow-[0_16px_30px_-14px_rgba(47,68,104,0.5)]"
 				>
 					Umów bezpłatną konsultację
 				</a>
 			</nav>
 		</div>
 	</div>
-	<a
-		href={anchor("kontakt")}
-		data-menu-link
-		class="mt-auto flex h-14 items-center justify-center rounded-2xl bg-linear-to-br from-accent to-accent-2 text-[17px] font-bold text-white shadow-[0_16px_30px_-14px_rgba(47,68,104,0.5)]"
-	>
-		Umów bezpłatną konsultację
-	</a>
+</header>
+
+<div id="menu-backdrop" class="drawer-backdrop fixed inset-0 z-58 bg-black/40 md:hidden" aria-hidden="true">
 </div>
 
 <script>
