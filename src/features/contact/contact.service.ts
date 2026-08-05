@@ -1,8 +1,8 @@
-import { getContactConfig } from "./contact.config";
+import { getEmailConfig } from "../../lib/email/email.config";
+import { sendEmail } from "../../lib/email/provider";
 import type { ContactMessage } from "./contact.schema";
 import { buildConfirmation } from "./email/confirmation";
 import { buildOwnerNotification } from "./email/owner-notification";
-import { sendEmail } from "./email/provider";
 
 /**
  * Wysyła dwie wiadomości: powiadomienie do właścicielki i potwierdzenie do
@@ -17,7 +17,7 @@ import { sendEmail } from "./email/provider";
  * Rzuca wyjątek tylko wtedy, gdy nie udało się dostarczyć powiadomienia.
  */
 export async function submitContactMessage(message: ContactMessage): Promise<void> {
-	const config = getContactConfig();
+	const config = getEmailConfig();
 
 	const notification = buildOwnerNotification(message);
 

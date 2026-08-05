@@ -1,0 +1,47 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+import MobileStickyCta from "../components/layout/MobileStickyCta.astro";
+import Section from "../components/ui/Section.astro";
+import IntakeForm from "../components/sections/intake/IntakeForm.astro";
+---
+
+<Layout
+	title="Ankieta startowa przed rozmową — Aleksandra Potocka, Księgowość"
+	description="Krótka ankieta o Twojej działalności, dzięki której lepiej przygotuję się do naszej rozmowy."
+	noindex
+>
+	<Header />
+
+	<main>
+		<Section class="py-[clamp(48px,6vw,96px)]" maxWidth="max-w-2xl">
+			<h1 class="text-[clamp(32px,5vw,48px)] leading-[1.05] tracking-[-0.03em]">
+				Ankieta startowa
+			</h1>
+
+			<p class="mt-4 text-[16px] leading-relaxed text-muted-600">
+				Zanim porozmawiamy, chciałabym lepiej poznać Twoją firmę. Wypełnienie
+				tej ankiety zajmie kilka minut i pomoże mi przygotować się do naszej
+				rozmowy tak, żebyśmy od razu mogli przejść do konkretów — bez
+				pytań wstępnych.
+			</p>
+
+			<div
+				class="relative mt-[clamp(32px,4vw,48px)] overflow-hidden rounded-[clamp(24px,3vw,36px)] bg-linear-to-br from-muted-900 to-ink p-[clamp(20px,3vw,40px)]"
+			>
+				<div
+					class="pointer-events-none absolute -top-16 -right-16 h-70 w-70 rounded-full bg-[radial-gradient(circle,rgba(123,108,246,0.35),transparent_70%)] blur-2xl md:h-90 md:w-90"
+				>
+				</div>
+
+				<div class="relative">
+					<IntakeForm />
+				</div>
+			</div>
+		</Section>
+	</main>
+
+	<Footer />
+	<MobileStickyCta />
+</Layout>

@@ -1,0 +1,33 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import type { IconName } from "../Icon.astro";
+import FormField from "./FormField.astro";
+import Select from "./Select.astro";
+
+interface Props extends HTMLAttributes<"select"> {
+	label: string;
+	name: string;
+	icon?: IconName;
+}
+
+const {
+	label,
+	name,
+	icon,
+	id = name,
+	required = false,
+	class: className,
+	...attrs
+} = Astro.props;
+
+// `id`/`required` przychodzą z HTMLAttributes jako typy atrybutów HTML,
+// a FormField oczekuje wartości znormalizowanych.
+const fieldId = id ?? name;
+const isRequired = Boolean(required);
+---
+
+<FormField label={label} for={fieldId} required={isRequired} class={className}>
+	<Select id={fieldId} name={name} icon={icon} required={isRequired} {...attrs}>
+		<slot />
+	</Select>
+</FormField>

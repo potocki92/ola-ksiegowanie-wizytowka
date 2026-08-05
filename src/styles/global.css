@@ -291,7 +291,7 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 	overflow: hidden;
 }
 
-/* --- Animacje: rysowany checkmark sukcesu kontaktu --- */
+/* --- Animacje: rysowany checkmark sukcesu formularzy (kontakt, ankieta) --- */
 @keyframes drawCheck {
 	from {
 		stroke-dashoffset: 1;
@@ -300,11 +300,13 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 		stroke-dashoffset: 0;
 	}
 }
-[data-contact-success] .check-draw path {
+[data-contact-success] .check-draw path,
+[data-intake-success] .check-draw path {
 	stroke-dasharray: 1;
 	stroke-dashoffset: 1;
 }
-[data-contact-success]:not([hidden]) .check-draw path {
+[data-contact-success]:not([hidden]) .check-draw path,
+[data-intake-success]:not([hidden]) .check-draw path {
 	animation: drawCheck 0.5s ease 0.1s forwards;
 }
 
@@ -325,7 +327,8 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 	[data-parallax] {
 		transform: none !important;
 	}
-	[data-contact-success] .check-draw path {
+	[data-contact-success] .check-draw path,
+	[data-intake-success] .check-draw path {
 		stroke-dashoffset: 0 !important;
 	}
 }

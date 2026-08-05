@@ -6,9 +6,9 @@ dashboard). Only what's actually used is set up so far — PocketBase is
 intentionally not installed until a feature needs it. Zod arrived with the
 contact form, which needed validation at a trust boundary.
 
-Every page is prerendered at build time. The one exception is the contact
-endpoint, which opts out via `export const prerender = false` and ships as a
-serverless function through `@astrojs/vercel`.
+Every page is prerendered at build time. The two exceptions are the contact
+and intake endpoints, which opt out via `export const prerender = false` and
+ship as serverless functions through `@astrojs/vercel`.
 
 ## Structure
 
@@ -18,12 +18,18 @@ src/
 ├── components/
 │   ├── ui/           generic presentational pieces (Icon, Button, form/*)
 │   ├── layout/        page chrome: Header, Footer, MobileStickyCta
-│   └── sections/      one component per homepage section (Hero, Services, Faq, ...)
+│   └── sections/      one component per homepage section (Hero, Services, Faq, ...),
+│                      plus contact/ and intake/ for the two standalone form pages
 ├── features/
-│   └── contact/       form validation, email templates, Brevo transport
+│   ├── contact/       contact form: schema, service, email content
+│   └── intake/        intake questionnaire: schema, service, email content
 ├── layouts/           Layout.astro — head/meta/SEO/JSON-LD, imports global.css
+├── lib/
+│   └── email/         shared Brevo transport, HTML email shell, env config —
+│                      used by both contact and intake
 ├── pages/             file-based routes; index.astro composes the sections
-│   └── api/contact.ts on-demand endpoint (the only non-static route)
+│   └── api/           on-demand endpoints (the only non-static routes):
+│                      contact.ts, intake.ts
 └── styles/            global.css — Tailwind import, @theme design tokens, @font-face
 ```
 
@@ -51,25 +57,34 @@ src/
   has a `site` TODO — set it once a production domain exists so canonical
   URLs and the sitemap resolve to absolute URLs.
 
+## Shared email infrastructure (`lib/email/`)
+
+Both forms below send mail the same way, so the transport lives once in
+`lib/email/`, not inside either feature:
+
+- `provider.ts` — the only module aware of Brevo. Plain `fetch`, no SDK.
+  Swapping in Resend once a custom domain exists means rewriting this file
+  alone; `EmailMessage` stays put.
+- `layout.ts` — table-based HTML shell plus `escapeHtml`. Submitted text is
+  interpolated into email HTML, so escaping is a security boundary, not
+  formatting.
+- `email.config.ts` — reads and validates env vars. Reads both `process.env`
+  and `import.meta.env`, because `astro dev` populates the latter while Vercel
+  populates the former at runtime. One sender identity and one notification
+  inbox serve the whole site, so both forms read the same variables.
+
+Environment variables are documented in [.env.example](./.env.example).
+
 ## Contact form
 
 The first vertical slice through the layering AGENTS.md prescribes. Flow:
 
 ```
-ContactForm.astro  →  POST /api/contact  →  contact.service  →  email/provider  →  Brevo
+ContactForm.astro  →  POST /api/contact  →  contact.service  →  lib/email/provider  →  Brevo
 ```
 
-- `contact.schema.ts` — Zod schema; the endpoint trusts nothing from the browser
-  and revalidates every field server-side.
-- `contact.config.ts` — reads and validates env vars. Reads both `process.env`
-  and `import.meta.env`, because `astro dev` populates the latter while Vercel
-  populates the former at runtime.
-- `email/provider.ts` — the only module aware of Brevo. Plain `fetch`, no SDK.
-  Swapping in Resend once a custom domain exists means rewriting this file
-  alone; `EmailMessage` stays put.
-- `email/layout.ts` — table-based HTML shell plus `escapeHtml`. Submitted text
-  is interpolated into email HTML, so escaping is a security boundary, not
-  formatting.
+`contact.schema.ts` is the Zod schema; the endpoint trusts nothing from the
+browser and revalidates every field server-side.
 
 Two emails go out per submission and they are not equal in weight. The owner
 notification is the only channel by which a lead actually arrives, so its
@@ -81,7 +96,20 @@ Anti-spam is a honeypot field, a minimum fill time, and a per-IP counter. The
 counter lives in serverless memory, so it is a guard against crude floods
 rather than real rate limiting; a durable one would need Vercel KV.
 
-Environment variables are documented in [.env.example](./.env.example).
+## Intake questionnaire ("ankieta startowa")
+
+A longer, ~15-field brief that Ola sends directly to a prospective client
+before their call — not a form visitors find on their own, so
+`ankieta-startowa.astro` carries `noindex` and isn't linked from the header or
+footer. Same layering and anti-spam pattern as the contact form:
+
+```
+IntakeForm.astro  →  POST /api/intake  →  intake.service  →  lib/email/provider  →  Brevo
+```
+
+`intake.options.ts` centralizes the label text for every `select` field's
+options so the form markup and the owner-notification email summary don't
+duplicate the same Polish copy in two places.
 
 ## Future phases
 
