@@ -1,12 +1,8 @@
 ---
-import Section from "../ui/Section.astro";
-import SectionHeading from "../ui/SectionHeading.astro";
-
-interface TimelineEntry {
-	year: string;
-	title: string;
-	org: string;
-}
+import Section from "../../ui/Section.astro";
+import SectionHeading from "../../ui/SectionHeading.astro";
+import AboutBadge from "./AboutBadge.astro";
+import AboutCredentials, { type Highlight, type TimelineEntry } from "./AboutCredentials.astro";
 
 const timeline: TimelineEntry[] = [
 	{
@@ -48,12 +44,6 @@ const timeline: TimelineEntry[] = [
 
 const badges = ["Certyfikat SKwP II stopień", "Specjalista ds. kadr i płac", "Specjalista ds. środków trwałych"];
 
-interface Highlight {
-	label: string;
-	title: string;
-	org: string;
-}
-
 const highlights: Highlight[] = [
 	{
 		label: "Wykształcenie",
@@ -92,48 +82,9 @@ const highlights: Highlight[] = [
 				Nieustannie rozwijam swoje kompetencje, aby pracować w oparciu o aktualną wiedzę i obowiązujące regulacje. Zmiany w przepisach śledzę na bieżąco.
 			</p>
 			<div class="mt-6.5 flex flex-wrap gap-2.5">
-				{
-					badges.map((badge) => (
-						<span class="rounded-full bg-surface-tint px-3.5 py-2 text-[13.5px] font-bold text-link">
-							{badge}
-						</span>
-					))
-				}
+				{badges.map((badge) => <AboutBadge label={badge} />)}
 			</div>
 		</div>
-		<div data-reveal-group class="rounded-3xl border border-border-2 bg-white p-[clamp(22px,2.4vw,36px)] shadow-[0_20px_44px_-30px_rgba(11,11,18,0.3)]">
-			<div class="mb-1.5 text-[12.5px] font-bold tracking-[0.7px] text-muted-100 uppercase">
-				Wykształcenie i certyfikaty
-			</div>
-			{
-				highlights.map((item) => (
-					<div data-reveal class="not-last:border-b not-last:border-border-4 py-4">
-						<div class="text-[11px] font-bold tracking-[0.4px] text-accent uppercase">{item.label}</div>
-						<div class="mt-1 text-[15px] font-bold leading-[1.3]">{item.title}</div>
-						<div class="mt-0.5 text-[13px] text-muted-300">{item.org}</div>
-					</div>
-				))
-			}
-
-			<details class="group mt-4">
-				<summary class="flex cursor-pointer list-none items-center gap-2 text-[13.5px] font-bold text-link">
-					Zobacz wszystkie kwalifikacje
-					<span class="transition-transform duration-200 group-open:rotate-180" aria-hidden="true">▾</span>
-				</summary>
-				<div class="mt-2">
-					{
-						timeline.map((entry) => (
-							<div class="grid grid-cols-[56px_1fr] gap-4.5 not-last:border-b not-last:border-border-4 py-4">
-								<div class="font-display text-[15px] font-extrabold text-accent">{entry.year}</div>
-								<div>
-									<div class="text-[15px] font-bold leading-[1.3]">{entry.title}</div>
-									<div class="mt-0.5 text-[13px] text-muted-300">{entry.org}</div>
-								</div>
-							</div>
-						))
-					}
-				</div>
-			</details>
-		</div>
+		<AboutCredentials highlights={highlights} timeline={timeline} />
 	</div>
 </Section>
