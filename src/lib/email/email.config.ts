@@ -17,14 +17,17 @@ const configSchema = z.object({
 	senderName: z.string().min(1, { error: "Brak CONTACT_SENDER_NAME" }),
 });
 
-export type ContactConfig = z.infer<typeof configSchema>;
+export type EmailConfig = z.infer<typeof configSchema>;
 
 /**
+ * Współdzielone przez wszystkie formularze wysyłające maile (kontakt, ankieta
+ * startowa) — to jedna skrzynka i jeden nadawca dla całej strony.
+ *
  * Celowo czytane przy każdym wywołaniu, nie na poziomie modułu: brakująca
  * zmienna ma zwrócić błąd 502 z jednego zapytania, a nie wysadzić cały import
  * i zabrać ze sobą całą funkcję serverless.
  */
-export function getContactConfig(): ContactConfig {
+export function getEmailConfig(): EmailConfig {
 	const result = configSchema.safeParse({
 		brevoApiKey: readEnv("BREVO_API_KEY"),
 		notificationEmail: readEnv("CONTACT_NOTIFICATION_EMAIL"),

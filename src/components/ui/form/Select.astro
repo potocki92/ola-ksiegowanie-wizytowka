@@ -1,0 +1,54 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Icon, { type IconName } from "../Icon.astro";
+
+interface Props extends HTMLAttributes<"select"> {
+	icon?: IconName;
+}
+
+const {
+	icon,
+	class: className,
+	...attrs
+} = Astro.props;
+---
+
+<span class="relative block">
+	{
+		icon && (
+			<Icon
+				name={icon}
+				size={18}
+				strokeWidth={1.9}
+				class="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-muted-50"
+			/>
+		)
+	}
+
+	<select
+		{...attrs}
+		class:list={[
+			"h-12.5 w-full appearance-none rounded-xl border border-white/18 bg-white/6 pr-11 font-[inherit] text-[16px] text-white outline-none transition-[border-color,box-shadow] duration-200",
+			"[&_option]:bg-[#171a2e] [&_option]:text-white",
+			icon ? "pl-11" : "pl-4",
+			className,
+		]}
+	>
+		<slot />
+	</select>
+
+	<svg
+		width="16"
+		height="16"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="2.2"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-muted-50"
+		aria-hidden="true"
+	>
+		<path d="m6 9 6 6 6-6" />
+	</svg>
+</span>

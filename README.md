@@ -48,8 +48,11 @@ podzielonej na następujące sekcje — każda to osobny komponent w
 | Stopka | `layout/Footer.astro` | Stopka z danymi firmy i linkiem do polityki prywatności. |
 | Mobilne CTA | `layout/MobileStickyCta.astro` | Przypięty do dołu ekranu pasek z przyciskiem kontaktu, widoczny tylko na urządzeniach mobilnych. |
 
-Osobną podstroną jest `src/pages/polityka-prywatnosci.astro` — polityka
-prywatności wymagana przy przetwarzaniu danych z formularza kontaktowego.
+Osobnymi podstronami są `src/pages/polityka-prywatnosci.astro` — polityka
+prywatności wymagana przy przetwarzaniu danych z formularza kontaktowego —
+oraz `src/pages/ankieta-startowa.astro` — rozbudowana ankieta o działalności
+klienta, wysyłana ręcznie (bez linku w menu/stopce) potencjalnym klientom
+przed rozmową, żeby Ola mogła się do niej lepiej przygotować.
 
 ## Funkcjonalności
 
@@ -57,6 +60,12 @@ prywatności wymagana przy przetwarzaniu danych z formularza kontaktowego.
   serwera (Zod), ochrona przed spamem (honeypot + minimalny czas wypełnienia +
   licznik zgłoszeń per IP), wysyłka e-maila powiadomienia do biura oraz
   potwierdzenia dla klienta przez Brevo.
+- **Ankieta startowa** (`features/intake/`, strona `/ankieta-startowa`) —
+  rozbudowany, kilkunastopolowy formularz (dane kontaktowe, opis działalności,
+  forma prawna i opodatkowania, VAT, zatrudnienie, obecna sytuacja) wysyłany
+  bezpośrednio potencjalnym klientom przed rozmową. Ta sama ochrona
+  antyspamowa i wysyłka e-mail co formularz kontaktowy — dzielą wspólną
+  infrastrukturę mailową z `lib/email/`.
 - **SEO** — tytuł, opis, meta Open Graph/Twitter oraz dane strukturalne
   `AccountingService` (JSON-LD) w `layouts/Layout.astro`.
 - **Animacje** — subtelny efekt paralaksy na zdjęciu w hero, odkrywanie
@@ -106,11 +115,14 @@ src/
 │   ├── layout/          Header, Footer, MobileStickyCta
 │   └── sections/        po jednym komponencie na sekcję strony głównej
 ├── features/
-│   └── contact/         walidacja formularza, szablony e-maili, wysyłka przez Brevo
+│   ├── contact/         walidacja formularza kontaktowego, szablony e-maili
+│   └── intake/          walidacja ankiety startowej, szablony e-maili
 ├── layouts/             Layout.astro — head/meta/SEO/JSON-LD
-├── lib/                 drobne helpery (paralaksa, scroll-reveal, typografia)
+├── lib/
+│   ├── email/           wspólna wysyłka przez Brevo (provider, layout maila, config)
+│   └── ...               drobne helpery (paralaksa, scroll-reveal, typografia)
 ├── pages/               routing plikowy; index.astro składa sekcje w jedną stronę
-│   └── api/contact.ts   jedyny endpoint serverless (formularz kontaktowy)
+│   └── api/             endpointy serverless: contact.ts, intake.ts
 └── styles/              global.css — import Tailwind + tokeny @theme
 ```
 

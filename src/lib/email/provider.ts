@@ -1,4 +1,4 @@
-import { getContactConfig } from "../contact.config";
+import { getEmailConfig } from "./email.config";
 
 export interface EmailAddress {
 	email: string;
@@ -25,7 +25,7 @@ const BREVO_ENDPOINT = "https://api.brevo.com/v3/smtp/email";
  * `EmailMessage` i reszta modułu zostają bez zmian.
  */
 export async function sendEmail(message: EmailMessage): Promise<void> {
-	const config = getContactConfig();
+	const config = getEmailConfig();
 
 	// Bez limitu czasu zawieszony dostawca trzymałby użytkownika na kręcącym się
 	// spinnerze aż do timeoutu całej funkcji.
