@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import SpeedInsights from "@vercel/speed-insights/astro";
 
 interface Props {
 	title?: string;
@@ -74,6 +75,7 @@ const jsonLd = {
 	     global.css — to nie miało związku z tym, gdzie leży overflow-x-hidden. -->
 	<body class="max-w-full overflow-x-hidden bg-bg relative">
 		<slot />
+		<SpeedInsights />
 		<script>
 			import "../lib/scrollReveal";
 			// TYMCZASOWO WYŁĄCZONE — test diagnostyczny: sprawdzamy, czy ciągłe
