@@ -4,7 +4,11 @@ import Section from "../ui/Section.astro";
 const tools = ["Comarch Optima", "Symfonia", "Płatnik", "Subiekt GT", "Rachmistrz GT"];
 ---
 
-<Section padding="compact" class="border-y border-border-2">
+<!-- Górna kreska znika na mobile: dół portretu w hero jest tam wygaszany maską
+     do przezroczystości, a linia 1px zaraz pod nim zatrzymywała to wygaszenie
+     w pół drogi i przywracała efekt ucięcia. Dolna zostaje — oddziela pasek od
+     sekcji usług. -->
+<Section padding="compact" class="border-y border-border-2 max-md:border-t-0">
 	<div data-reveal class="mb-4.5 text-center text-[12.5px] font-bold tracking-[1px] text-muted-100 uppercase">
 		Pracuję w programach, które znasz z rynku
 	</div>

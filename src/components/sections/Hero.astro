@@ -11,7 +11,7 @@ const trustBadges = ["UE Wrocław", "6 lat praktyki", "100% online"];
 	id="top"
 	as="header"
 	padding="none"
-	class="px-[clamp(18px,4vw,56px)] pt-[clamp(40px,6vw,88px)] md:pb-[clamp(48px,6vw,80px)]"
+	class="px-[clamp(18px,4vw,56px)] pt-[clamp(40px,6vw,88px)] pb-[clamp(24px,5vw,44px)] md:pb-[clamp(48px,6vw,80px)]"
 	glow="bg-[radial-gradient(60%_50%_at_78%_8%,rgba(123,108,246,0.16),transparent_70%),radial-gradient(55%_45%_at_12%_4%,rgba(79,91,242,0.12),transparent_70%)]"
 >
 	<div
@@ -68,10 +68,29 @@ const trustBadges = ["UE Wrocław", "6 lat praktyki", "100% online"];
 		</div>
 
 		<div class="relative order-2 w-full animate-rise-in-delayed md:order-0">
+			<!-- Portret to wycinanka (webp z alfą) leżąca na tym samym #fbfbfd co
+			     ToolsStrip, więc `overflow-hidden` ucinał go na mobile prostą kreską
+			     przez marynarkę; maska wygasza dół wprost do przezroczystości.
+			     Bliźniak `-webkit-` jest obowiązkowy (iOS Safari < 16.4): repo nie ma
+			     browserslist, więc Lightning CSS nie dogeneruje prefiksu — ten sam
+			     problem co przy `backdrop-filter` w global.css. Środkowy stop 0.5 @ 88%
+			     leży wyżej niż liniowy (~0,44): czerń trzyma pełne krycie dłużej,
+			     a potem gaśnie szybciej — to różnica między zanikiem a szarym „duchem". -->
 			<div
-				class="relative aspect-4/5 overflow-hidden md:aspect-auto md:h-[clamp(440px,48vw,580px)]"
+				class="relative aspect-4/5 overflow-hidden max-md:aspect-6/7 max-md:[mask-image:linear-gradient(to_bottom,black_74%,rgba(0,0,0,0.5)_88%,transparent_100%)] max-md:[-webkit-mask-image:linear-gradient(to_bottom,black_74%,rgba(0,0,0,0.5)_88%,transparent_100%)] md:aspect-auto md:h-[clamp(440px,48vw,580px)]"
 			>
-				<div data-parallax class="absolute left-0 top-[-8%] h-[116%] w-full">
+				<!-- Warstwa jest wyższa od kadru, żeby paralaksa miała po czym jeździć —
+				     zapas musi zostać po OBU stronach co najmniej `--parallax-amp` (20px
+				     na mobile), inaczej po włączeniu `lib/parallax` wyjedzie jej krawędź.
+				     Mobilne -18%/125% dają 68px u góry i 26px u dołu, a przy okazji
+				     przesuwają okno kadru z 0,50 na 0,544 wysokości obrazu, czyli zdejmują
+				     martwą przestrzeń nad głową. `object-position` nie jest tu dźwignią:
+				     obraz (3:4) wypełnia warstwę co do piksela w pionie, więc na mobile
+				     przycinane są wyłącznie boki. -->
+				<div
+					data-parallax
+					class="absolute left-0 top-[-8%] h-[116%] w-full max-md:top-[-18%] max-md:h-[125%]"
+				>
 					<Image
 						src="/portret.webp"
 						alt="mgr Aleksandra Potocka – księgowa"
