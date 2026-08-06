@@ -1,11 +1,19 @@
 ---
 import "../styles/global.css";
+import Analytics from "@vercel/analytics/astro";
 import SpeedInsights from "@vercel/speed-insights/astro";
 import { ClientRouter } from "astro:transitions";
 
 interface Props {
 	title?: string;
 	description?: string;
+	/** Ścieżka do podmiany zamiast Astro.url.pathname — dla stron spoza standardowego routingu. */
+	canonicalPath?: string;
+	/** Ścieżka do obrazu OG (np. z public/) — domyślnie generyczny placeholder marki. */
+	ogImage?: string;
+	type?: "website" | "article";
+	/** Dodatkowe węzły schema.org scalane z głównym węzłem przez @graph (np. FAQPage). */
+	extraJsonLd?: Record<string, unknown>[];
 	/** Strony dostępne tylko na bezpośredni link (np. ankieta wysyłana klientom) nie mają trafiać do wyszukiwarek. */
 	noindex?: boolean;
 }
@@ -13,24 +21,54 @@ interface Props {
 const {
 	title = "Aleksandra Potocka — Księgowość online dla jednoosobowych działalności",
 	description = "Prowadzenie i zakładanie JDG, kadry i płace, rozliczenia VAT i ZUS — w pełni zdalnie, w całej Polsce. Bezpłatna pierwsza konsultacja.",
+	canonicalPath,
+	ogImage,
+	type = "website",
+	extraJsonLd = [],
 	noindex = false,
 } = Astro.props;
 
-const canonicalURL = Astro.site ? new URL(Astro.url.pathname, Astro.site) : Astro.url.pathname;
+const canonicalURL = Astro.site
+	? new URL(canonicalPath ?? Astro.url.pathname, Astro.site)
+	: (canonicalPath ?? Astro.url.pathname);
 
-const jsonLd = {
-	"@context": "https://schema.org",
+const ogImagePath = ogImage ?? defaultOgImage.src;
+const ogImageURL = Astro.site ? new URL(ogImagePath, Astro.site) : ogImagePath;
+
+const accountingServiceNode = {
 	"@type": "AccountingService",
 	name: "Aleksandra Potocka — Księgowość",
 	description,
+	url: Astro.site ? Astro.site.toString() : undefined,
 	telephone: "+48533032455",
 	email: "kontakt@potockaksiegowosc.pl",
+	logo: Astro.site ? new URL("/apple-touch-icon.png", Astro.site).toString() : "/apple-touch-icon.png",
+	image: ogImageURL.toString(),
 	areaServed: "PL",
+	priceRange: getJdgPriceRangeLabel(pricing),
 	address: {
 		"@type": "PostalAddress",
 		addressLocality: "Jelenia Góra",
 		addressCountry: "PL",
 	},
+	hasOfferCatalog: {
+		"@type": "OfferCatalog",
+		name: "Usługi księgowe",
+		itemListElement: [
+			"Prowadzenie JDG",
+			"Kadry i płace",
+			"Zakładanie działalności",
+			"Rozliczenia roczne PIT",
+		].map((serviceName) => ({
+			"@type": "Offer",
+			itemOffered: { "@type": "Service", name: serviceName },
+		})),
+	},
+};
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@graph": [accountingServiceNode, ...extraJsonLd],
 };
 ---
 
@@ -53,15 +91,20 @@ const jsonLd = {
 		<link rel="canonical" href={canonicalURL} />
 		{noindex && <meta name="robots" content="noindex, nofollow" />}
 
-		<meta property="og:type" content="website" />
+		<meta property="og:type" content={type} />
 		<meta property="og:locale" content="pl_PL" />
+		<meta property="og:site_name" content="Aleksandra Potocka — Księgowość" />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:image" content={ogImageURL} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
 
-		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageURL} />
 
 		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
 
@@ -85,6 +128,7 @@ const jsonLd = {
 	     global.css — to nie miało związku z tym, gdzie leży overflow-x-hidden. -->
 	<body class="max-w-full overflow-x-hidden bg-bg relative">
 		<slot />
+		<Analytics />
 		<SpeedInsights />
 		<script>
 			import "../lib/scrollReveal";

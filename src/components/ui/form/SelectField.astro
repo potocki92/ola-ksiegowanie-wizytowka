@@ -2,18 +2,23 @@
 import type { HTMLAttributes } from "astro/types";
 import type { IconName } from "../Icon.astro";
 import FormField from "./FormField.astro";
-import Select from "./Select.astro";
+import Select, { type Option } from "./Select.astro";
 
 interface Props extends HTMLAttributes<"select"> {
 	label: string;
 	name: string;
 	icon?: IconName;
+	/** Lista opcji. Gdy jej nie podasz, opcje przekazujesz przez slot. */
+	options?: Option[];
+	placeholder?: string;
 }
 
 const {
 	label,
 	name,
 	icon,
+	options,
+	placeholder,
 	id = name,
 	required = false,
 	class: className,
@@ -27,7 +32,15 @@ const isRequired = Boolean(required);
 ---
 
 <FormField label={label} for={fieldId} required={isRequired} class={className}>
-	<Select id={fieldId} name={name} icon={icon} required={isRequired} {...attrs}>
+	<Select
+		id={fieldId}
+		name={name}
+		icon={icon}
+		options={options}
+		placeholder={placeholder}
+		required={isRequired}
+		{...attrs}
+	>
 		<slot />
 	</Select>
 </FormField>

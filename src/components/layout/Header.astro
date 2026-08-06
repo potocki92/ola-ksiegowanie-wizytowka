@@ -1,5 +1,4 @@
 ---
-import Icon from "../ui/Icon.astro";
 import BrandLockup from "../ui/BrandLockup.astro";
 import Button from "../ui/Button.astro";
 
@@ -56,23 +55,35 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 		aria-controls="mobile-menu"
 		class="grid h-11 w-11 place-items-center rounded-xl bg-[#F1F2F7] md:hidden"
 	>
-		<Icon name="menu" size={24} />
-	</button>
-</nav>
+		<BrandLockup href={isHome ? "#top" : "/"} size="lg" />
 
-<div
-	id="mobile-menu"
-	hidden
-	class="fixed inset-0 z-70 flex flex-col bg-bg px-[clamp(18px,4vw,56px)] py-3.5 animate-sheet-up"
->
-	<div class="flex items-center justify-between">
-		<BrandLockup animated={false} size="sm" />
+		<div class="hidden md:flex items-center gap-4.5 lg:gap-7.5">
+			{
+				navLinks.map((link) => (
+					<a
+						href={anchor(link.id)}
+						data-nav-link={link.id}
+						class="nav-link nav-underline text-[14.5px] font-semibold text-muted-700 transition-colors duration-200 hover:text-ink"
+					>
+						{link.label}
+					</a>
+				))
+			}
+			<Button href={anchor("kontakt")} variant="nav">Bezpłatna konsultacja</Button>
+		</div>
+
 		<button
-			id="menu-close"
-			aria-label="Zamknij"
-			class="grid h-11 w-11 place-items-center rounded-xl border-none bg-[#F1F2F7]"
+			id="menu-toggle"
+			aria-label="Menu"
+			aria-expanded="false"
+			aria-controls="mobile-drawer"
+			class="grid h-11 w-11 place-items-center rounded-xl bg-surface-2 md:hidden"
 		>
-			<Icon name="close" size={22} />
+			<span class="burger" aria-hidden="true">
+				<span class="burger-line"></span>
+				<span class="burger-line"></span>
+				<span class="burger-line"></span>
+			</span>
 		</button>
 	</div>
 	{/* `--menu-i` = miejsce w kolejce; panel wjeżdżał wcześniej w całości, więc
@@ -81,17 +92,17 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 		{
 			navLinks.map((link, i) => (
 				<a
-					href={anchor(link.id)}
+					href={anchor("kontakt")}
 					data-menu-link
 					data-menu-item
 					data-nav-link={link.id}
 					style={`--menu-i:${i}`}
 					class="nav-link border-b border-border py-3 font-display text-[30px] font-bold text-ink"
 				>
-					{link.label}
+					Umów bezpłatną konsultację
 				</a>
-			))
-		}
+			</nav>
+		</div>
 	</div>
 	<a
 		href={anchor("kontakt")}
