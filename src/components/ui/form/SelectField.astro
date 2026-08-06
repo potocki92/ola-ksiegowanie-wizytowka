@@ -2,18 +2,14 @@
 import type { HTMLAttributes } from "astro/types";
 import type { IconName } from "../Icon.astro";
 import FormField from "./FormField.astro";
-import Select from "./Select.astro";
-
-interface Option {
-	value: string;
-	label: string;
-}
+import Select, { type Option } from "./Select.astro";
 
 interface Props extends HTMLAttributes<"select"> {
 	label: string;
 	name: string;
 	icon?: IconName;
-	options: Option[];
+	/** Lista opcji. Gdy jej nie podasz, opcje przekazujesz przez slot. */
+	options?: Option[];
 	placeholder?: string;
 }
 
@@ -29,6 +25,8 @@ const {
 	...attrs
 } = Astro.props;
 
+// `id`/`required` przychodzą z HTMLAttributes jako typy atrybutów HTML,
+// a FormField oczekuje wartości znormalizowanych.
 const fieldId = id ?? name;
 const isRequired = Boolean(required);
 ---
@@ -42,5 +40,7 @@ const isRequired = Boolean(required);
 		placeholder={placeholder}
 		required={isRequired}
 		{...attrs}
-	/>
+	>
+		<slot />
+	</Select>
 </FormField>

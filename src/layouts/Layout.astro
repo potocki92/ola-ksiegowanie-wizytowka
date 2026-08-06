@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Analytics from "@vercel/analytics/astro";
+import SpeedInsights from "@vercel/speed-insights/astro";
 import { pricing, getJdgPriceRangeLabel } from "../data/pricing";
 import defaultOgImage from "../assets/og-image.png";
 
@@ -14,6 +15,8 @@ interface Props {
 	type?: "website" | "article";
 	/** Dodatkowe węzły schema.org scalane z głównym węzłem przez @graph (np. FAQPage). */
 	extraJsonLd?: Record<string, unknown>[];
+	/** Strony dostępne tylko na bezpośredni link (np. ankieta wysyłana klientom) nie mają trafiać do wyszukiwarek. */
+	noindex?: boolean;
 }
 
 const {
@@ -23,6 +26,7 @@ const {
 	ogImage,
 	type = "website",
 	extraJsonLd = [],
+	noindex = false,
 } = Astro.props;
 
 const canonicalURL = Astro.site
@@ -86,6 +90,7 @@ const jsonLd = {
 		<title>{title}</title>
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonicalURL} />
+		{noindex && <meta name="robots" content="noindex, nofollow" />}
 
 		<meta property="og:type" content={type} />
 		<meta property="og:locale" content="pl_PL" />
@@ -116,6 +121,7 @@ const jsonLd = {
 	<body class="max-w-full overflow-x-hidden bg-bg relative">
 		<slot />
 		<Analytics />
+		<SpeedInsights />
 		<script>
 			import "../lib/scrollReveal";
 			// TYMCZASOWO WYŁĄCZONE — test diagnostyczny: sprawdzamy, czy ciągłe

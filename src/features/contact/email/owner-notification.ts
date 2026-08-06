@@ -1,4 +1,3 @@
-import type { ContactMessage } from "../contact.schema";
 import {
 	COLOR,
 	FONT_STACK,
@@ -7,7 +6,8 @@ import {
 	renderDataRow,
 	renderEmailLayout,
 	renderQuoteBlock,
-} from "./layout";
+} from "../../../lib/email/layout";
+import type { ContactMessage } from "../contact.schema";
 
 export interface BuiltEmail {
 	subject: string;

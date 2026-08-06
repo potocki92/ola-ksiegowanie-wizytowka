@@ -1,5 +1,3 @@
-import type { ContactMessage } from "../contact.schema";
-import type { BuiltEmail } from "./owner-notification";
 import {
 	COLOR,
 	FONT_STACK,
@@ -7,7 +5,9 @@ import {
 	escapeHtmlWithBreaks,
 	renderEmailLayout,
 	renderQuoteBlock,
-} from "./layout";
+} from "../../../lib/email/layout";
+import type { ContactMessage } from "../contact.schema";
+import type { BuiltEmail } from "./owner-notification";
 
 /** Potwierdzenie dla osoby, która wypełniła formularz. */
 export function buildConfirmation(message: ContactMessage): BuiltEmail {
