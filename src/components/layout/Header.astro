@@ -21,22 +21,31 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 
 
 <nav
+	data-navbar
 	class="sticky top-0 z-60 flex items-center justify-between px-[clamp(18px,4vw,56px)] py-3.5 bg-bg/78 backdrop-blur-xl border-b border-black/6"
 >
 	<BrandLockup href={isHome ? "#top" : "/"} size="lg" />
 
 	<div class="hidden md:flex items-center gap-4.5 lg:gap-7.5">
-		{
-			navLinks.map((link) => (
-				<a
-					href={anchor(link.id)}
-					data-nav-link={link.id}
-					class="nav-link nav-underline text-[14.5px] font-semibold text-muted-700 transition-colors duration-200 hover:text-ink"
-				>
-					{link.label}
-				</a>
-			))
-		}
+		{/*
+			Linki dostają własny kontener `relative`, bo wskaźnik aktywnej sekcji
+			pozycjonuje się względem NIEGO, a nie całego paska — przycisk CTA stoi
+			obok i nie może wchodzić w rachubę offsetów.
+		*/}
+		<div data-nav-track class="relative flex items-center gap-4.5 lg:gap-7.5">
+			{
+				navLinks.map((link) => (
+					<a
+						href={anchor(link.id)}
+						data-nav-link={link.id}
+						class="nav-link text-[14.5px] font-semibold text-muted-700 transition-colors duration-200 hover:text-ink"
+					>
+						{link.label}
+					</a>
+				))
+			}
+			<span data-nav-indicator aria-hidden="true"></span>
+		</div>
 		<Button href={anchor("kontakt")} variant="nav">Bezpłatna konsultacja</Button>
 	</div>
 
@@ -66,14 +75,18 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 			<Icon name="close" size={22} />
 		</button>
 	</div>
+	{/* `--menu-i` = miejsce w kolejce; panel wjeżdżał wcześniej w całości, więc
+	    linki „były już na miejscu" zanim overlay dojechał. */}
 	<div class="mt-8 flex flex-col gap-1.5">
 		{
-			navLinks.map((link) => (
+			navLinks.map((link, i) => (
 				<a
 					href={anchor(link.id)}
 					data-menu-link
+					data-menu-item
 					data-nav-link={link.id}
-						class="nav-link border-b border-border py-3 font-display text-[30px] font-bold text-ink"
+					style={`--menu-i:${i}`}
+					class="nav-link border-b border-border py-3 font-display text-[30px] font-bold text-ink"
 				>
 					{link.label}
 				</a>
@@ -83,46 +96,88 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 	<a
 		href={anchor("kontakt")}
 		data-menu-link
-		class="mt-auto flex h-14 items-center justify-center rounded-2xl bg-linear-to-br from-accent to-accent-2 text-[17px] font-bold text-white shadow-[0_16px_30px_-14px_rgba(79,91,242,0.8)]"
+		data-menu-item
+		style={`--menu-i:${navLinks.length}`}
+		class="btn-press mt-auto flex h-14 items-center justify-center rounded-2xl bg-linear-to-br from-accent to-accent-2 text-[17px] font-bold text-white shadow-[0_16px_30px_-14px_rgba(79,91,242,0.8)] transition-transform duration-200"
 	>
 		Umów bezpłatną konsultację
 	</a>
 </div>
 
 <script>
-	const toggleBtn = document.getElementById("menu-toggle")!;
-	const closeBtn = document.getElementById("menu-close")!;
-	const menu = document.getElementById("mobile-menu")!;
-	const menuLinks = menu.querySelectorAll<HTMLAnchorElement>("[data-menu-link]");
+	import { onPageInit } from "../../lib/pageInit";
 
-	function openMenu() {
-		menu.hidden = false;
-		toggleBtn.setAttribute("aria-expanded", "true");
-		document.body.style.overflow = "hidden";
-	}
+	// Menu żyje tylko w obrębie jednej strony, a po przejściu przez ClientRouter
+	// wszystkie te węzły są już inne — stąd wiązanie w `onPageInit`.
+	onPageInit(() => {
+		const toggleBtn = document.getElementById("menu-toggle");
+		const closeBtn = document.getElementById("menu-close");
+		const menu = document.getElementById("mobile-menu");
+		if (!toggleBtn || !closeBtn || !menu) return;
 
-	function closeMenu() {
-		menu.hidden = true;
-		toggleBtn.setAttribute("aria-expanded", "false");
+		// Nawigacja z otwartym menu zostawiłaby zablokowany scroll na nowej stronie.
 		document.body.style.overflow = "";
-	}
 
-	toggleBtn.addEventListener("click", openMenu);
-	closeBtn.addEventListener("click", closeMenu);
-	menuLinks.forEach((link) => link.addEventListener("click", closeMenu));
+		const openMenu = () => {
+			menu.hidden = false;
+			toggleBtn.setAttribute("aria-expanded", "true");
+			document.body.style.overflow = "hidden";
+		};
+
+		const closeMenu = () => {
+			menu.hidden = true;
+			toggleBtn.setAttribute("aria-expanded", "false");
+			document.body.style.overflow = "";
+		};
+
+		toggleBtn.addEventListener("click", openMenu);
+		closeBtn.addEventListener("click", closeMenu);
+		menu
+			.querySelectorAll<HTMLAnchorElement>("[data-menu-link]")
+			.forEach((link) => link.addEventListener("click", closeMenu));
+	});
 </script>
 
 <script>
-	// Scrollspy: highlight the nav link whose section is currently in view.
-	const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-nav-link]"));
-	const sections = [...new Set(navLinks.map((l) => l.dataset.navLink!))]
-		.map((id) => document.getElementById(id))
-		.filter((el): el is HTMLElement => el !== null)
-		.sort((a, b) => a.offsetTop - b.offsetTop);
+	import { onPageInit } from "../../lib/pageInit";
 
-	const LINE = 100; // px below the viewport top (clears the sticky navbar)
+	// Scrollspy: podświetla link sekcji widocznej na ekranie, przesuwa pod nim
+	// wspólną kreskę i unosi pasek po zejściu ze szczytu strony. Wszystko trzy
+	// razem, bo i tak liczą się przy tym samym zdarzeniu scrolla — trzy osobne
+	// listenery robiłyby tę samą pracę trzykrotnie.
+	const LINE = 100; // px poniżej górnej krawędzi (mija przyklejony pasek)
+	const ELEVATE_AT = 8; // px scrolla, po których pasek dostaje cień
 
-	function updateActive() {
+	let navLinks: HTMLAnchorElement[] = [];
+	let sections: HTMLElement[] = [];
+	let navbar: HTMLElement | null = null;
+	let track: HTMLElement | null = null;
+	let indicator: HTMLElement | null = null;
+
+	function moveIndicator(currentId: string | null) {
+		if (!indicator || !track) return;
+
+		const active = currentId
+			? track.querySelector<HTMLElement>(`[data-nav-link="${currentId}"]`)
+			: null;
+
+		// Poza sekcjami z menu (góra strony, stopka, podstrony) kreski nie ma —
+		// zostawiamy ją tam, gdzie była, i tylko wygaszamy, żeby nie odjeżdżała
+		// na lewą krawędź przy każdym przewinięciu na sam szczyt.
+		if (!active) {
+			indicator.style.setProperty("--nav-o", "0");
+			return;
+		}
+
+		indicator.style.setProperty("--nav-x", `${active.offsetLeft}px`);
+		indicator.style.setProperty("--nav-w", `${active.offsetWidth}px`);
+		indicator.style.setProperty("--nav-o", "1");
+		// Dopiero po pierwszym ustawieniu pozwalamy kresce się przesuwać —
+		// inaczej wjechałaby z pozycji zerowej przy pierwszym scrollu.
+		indicator.classList.add("is-ready");
+	}
+
+	function update() {
 		let currentId: string | null = null;
 		for (const section of sections) {
 			if (section.getBoundingClientRect().top - LINE <= 0) currentId = section.id;
@@ -130,6 +185,8 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 		for (const link of navLinks) {
 			link.classList.toggle("is-active", link.dataset.navLink === currentId);
 		}
+		moveIndicator(currentId);
+		navbar?.classList.toggle("is-scrolled", window.scrollY > ELEVATE_AT);
 	}
 
 	let ticking = false;
@@ -137,16 +194,28 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 		if (ticking) return;
 		ticking = true;
 		requestAnimationFrame(() => {
-			updateActive();
+			update();
 			ticking = false;
 		});
 	}
 
-	if (sections.length) {
-		window.addEventListener("scroll", onScroll, { passive: true });
-		window.addEventListener("resize", onScroll);
-		updateActive();
-	}
+	// Listenery okna rejestrujemy raz, w zasięgu modułu. Gdyby siedziały
+	// w `onPageInit`, każde przejście między stronami dokładałoby kolejny.
+	window.addEventListener("scroll", onScroll, { passive: true });
+	window.addEventListener("resize", onScroll);
+
+	onPageInit(() => {
+		navbar = document.querySelector<HTMLElement>("[data-navbar]");
+		track = document.querySelector<HTMLElement>("[data-nav-track]");
+		indicator = document.querySelector<HTMLElement>("[data-nav-indicator]");
+		navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-nav-link]"));
+		sections = [...new Set(navLinks.map((l) => l.dataset.navLink!))]
+			.map((id) => document.getElementById(id))
+			.filter((el): el is HTMLElement => el !== null)
+			.sort((a, b) => a.offsetTop - b.offsetTop);
+
+		update();
+	});
 </script>
 
 <!-- Pasek celowo NIE zmienia wysokości przy zwijaniu logotypu. `nav` jest

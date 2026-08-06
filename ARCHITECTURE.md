@@ -23,8 +23,12 @@ src/
 ├── features/
 │   ├── contact/       contact form: schema, service, email content
 │   └── intake/        intake questionnaire: schema, service, email content
-├── layouts/           Layout.astro — head/meta/SEO/JSON-LD, imports global.css
+├── layouts/           Layout.astro — head/meta/SEO/JSON-LD, ClientRouter, global.css
 ├── lib/
+│   ├── pageInit.ts    re-runs a component's init after every view transition
+│   ├── scrollReveal.ts  reveal-on-scroll observer (direction comes from CSS)
+│   ├── cardGlow.ts    pointer position for the card hover highlight
+│   ├── formFlow.ts    shared submit flow for the contact and intake forms
 │   └── email/         shared Brevo transport, HTML email shell, env config —
 │                      used by both contact and intake
 ├── pages/             file-based routes; index.astro composes the sections
@@ -48,6 +52,22 @@ src/
   inline `<script>` — per AGENTS.md, `client:*` directives are avoided
   unless a real interaction requires a framework island, and none of this
   page's interactivity does.
+- **Navigation**: `Layout.astro` mounts `ClientRouter`, so routes swap
+  without a full document load. Module scripts therefore execute **once per
+  visit, not once per page** — anything that binds listeners to elements must
+  go through `onPageInit` (`lib/pageInit.ts`), which re-runs it after every
+  swap. Listeners on `window`/`document` stay at module scope; registering
+  them inside `onPageInit` would stack up one copy per navigation.
+- **Animation**: the mechanics live in `global.css` under `--- Animacje: ---`
+  headings; components only carry data attributes (`data-reveal`,
+  `data-parallax`, `data-glow`, …). Two rules matter when adding more.
+  First, every mechanism whose resting state is a `transform`, `clip-path`
+  or `scale` must also declare its end state in the
+  `prefers-reduced-motion: reduce` block at the bottom of the file — the
+  global switch only kills durations, so an undeclared start state freezes
+  the content out of sight. Second, prefer CSS over JS: parallax runs on
+  `animation-timeline: view()` behind an `@supports` guard, which costs no
+  main-thread work and degrades to a static element.
 - **Data**: page copy that repeats (FAQ items, the About timeline) is a
   typed local array in its section component's frontmatter, not a shared
   `lib`/`features` module — it's one-page marketing content, not business

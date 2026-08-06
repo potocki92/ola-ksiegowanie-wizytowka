@@ -3,12 +3,40 @@ interface Props {
 	year: string;
 	title: string;
 	org: string;
+	/** Miejsce w kolejce — steruje opóźnieniem rysowania osi (CSS `--tl-i`). */
+	index?: number;
+	/** Ostatni wpis urywa oś na swojej kropce, żeby linia nie wisiała w pustce. */
+	isLast?: boolean;
 }
 
-const { year, title, org } = Astro.props;
+const { year, title, org, index = 0, isLast = false } = Astro.props;
 ---
 
-<div class="grid grid-cols-[56px_1fr] gap-4.5 not-last:border-b not-last:border-border-4 py-4">
+{/*
+  Oś biegnie w rynience między kolumną roku (56 px) a treścią — czyli od 56 do
+  74 px, środek na 65 px. Każdy wpis rysuje własny odcinek na całej swojej
+  wysokości, więc razem tworzą ciągłą linię niezależnie od tego, ile wierszy
+  zajmie tytuł. Kropka siada na wysokości roku (16 px paddingu + ~10 px do
+  środka wersu).
+*/}
+<div
+	data-tl-item
+	style={`--tl-i:${index}`}
+	class="relative grid grid-cols-[56px_1fr] gap-4.5 py-4 not-last:border-b not-last:border-border-4"
+>
+	<span
+		data-tl-rail
+		aria-hidden="true"
+		class:list={[
+			"pointer-events-none absolute left-[65px] w-px bg-border-3",
+			isLast ? "top-0 h-[26px]" : "inset-y-0",
+		]}
+	></span>
+	<span
+		aria-hidden="true"
+		class="pointer-events-none absolute top-[22px] left-[61px] h-2 w-2 rounded-full bg-accent ring-3 ring-white"
+	></span>
+
 	<div class="font-display text-[15px] font-extrabold text-accent">{year}</div>
 	<div>
 		<div class="text-[15px] font-bold leading-[1.3]">{title}</div>
