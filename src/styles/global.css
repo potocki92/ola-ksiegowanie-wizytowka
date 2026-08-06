@@ -1,23 +1,6 @@
 @import "tailwindcss";
 
 @font-face {
-	font-family: "Plus Jakarta Sans";
-	font-style: normal;
-	font-weight: 500 800;
-	font-display: swap;
-	src: url("../assets/fonts/plus-jakarta-sans-latin-ext.woff2") format("woff2");
-	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-	font-family: "Plus Jakarta Sans";
-	font-style: normal;
-	font-weight: 500 800;
-	font-display: swap;
-	src: url("../assets/fonts/plus-jakarta-sans-latin.woff2") format("woff2");
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
 	font-family: "Hanken Grotesk";
 	font-style: normal;
 	font-weight: 400 700;
@@ -50,8 +33,9 @@
 	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* Tenor Sans — wyłącznie logotyp. Krój ma jedną grubość (400), więc bez
-   zakresu `font-weight` jak przy pozostałych rodzinach. */
+/* Tenor Sans — logotyp i nagłówki (`--font-logo`, `--font-display`). Krój ma
+   jedną grubość (400), więc bez zakresu `font-weight` jak przy pozostałych
+   rodzinach. */
 @font-face {
 	font-family: "Tenor Sans";
 	font-style: normal;
@@ -71,28 +55,33 @@
 
 @theme {
 	--font-sans: "Hanken Grotesk", sans-serif;
-	--font-display: "Plus Jakarta Sans", sans-serif;
+	--font-display: "Tenor Sans", serif;
 	--font-logo: "Tenor Sans", serif;
 
 	--color-bg: #fbfbfd;
 	--color-ink: #0b0b12;
 
-	/* Kolory wyłącznie logotypu — reszta strony zostaje na indygo.
-	   Złoto jest przyciemnione względem wizytówki (#b3924f): daje 4,78:1
-	   zamiast 2,88:1, a z odległości wciąż czyta się jako złoto. */
+	/* Granat i złoto z logotypu są teraz głównymi kolorami całej strony, nie
+	   tylko logo. Złoto jest przyciemnione względem wizytówki (#b3924f): daje
+	   4,78:1 zamiast 2,88:1, a z odległości wciąż czyta się jako złoto.
+	   Fiolet/indygo zostaje jako drugorzędny akcent, ale mocno stonowany —
+	   patrz --color-accent-3. */
 	--color-brand-navy: #16233a;
 	--color-brand-gold: #8a6d2f;
+	--color-gold-soft: #f4ecd8;
 
-	--color-accent: #4f5bf2;
-	--color-accent-2: #7b6cf6;
-	--color-accent-3: #8b78ff;
-	--color-accent-soft: #a9b2ff;
-	--color-link: #3a42c9;
-	--color-link-hover: #2a32a8;
+	--color-accent: #2f4468;
+	--color-accent-2: #3c5686;
+	--color-accent-3: #6b6f9e;
+	--color-accent-soft: #aab4cc;
+	--color-link: #2c4468;
+	--color-link-hover: #1c2c48;
 
 	--color-success: #10b981;
 	--color-success-soft: #e6f8f1;
 	--color-success-mint: #5eead4;
+
+	--color-danger-soft: #ffc2c2;
 
 	--color-muted-900: #171a2e;
 	--color-muted-800: #0c0e1c;
@@ -111,11 +100,12 @@
 	--color-border-4: #f0f1f6;
 	--color-border-5: #dddfea;
 
-	--color-surface-tint: #eef0ff;
+	--color-surface-tint: #eef1f6;
+	--color-surface-1: #f6f7fb;
+	--color-surface-2: #f1f2f7;
 
 	--animate-rise-in: riseIn 0.8s ease both;
 	--animate-rise-in-delayed: riseIn 1s ease 0.12s both;
-	--animate-sheet-up: sheetUp 0.28s ease both;
 
 	@keyframes riseIn {
 		from {
@@ -134,16 +124,6 @@
 		}
 		50% {
 			transform: translateY(-7px);
-		}
-	}
-	@keyframes sheetUp {
-		from {
-			opacity: 0;
-			transform: translateY(12px);
-		}
-		to {
-			opacity: 1;
-			transform: none;
 		}
 	}
 }
@@ -201,16 +181,17 @@
 	}
 
 	input:focus,
-	textarea:focus {
+	textarea:focus,
+	select:focus {
 		border-color: var(--color-accent) !important;
-		box-shadow: 0 0 0 4px rgba(79, 91, 242, 0.14);
+		box-shadow: 0 0 0 4px rgba(47, 68, 104, 0.14);
 	}
 
 	h1,
 	h2,
 	h3 {
 		font-family: var(--font-display);
-		font-weight: 800;
+		font-weight: 400;
 	}
 
 	:focus-visible {
@@ -250,6 +231,90 @@
 }
 .nav-underline.is-active::after {
 	width: 100%;
+}
+
+/* --- Wysuwany panel nawigacji mobilnej (przypięty pod paskiem) --- */
+.drawer {
+	display: grid;
+	grid-template-rows: 0fr;
+	background: var(--color-bg);
+	border-bottom: 1px solid transparent;
+	transition:
+		grid-template-rows 0.32s ease,
+		border-color 0.32s ease;
+}
+.drawer.is-open {
+	grid-template-rows: 1fr;
+	border-color: rgb(0 0 0 / 6%);
+}
+.drawer-inner {
+	overflow: hidden;
+}
+
+.drawer-link {
+	opacity: 0;
+	transform: translateY(8px);
+	transition:
+		opacity 0.22s ease,
+		transform 0.22s ease;
+}
+.drawer.is-open .drawer-link {
+	opacity: 1;
+	transform: none;
+	/* Opóźnienie liczone tylko przy otwieraniu — zamknięcie zeruje regułę
+	   bazową, więc linki znikają razem, bez kaskady w drugą stronę. */
+	transition-delay: calc(var(--i, 0) * 40ms);
+}
+
+.drawer-backdrop {
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.28s ease;
+}
+.drawer-backdrop.is-open {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+/* Hamburger -> X, sterowany tym samym `aria-expanded`, który ustawia JS. */
+.burger {
+	position: relative;
+	display: block;
+	width: 20px;
+	height: 14px;
+}
+.burger-line {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 2px;
+	border-radius: 9999px;
+	background: currentColor;
+	transition:
+		top 0.28s ease,
+		transform 0.28s ease,
+		opacity 0.2s ease;
+}
+.burger-line:nth-child(1) {
+	top: 0;
+}
+.burger-line:nth-child(2) {
+	top: 6px;
+}
+.burger-line:nth-child(3) {
+	top: 12px;
+}
+#menu-toggle[aria-expanded="true"] .burger-line:nth-child(1) {
+	top: 6px;
+	transform: rotate(45deg);
+}
+#menu-toggle[aria-expanded="true"] .burger-line:nth-child(2) {
+	opacity: 0;
+	transform: scaleX(0);
+}
+#menu-toggle[aria-expanded="true"] .burger-line:nth-child(3) {
+	top: 6px;
+	transform: rotate(-45deg);
 }
 
 /* --- Animacje: reveal-on-scroll (aktywne tylko z JS) --- */

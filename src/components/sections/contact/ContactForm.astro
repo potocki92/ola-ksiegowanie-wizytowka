@@ -3,7 +3,22 @@ import Button from "../../ui/Button.astro";
 import Form from "../../ui/form/Form.astro";
 import TextField from "../../ui/form/TextField.astro";
 import TextAreaField from "../../ui/form/TextAreaField.astro";
+import SelectField from "../../ui/form/SelectField.astro";
 import ContactSuccess from "./ContactSuccess.astro";
+
+const inquiryTypeOptions = [
+	"Prowadzenie JDG",
+	"Założenie działalności",
+	"Zmiana biura rachunkowego",
+	"Kadry i płace",
+	"Rozliczenie roczne PIT",
+	"Inne",
+].map((value) => ({ value, label: value }));
+
+const monthlyDocumentsOptions = ["Jeszcze nie wiem", "Do 10", "11–20", "21–50", "Powyżej 50"].map((value) => ({
+	value,
+	label: value,
+}));
 ---
 
 <div data-contact-block>
@@ -35,6 +50,22 @@ import ContactSuccess from "./ContactSuccess.astro";
 			icon="phone"
 			autocomplete="tel"
 			placeholder="533 032 455"
+		/>
+
+		<SelectField
+			label="Rodzaj zapytania"
+			name="inquiryType"
+			icon="briefcase"
+			placeholder="Wybierz…"
+			options={inquiryTypeOptions}
+		/>
+
+		<SelectField
+			label="Liczba dokumentów miesięcznie"
+			name="monthlyDocuments"
+			icon="file-text"
+			placeholder="Wybierz…"
+			options={monthlyDocumentsOptions}
 		/>
 
 		<TextAreaField
@@ -87,7 +118,7 @@ import ContactSuccess from "./ContactSuccess.astro";
 			data-form-error
 			role="alert"
 			hidden
-			class="rounded-xl border border-[rgba(255,107,107,0.32)] bg-[rgba(255,107,107,0.12)] px-4 py-3 text-center text-[13.5px] leading-relaxed text-[#ffc2c2]"
+			class="rounded-xl border border-[rgba(255,107,107,0.32)] bg-[rgba(255,107,107,0.12)] px-4 py-3 text-center text-[13.5px] leading-relaxed text-danger-soft"
 		>
 		</p>
 
@@ -116,6 +147,8 @@ import ContactSuccess from "./ContactSuccess.astro";
 </div>
 
 <script>
+	import { track } from "@vercel/analytics";
+
 	const FALLBACK_ERROR =
 		"Nie udało się wysłać wiadomości. Zadzwoń: 533 032 455 lub napisz na kontakt@potockaksiegowosc.pl";
 
@@ -183,6 +216,8 @@ import ContactSuccess from "./ContactSuccess.astro";
 					showError(fieldError ?? data?.error);
 					return;
 				}
+
+				track("formularz_wyslany");
 
 				// `form.hidden` by nie zadziałało: Form.astro nakłada `flex`,
 				// które wygrywa z `[hidden]` z preflightu Tailwinda.
