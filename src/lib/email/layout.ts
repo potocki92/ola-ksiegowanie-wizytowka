@@ -16,13 +16,13 @@ const COLOR = {
 	bg: "#fbfbfd",
 	ink: "#0b0b12",
 	dark: "#171a2e",
-	accent: "#4f5bf2",
-	accent2: "#7b6cf6",
-	accentSoft: "#a9b2ff",
+	accent: "#2f4468",
+	accent2: "#3c5686",
+	accentSoft: "#aab4cc",
 	muted: "#585e71",
 	mutedLight: "#8a8fa3",
 	border: "#ecedf3",
-	surfaceTint: "#eef0ff",
+	surfaceTint: "#eef1f6",
 } as const;
 
 const FONT_STACK =

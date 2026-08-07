@@ -11,8 +11,12 @@ interface Props {
 const { icon, heading, description } = Astro.props;
 ---
 
+{/* `data-glow` — podświetlenie podążające za kursorem (global.css + lib/cardGlow.ts).
+    Gradient leci jako `background-image`, więc kładzie się na białym tle karty,
+    ale pod jej treścią. */}
 <div
 	data-reveal
+	data-glow
 	class="flex flex-col gap-5 rounded-3xl border border-border-2 bg-white p-[clamp(24px,2.4vw,34px)] shadow-[0_12px_30px_-24px_rgba(11,11,18,0.22)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_24px_44px_-26px_rgba(11,11,18,0.26)]"
 >
 	<div class="min-w-0 flex-1">

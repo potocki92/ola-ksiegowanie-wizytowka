@@ -157,13 +157,16 @@ const sectionHeadingClass =
 		{/* Czas wypełniania — uzupełniany skryptem przy wysyłce. */}
 		<input data-elapsed type="hidden" name="elapsed" value="" />
 
+		{/* Etykieta osobnym elementem — skrypt podmienia sam tekst, żeby nie
+		    skasować spinnera. Szczegóły w lib/formFlow.ts. */}
 		<Button
 			data-submit
 			type="submit"
 			variant="primary"
 			class="mt-1 h-13.5 cursor-pointer font-[inherit] disabled:pointer-events-none disabled:opacity-60"
 		>
-			Wyślij ankietę
+			<span data-spinner aria-hidden="true"></span>
+			<span data-submit-label>Wyślij ankietę</span>
 		</Button>
 
 		<p
@@ -199,88 +202,14 @@ const sectionHeadingClass =
 </div>
 
 <script>
-	const FALLBACK_ERROR =
-		"Nie udało się wysłać ankiety. Zadzwoń: 533 032 455 lub napisz na kontakt@potockaksiegowosc.pl";
+	import { initFormFlow } from "../../../lib/formFlow";
 
-	interface IntakeResponse {
-		ok?: boolean;
-		error?: string;
-		fields?: Record<string, string[] | undefined>;
-	}
-
-	const blocks = document.querySelectorAll<HTMLElement>("[data-intake-block]");
-
-	blocks.forEach((block) => {
-		const form = block.querySelector<HTMLFormElement>("[data-intake-form]");
-		const success = block.querySelector<HTMLElement>("[data-intake-success]");
-		const errorBox = block.querySelector<HTMLElement>("[data-form-error]");
-		const submit = block.querySelector<HTMLButtonElement>("[data-submit]");
-		const elapsed = block.querySelector<HTMLInputElement>("[data-elapsed]");
-
-		if (!form || !success || !errorBox || !submit) {
-			return;
-		}
-
-		const mountedAt = Date.now();
-		const defaultLabel = submit.textContent ?? "Wyślij ankietę";
-
-		const showError = (message?: string) => {
-			errorBox.textContent = message || FALLBACK_ERROR;
-			errorBox.hidden = false;
-		};
-
-		form.addEventListener("submit", async (event) => {
-			event.preventDefault();
-
-			// Natywna walidacja HTML zdejmuje z serwera oczywiste przypadki
-			// i pokazuje błąd przy właściwym polu.
-			if (!form.checkValidity()) {
-				form.reportValidity();
-				return;
-			}
-
-			errorBox.hidden = true;
-			submit.disabled = true;
-			submit.textContent = "Wysyłam…";
-
-			if (elapsed) {
-				elapsed.value = String(Date.now() - mountedAt);
-			}
-
-			try {
-				const response = await fetch(form.action, {
-					method: "POST",
-					headers: { "content-type": "application/json" },
-					body: JSON.stringify(Object.fromEntries(new FormData(form))),
-				});
-
-				const data: IntakeResponse | null = await response
-					.json()
-					.catch(() => null);
-
-				if (!response.ok || !data?.ok) {
-					const fieldError = Object.values(data?.fields ?? {})
-						.flat()
-						.find(Boolean);
-
-					showError(fieldError ?? data?.error);
-					return;
-				}
-
-				// `form.hidden` by nie zadziałało: Form.astro nakłada `flex`,
-				// które wygrywa z `[hidden]` z preflightu Tailwinda.
-				form.style.display = "none";
-				success.hidden = false;
-
-				// Bez przeniesienia fokusu użytkownik czytnika ekranu nie
-				// dowiedziałby się, że formularz zniknął.
-				success.focus();
-			} catch {
-				showError();
-			} finally {
-				submit.disabled = false;
-				submit.textContent = defaultLabel;
-			}
-		});
+	initFormFlow({
+		block: "[data-intake-block]",
+		form: "[data-intake-form]",
+		success: "[data-intake-success]",
+		fallbackError:
+			"Nie udało się wysłać ankiety. Zadzwoń: 533 032 455 lub napisz na kontakt@potockaksiegowosc.pl",
+		loadingLabel: "Wysyłam…",
 	});
 </script>
