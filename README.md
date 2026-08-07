@@ -42,7 +42,7 @@ podzielonej na następujące sekcje — każda to osobny komponent w
 | Jak pracuję | `sections/ValueProps.astro` | Trzy karty na temat sposobu współpracy: stały kontakt, indywidualne podejście, księgowość w pełni online. |
 | O mnie | `sections/About.astro` | Bio Aleksandry Potockiej (studia UE Wrocław, doradztwo podatkowe) i osobista linia czasu certyfikatów/kwalifikacji. |
 | Cennik | `sections/Pricing.astro` | Widełki cenowe prowadzenia JDG (z VAT / bez VAT), co wchodzi w cenę, koszt założenia firmy oraz usługi dodatkowe (kadry i płace, PIT roczny). |
-| Jak zaczynamy | `sections/Process.astro` | Cztery kroki onboardingu: bezpłatna konsultacja → umowa i pełnomocnictwo → przekazanie dokumentów → spokój i terminy. |
+| Jak zaczynamy | `sections/process/ProcessSection.astro` | Cztery kroki onboardingu: bezpłatna konsultacja → umowa i pełnomocnictwo → przekazanie dokumentów → spokój i terminy. Kroki stoją na „sznurku”, który dorysowuje się przy scrollu — pionowo na mobile, poziomo od `lg`. |
 | FAQ | `sections/Faq.astro` | Rozwijana lista najczęściej zadawanych pytań (akordeon). |
 | Kontakt | `sections/contact/ContactSection.astro` | Dane kontaktowe (telefon, e-mail, zasięg działania) oraz formularz kontaktowy z ochroną antyspamową, wysyłający zapytanie na e-mail biura. |
 | Stopka | `layout/Footer.astro` | Stopka z danymi firmy i linkiem do polityki prywatności. |
