@@ -2,7 +2,11 @@
 import { fixOrphans } from "../../../lib/typography";
 
 interface Props {
-	/** Numer kroku liczony od zera — daje etykietę i opóźnienie kaskady. */
+	/**
+	 * Numer kroku liczony od zera. Trafia do CSS jako `--process-i` i steruje
+	 * tam obiema kaskadami naraz: zakresami scrolla w wersji scroll-driven
+	 * i `--reveal-delay` w wersji zapasowej.
+	 */
 	index: number;
 	title: string;
 	description: string;
@@ -11,20 +15,21 @@ interface Props {
 }
 
 const { index, title, description, isLast } = Astro.props;
-
-// Odstęp między wejściem kolejnych kroków. Działa tylko w układzie poziomym
-// (lg), gdzie wszystkie cztery wjeżdżają w viewport naraz — patrz global.css.
-const CASCADE_STEP_MS = 130;
 ---
 
 <!-- Sznurek biegnie od środka TEGO numerka do środka numerka następnego kroku,
      więc jego długość to wysokość/szerokość kroku plus odstęp siatki
      (`--rope-gap`, ustawiany na liście razem z `gap`). Numerek stoi na
-     sznurku (`relative`), więc zakrywa jego początek — bez zabaw z z-index. -->
+     sznurku (`relative`), więc zakrywa jego początek — bez zabaw z z-index.
+
+     `<li>` nie animuje się sam: jest tylko hakiem dla obserwatora
+     (`data-reveal`) i nośnikiem osi czasu widoku. Cały ruch robią dzieci,
+     bo numerek jest węzłem sznurka i musi stać nieruchomo dokładnie na nim,
+     podczas gdy kafelek pod nim podjeżdża. -->
 <li
 	data-reveal
 	data-process-step
-	style={`--process-delay:${index * CASCADE_STEP_MS}ms`}
+	style={`--process-i:${index}`}
 	class="relative grid grid-cols-[44px_minmax(0,1fr)] items-start gap-x-4 lg:flex lg:flex-col lg:items-stretch"
 >
 	{
@@ -37,6 +42,7 @@ const CASCADE_STEP_MS = 130;
 		)
 	}
 	<div
+		data-process-badge
 		class="relative grid h-11 w-11 place-items-center rounded-[13px] bg-linear-to-br from-accent to-accent-2 font-display font-extrabold text-white"
 	>
 		{index + 1}

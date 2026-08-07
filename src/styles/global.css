@@ -476,53 +476,211 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 }
 
 /* --- Animacje: sznurek etapów w sekcji „Jak zaczynamy" --- */
-/* Zamiast jednej nitki przez całą siatkę każdy krok wiezie własny odcinek do
-   następnego numerka (patrz sections/process/ProcessStep.astro). Dzięki temu
-   sznurek jest dzieckiem kroku `[data-reveal]` i rysuje się dokładnie w
-   momencie, w którym pojawia się kafelek — a biegnie w stronę etapu, który
-   dopiero wjedzie na ekran. Działa też w pionie, gdzie poprzednia nitka
-   musiała się chować (`lg:block`). Skalujemy (transform), nie zmieniamy
-   wysokości, żeby zostać przy właściwościach kompozytowanych na GPU. */
-html.js [data-rope] {
-	transform: scaleY(0);
-	transform-origin: top center;
-	transition: transform 0.6s var(--ease-out-expo);
-	transition-delay: var(--reveal-delay, 0ms);
+/* UWAGA na miejsce tych klatek: muszą stać POZA `@theme`. Tailwind v4
+   wycina z `@theme` klatki, do których nie sięga skrót `animation`, a te
+   są używane przez `animation-name` (bo `animation-timeline` wymaga
+   rozbicia na osobne właściwości). W `@theme` zostałyby po cichu usunięte
+   z builda — bez błędu, po prostu bez animacji. */
+@keyframes ropeDrawY {
+	from {
+		clip-path: inset(0 0 100% 0);
+	}
+	to {
+		clip-path: inset(0 0 0 0);
+	}
 }
-html.js [data-reveal].is-visible [data-rope] {
-	transform: scaleY(1);
+@keyframes ropeDrawX {
+	from {
+		clip-path: inset(0 100% 0 0);
+	}
+	to {
+		clip-path: inset(0 0 0 0);
+	}
 }
-/* Numerki są węzłami sznurka i muszą leżeć dokładnie na nim przez cały czas
-   animacji. Domyślny reveal przesuwa cały krok o 20 px, więc numerek jechałby
-   obok linii, która celuje w jego docelowe miejsce. Krok pojawia się zatem samą
-   przezroczystością, a wektor wejścia przejmuje kafelek pod numerkiem — ten sam
-   co w `[data-reveal]`, żeby ruch był spójny z resztą strony. Reguły muszą stać
-   PO bloku reveal: mają tę samą specyficzność. */
+@keyframes badgeArrive {
+	from {
+		opacity: 0;
+		transform: scale(0.9);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+/* Ten sam wektor co `[data-reveal]` — kafelek etapu ma wchodzić tak jak
+   każda inna karta na stronie, różni go tylko to, co go wyzwala. */
+@keyframes processCardIn {
+	from {
+		opacity: 0;
+		transform: translate3d(0, 20px, 0) scale(0.985);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+/* Każdy krok wiezie własny odcinek sznurka do następnego numerka (patrz
+   sections/process/ProcessStep.astro), więc linia działa w obu układach:
+   pionowym do `lg` i poziomym od `lg`.
+
+   Sam `<li data-process-step>` NIE animuje się wizualnie, mimo że nosi
+   `data-reveal`. Atrybut jest tu wyłącznie hakiem dla obserwatora — gdyby
+   krok chował się jak zwykły reveal, jego 20 px przesunięcia ruszyłoby
+   numerkiem, a numerek jest węzłem sznurka i musi stać dokładnie na linii,
+   która celuje w jego docelowe miejsce. Dlatego opacity i wektor wejścia
+   są zepchnięte na dzieci: rusza się kafelek, numerek tylko się pojawia.
+   Reguły muszą stać PO bloku reveal — mają tę samą specyficzność (0,2,1). */
 html.js [data-process-step] {
+	opacity: 1;
 	transform: none;
 }
-html.js [data-process-step] [data-process-card] {
-	transform: translate3d(0, 20px, 0) scale(0.985);
-	transition: transform 0.6s var(--ease-out-expo);
+
+/* Odsłanianie sznurka: `clip-path`, nie `transform: scale()`. Skalowanie
+   ściskałoby gradient `from-accent to-accent-2` i zaokrąglone końcówki —
+   linia wyglądałaby na rozciąganą, nie rysowaną. Ten sam zapis geometrii
+   obsługuje obie ścieżki niżej, różni je tylko to, co pcha animację. */
+html.js [data-rope] {
+	clip-path: inset(0 0 100% 0);
+	transition: clip-path 0.6s var(--ease-out-expo);
 	transition-delay: var(--reveal-delay, 0ms);
 }
+html.js [data-process-badge] {
+	opacity: 0;
+	transform: scale(0.9);
+	transition:
+		opacity 0.4s var(--ease-out-expo),
+		transform 0.4s var(--ease-out-expo);
+	transition-delay: var(--reveal-delay, 0ms);
+}
+html.js [data-process-card] {
+	opacity: 0;
+	transform: translate3d(0, 20px, 0) scale(0.985);
+	transition:
+		opacity 0.6s var(--ease-out-expo),
+		transform 0.6s var(--ease-out-expo);
+	transition-delay: var(--reveal-delay, 0ms);
+}
+html.js [data-process-step].is-visible [data-rope] {
+	clip-path: inset(0 0 0 0);
+}
+html.js [data-process-step].is-visible [data-process-badge],
 html.js [data-process-step].is-visible [data-process-card] {
+	opacity: 1;
 	transform: none;
 }
 @media (min-width: 64rem) {
 	html.js [data-rope] {
-		transform: scaleX(0);
-		transform-origin: left center;
-	}
-	html.js [data-reveal].is-visible [data-rope] {
-		transform: scaleX(1);
+		clip-path: inset(0 100% 0 0);
 	}
 	/* Kaskada kroków ma sens wyłącznie w układzie poziomym: cztery kafelki
 	   wchodzą w viewport naraz, więc dopiero opóźnienie buduje kolejność
 	   etapów. W pionie każdy krok pojawia się we własnym momencie scrolla i
 	   to samo opóźnienie byłoby już tylko zwłoką po wjechaniu na ekran. */
 	html.js [data-process-step] {
-		--reveal-delay: var(--process-delay, 0ms);
+		--reveal-delay: calc(var(--process-i, 0) * 130ms);
+	}
+}
+
+/* Ścieżka główna: sznurek przywiązany do pozycji scrolla.
+   Powyższe `transition` to wersja zapasowa dla przeglądarek bez
+   scroll-driven animations (Safari < 26, Firefox < 144) — tam sznurek
+   odtwarza własne 0,6 s po wejściu w viewport, jak każdy inny reveal na
+   stronie. Tutaj przejmuje go oś czasu widoku: linia rysuje się w tempie
+   scrolla, staje, gdy scroll staje, i cofa się przy przewijaniu w górę.
+   Animacje CSS wygrywają z deklaracjami zwykłymi, więc nie trzeba zerować
+   `transition` — keyframes po prostu nadpisują ich wartości.
+
+   Jedna oś czasu na krok (`--step` na `<li>`), a nie `view()` osobno na
+   każdym elemencie: sznurek ma 2 px, kafelek ~180 px, więc ich własne
+   zakresy `cover` miałyby różne długości i choreografia by pływała.
+   Nazwana oś jest wyszukiwana na przodkach, więc `timeline-scope` odpada. */
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		/* Łańcuch jest ściśle sekwencyjny: węzeł → odcinek → następny węzeł.
+		   Każdy element dostaje swoje okno scrolla tuż za poprzednim, więc
+		   w danym momencie rusza się dokładnie jedna rzecz, a wszystko przed
+		   nią jest już gotowe. Odcinki puszczone równolegle wyglądały jak
+		   luźne kreski wiszące w miejscach, gdzie numerka jeszcze nie ma. */
+		[data-process-step] {
+			view-timeline-name: --step;
+			view-timeline-axis: block;
+
+			--seq-from: 8%; /* gdzie łańcuch startuje w postępie `cover` */
+			--badge-span: 6%; /* ile scrolla trwa zapalenie numerka */
+			--rope-span: 18%; /* ile scrolla trwa jeden odcinek */
+			--card-span: 20%; /* ile scrolla trwa dojazd kafelka */
+			/* O ile przesuwa się okno kolejnego kroku. W pionie zero: każdy
+			   krok ma własną oś i wchodzi w swoim momencie scrolla, więc
+			   czekanie na sąsiada byłoby tylko zwłoką. */
+			--step-advance: 0%;
+		}
+		[data-process-badge] {
+			animation-name: badgeArrive;
+			animation-timing-function: var(--ease-out-expo);
+			animation-fill-mode: both;
+			animation-timeline: --step;
+			animation-range: cover
+				calc(var(--seq-from) + var(--process-i, 0) * var(--step-advance)) cover
+				calc(
+					var(--seq-from) + var(--badge-span) + var(--process-i, 0) *
+						var(--step-advance)
+				);
+		}
+		/* Kafelek rusza razem ze swoim numerkiem — etap ma się pojawiać jako
+		   całość. Puszczony osobno (obserwatorem) wyprzedzał łańcuch: karta
+		   stała już gotowa, a nad nią ziała dziura po numerku, który czekał
+		   na sznurek. Dojazd może zachodzić na rysowanie odcinka, bo odcinek
+		   wychodzi z numerka, który jest już na miejscu. */
+		[data-process-card] {
+			animation-name: processCardIn;
+			animation-timing-function: var(--ease-out-expo);
+			animation-fill-mode: both;
+			animation-timeline: --step;
+			animation-range: cover
+				calc(var(--seq-from) + var(--process-i, 0) * var(--step-advance)) cover
+				calc(
+					var(--seq-from) + var(--card-span) + var(--process-i, 0) *
+						var(--step-advance)
+				);
+		}
+		[data-rope] {
+			animation-name: ropeDrawY;
+			animation-timing-function: linear;
+			animation-fill-mode: both;
+			animation-timeline: --step;
+			animation-range: cover
+				calc(
+					var(--seq-from) + var(--badge-span) + var(--process-i, 0) *
+						var(--step-advance)
+				) cover
+				calc(
+					var(--seq-from) + var(--badge-span) + var(--rope-span) +
+						var(--process-i, 0) * var(--step-advance)
+				);
+		}
+
+		@media (min-width: 64rem) {
+			[data-process-step] {
+				/* Poziomo wszystkie cztery kroki mają identyczny postęp osi
+				   (ten sam wiersz, ta sama wysokość), więc kolejność etapów
+				   musi zbudować przesunięcie okien — kaskada liczona
+				   w scrollu, nie w milisekundach.
+
+				   INWARIANT: --step-advance = --badge-span + --rope-span.
+				   Mniej zostawia dziurę w łańcuchu (odcinek rusza, zanim
+				   zapali się jego węzeł), więcej — przestój między krokami.
+				   Okna są tu ciaśniejsze niż w pionie, bo cztery kroki
+				   ustawiają się jeden za drugim na tej samej osi. */
+				--badge-span: 5%;
+				--rope-span: 10%;
+				--card-span: 12%;
+				--step-advance: 15%;
+			}
+			[data-rope] {
+				animation-name: ropeDrawX;
+			}
+		}
 	}
 }
 
@@ -719,8 +877,14 @@ details[data-about-more][open] [data-tl-item] {
 	[data-parallax] {
 		transform: none !important;
 	}
-	html.js [data-rope],
+	/* Sznurek odsłania się `clip-path`, więc wyzerowanie samego `transform`
+	   zostawiłoby go przyciętym do zera i niewidocznym. */
+	html.js [data-rope] {
+		clip-path: none !important;
+	}
+	html.js [data-process-badge],
 	html.js [data-process-card] {
+		opacity: 1 !important;
 		transform: none !important;
 	}
 	[data-tl-rail] {
