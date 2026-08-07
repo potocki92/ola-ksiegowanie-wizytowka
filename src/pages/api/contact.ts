@@ -110,5 +110,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return json({ ok: false, error: "Nie udało się wysłać wiadomości." }, 502);
   }
 
+  // Log strukturalny, niezależny od skryptów w przeglądarce (adblocki go nie
+  // ruszą) — trafia do Vercel Runtime Logs i liczy się 1:1 z realną wysyłką.
+  console.log(JSON.stringify({ event: "contact_form_submitted", ts: Date.now() }));
+
   return json({ ok: true }, 200);
 };

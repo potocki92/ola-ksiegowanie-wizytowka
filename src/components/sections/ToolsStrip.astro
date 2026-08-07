@@ -4,7 +4,32 @@ import Section from "../ui/Section.astro";
 const tools = ["Comarch Optima", "Symfonia", "Płatnik", "Subiekt GT", "Rachmistrz GT"];
 ---
 
-<Section padding="compact" class="border-y border-border-2">
+<!-- Na mobile ten pasek jest wysunięty w GÓRĘ na portret z hero i zasłania jego
+     dolną krawędź — wcześniej wycinanka urywała się tam prostą kreską przez
+     marynarkę. Panel ma kolor strony (`bg-bg`), więc nad białym tłem jest
+     niewidoczny; jedyne, co widać, to krzywa w miejscu, gdzie przecina zdjęcie.
+     Nieprzezroczyste tło jest tu warunkiem działania, nie dekoracją: bez niego
+     portret prześwituje. Górna kreska znika, bo przecięłaby krzywą w poprzek;
+     dolna zostaje i nadal oddziela pasek od sekcji usług. -->
+<Section
+	padding="compact"
+	class="tools-panel border-y border-border-2 max-md:z-[1] max-md:-mt-[46px] max-md:border-t-0 max-md:bg-bg max-md:pt-[34px]"
+>
+	<!-- Sam kształt krzywej. `clipPathUnits="objectBoundingBox"` znaczy, że
+	     współrzędne są ułamkami pudełka (0–1), więc jedna ścieżka skaluje się na
+	     każdą szerokość ekranu — bez tego trzeba by ją przeliczać per breakpoint.
+	     Definicja musi istnieć w dokumencie, ale sama nic nie rysuje; rysuje
+	     `.tools-panel::before` niżej, które się do niej odwołuje. -->
+	<svg aria-hidden="true" class="absolute h-0 w-0">
+		<defs>
+			<clipPath id="tools-panel-curve" clipPathUnits="objectBoundingBox">
+				<path
+					d="M0,1 L0,0.75 C0.24,0.7875 0.46,0.5625 0.66,0.3125 C0.8,0.1375 0.91,0.05625 1,0 L1,1 Z"
+				></path>
+			</clipPath>
+		</defs>
+	</svg>
+
 	<div data-reveal class="mb-4.5 text-center text-[12.5px] font-bold tracking-[1px] text-muted-100 uppercase">
 		Pracuję w programach, które znasz z rynku
 	</div>
@@ -48,6 +73,37 @@ const tools = ["Comarch Optima", "Symfonia", "Płatnik", "Subiekt GT", "Rachmist
 </Section>
 
 <style>
+	/* Krzywa górna krawędź panelu. Musi być pseudoelementem sekcji, a nie
+	   elementem w slocie: slot renderuje się wewnątrz wypełnionego paddingiem
+	   wrappera `Section.astro`, więc kształt wylądowałby 34 px za nisko i pod
+	   spodem zostałaby widoczna prosta krawędź sekcji. `::before` pozycjonuje
+	   się względem samej sekcji, która ma już `relative`.
+	   `bottom: 100%` sadza pasek dokładnie nad jej górną krawędzią, a ujemny
+	   margines nakłada go o 1 px, żeby przy zaokrąglaniu subpikseli nie
+	   przebijała się szczelina.
+	   Bez prefiksu -webkit- świadomie: Lightning CSS i tak go wycina z builda
+	   (sprawdzone w dist), więc w źródle byłby martwym kodem sugerującym
+	   nieistniejące zabezpieczenie. Jeśli `clip-path` gdzieś nie zadziała,
+	   degradacja jest łagodna — zostaje prosty pasek w kolorze tła, czyli
+	   zachowanie sprzed tej zmiany, a nie zepsuty układ.
+	   `:global()` jest tu konieczne: `.tools-panel` ląduje na elemencie
+	   renderowanym przez `Section.astro`, więc hash scoped-stylów tego pliku go
+	   nie obejmuje i zwykły selektor po prostu nie trafia (sprawdzone —
+	   `::before` nie powstawał). Nazwa klasy jest używana wyłącznie tutaj. */
+	@media (max-width: 47.9375rem) {
+		:global(.tools-panel)::before {
+			content: "";
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: 100%;
+			margin-bottom: -1px;
+			height: 58px;
+			background: var(--color-bg);
+			clip-path: url("#tools-panel-curve");
+		}
+	}
+
 	.tools-marquee {
 		display: none;
 		overflow: hidden;

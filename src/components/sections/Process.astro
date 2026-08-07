@@ -6,7 +6,7 @@ import SectionHeading from "../ui/SectionHeading.astro";
 const steps = [
 	{
 		title: "Bezpłatna konsultacja",
-		description: "Poznajemy Twoją działalność i wspólnie wybieramy formę opodatkowania.",
+		description: "Poznajemy Twoją działalność, jej skalę i formę opodatkowania, w jakiej już działasz lub planujesz działać.",
 	},
 	{
 		title: "Umowa i pełnomocnictwo",
@@ -25,7 +25,7 @@ const steps = [
 
 <Section
 	padding="none"
-	class="bg-[#F5F6FB] px-[clamp(18px,4vw,56px)] py-[clamp(60px,8vw,110px)]"
+	class="bg-surface-1 px-[clamp(18px,4vw,56px)] py-[clamp(60px,8vw,110px)]"
 >
 	<SectionHeading
 		eyebrow="Jak zaczynamy"
@@ -34,11 +34,42 @@ const steps = [
 		size="lg"
 		headingWidth="md"
 	/>
-	<div data-reveal-group class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4.5">
+	<div data-reveal-group class="relative grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4.5">
+		{/*
+			Nitka łącząca ponumerowane kafelki — jedyna animacja na stronie, która
+			niesie treść sekcji („cztery kroki"), a nie tylko ją zdobi. Rysuje się
+			po wejściu siatki w viewport (CSS: `[data-process-line]`).
+
+			Geometria: start w środku pierwszego kafelka, czyli 26 px paddingu
+			karty + 22 px połowy kafelka = 48 px od krawędzi siatki. Koniec w
+			środku czwartego, więc szerokość to trzy rozstawy kolumn:
+			3 × (szerokość karty + odstęp) = 3 × (100% + 18px) / 4 = 75% + 13,5px.
+			Wartość zależy od `lg:gap-4.5` (18 px) i czterech RÓWNYCH kolumn —
+			zmiana któregokolwiek z tych dwóch rozstroi końcówkę linii.
+
+			Widoczna dopiero od `lg`: niżej karty stoją w jednej lub dwóch
+			kolumnach i pozioma nitka nie miałaby czego łączyć.
+
+			`z-10` kładzie nitkę NAD białym tłem kart (bez tego widać ją tylko
+			w przerwach), a numerowany kafelek wraca nad nią przez `z-20`.
+		*/}
+		<span
+			data-process-line
+			aria-hidden="true"
+			class="pointer-events-none absolute top-12 left-12 z-10 hidden h-px w-[calc(75%+13.5px)] bg-linear-to-r from-accent to-accent-2 lg:block"
+		></span>
 		{
 			steps.map((step, i) => (
-				<div data-reveal class="rounded-[20px] border border-border-2 bg-white p-6.5">
-					<div class="mb-4.5 grid h-11 w-11 place-items-center rounded-[13px] bg-linear-to-br from-accent to-accent-2 font-display font-extrabold text-white">
+				// Świadomie BEZ `hover:-translate-y-1`, choć pozostałe karty na stronie
+				// je mają: `translate` tworzy kontekst układania, przez co kafelek
+				// z numerem zostałby uwięziony pod nitką i linia przecięłaby go
+				// w poprzek przy najechaniu.
+				<div
+					data-reveal
+					data-glow
+					class="rounded-[20px] border border-border-2 bg-white p-6.5 transition-shadow duration-250 hover:shadow-[0_22px_40px_-28px_rgba(11,11,18,0.3)]"
+				>
+					<div class="relative z-20 mb-4.5 grid h-11 w-11 place-items-center rounded-[13px] bg-linear-to-br from-accent to-accent-2 font-display font-extrabold text-white">
 						{i + 1}
 					</div>
 					<h3 class="text-[19px] leading-[1.3] tracking-[-0.01em] text-balance">
