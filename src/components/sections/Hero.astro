@@ -17,15 +17,22 @@ const trustBadges = ["UE Wrocław", "6 lat praktyki", "100% online"];
 	<div
 		class="flex flex-col items-center gap-9 md:grid md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:gap-[clamp(32px,4vw,64px)]"
 	>
-		<div class="order-1 animate-rise-in md:order-0">
+		<!-- Elementy wchodzą po kolei (`--seq` = miejsce w kolejce, 90 ms na krok),
+		     a nie całą kolumną naraz — oko podąża wtedy tą samą drogą, którą
+		     czyta: nagłówek, obietnica, akcja, dowód. -->
+		<div class="order-1 md:order-0">
 			<!-- Każde zdanie ma własny wiersz. Wcześniej oba leciały jednym
 			     strumieniem i „Ty" lądowało w wierszu z „…od A do Z.". „od A do Z"
 			     jest sklejone twardymi spacjami, bo to zwrot nierozdzielny. -->
 			<h1
 				class="text-[clamp(38px,5vw,58px)] leading-[1.06] tracking-[-0.035em] text-balance"
 			>
-				<span class="block">Księgowość od&nbsp;A&nbsp;do&nbsp;Z.</span>
+				<span data-hero-item style="--seq:0" class="block">
+					Księgowość od&nbsp;A&nbsp;do&nbsp;Z.
+				</span>
 				<span
+					data-hero-item
+					style="--seq:1"
 					class="block bg-linear-to-r from-accent to-accent-3 bg-clip-text text-transparent"
 				>
 					Ty zawsze na pierwszym miejscu.
@@ -33,6 +40,8 @@ const trustBadges = ["UE Wrocław", "6 lat praktyki", "100% online"];
 			</h1>
 
 			<p
+				data-hero-item
+				style="--seq:2"
 				class="mt-[clamp(18px,2.4vw,26px)] max-w-[52ch] text-[clamp(16px,1.35vw,19px)] leading-[1.6] text-pretty text-muted-600"
 			>
 				Prowadzę jednoosobowe działalności gospodarcze na zasadach ogólnych, podatku liniowym
@@ -40,7 +49,11 @@ const trustBadges = ["UE Wrocław", "6 lat praktyki", "100% online"];
 				Bez papierologii, kolejek i&nbsp;stresu.
 			</p>
 
-			<div class="mt-[clamp(26px,3vw,38px)] flex flex-col flex-wrap gap-3 sm:flex-row">
+			<div
+				data-hero-item
+				style="--seq:3"
+				class="mt-[clamp(26px,3vw,38px)] flex flex-col flex-wrap gap-3 sm:flex-row"
+			>
 				<Button href="#kontakt" variant="primary" size="lg">
 					Umów bezpłatną konsultację
 				</Button>
@@ -49,7 +62,7 @@ const trustBadges = ["UE Wrocław", "6 lat praktyki", "100% online"];
 				</Button>
 			</div>
 
-			<div class="mt-[clamp(24px,3vw,34px)] flex flex-wrap gap-2">
+			<div data-hero-item style="--seq:4" class="mt-[clamp(24px,3vw,34px)] flex flex-wrap gap-2">
 				{
 					trustBadges.map((badge, i) => (
 						<>
@@ -67,8 +80,12 @@ const trustBadges = ["UE Wrocław", "6 lat praktyki", "100% online"];
 			</div>
 		</div>
 
-		<div class="relative order-2 w-full animate-rise-in-delayed md:order-0">
+		<div class="relative order-2 w-full md:order-0">
+			<!-- Zdjęcie odsłania się maską od góry w dół. Przesuwanie kadru
+			     (poprzednie `animate-rise-in-delayed`) przy portrecie widać jako
+			     „skok obrazka"; ścieranie maski czyta się jak wywoływanie kliszy. -->
 			<div
+				data-hero-media
 				class="relative aspect-4/5 overflow-hidden md:aspect-auto md:h-[clamp(440px,48vw,580px)]"
 			>
 				<div data-parallax class="absolute left-0 top-[-8%] h-[116%] w-full">

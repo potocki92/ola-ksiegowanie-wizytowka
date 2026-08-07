@@ -2,8 +2,7 @@
 import "../styles/global.css";
 import Analytics from "@vercel/analytics/astro";
 import SpeedInsights from "@vercel/speed-insights/astro";
-import { pricing, getJdgPriceRangeLabel } from "../data/pricing";
-import defaultOgImage from "../assets/og-image.png";
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
 	title?: string;
@@ -108,6 +107,15 @@ const jsonLd = {
 		<meta name="twitter:image" content={ogImageURL} />
 
 		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+
+		{/*
+			Przejścia między trasami (`/`, polityka prywatności, ankieta) zamiast
+			białego mrugnięcia przy każdym kliknięciu. Nawigacja nie przeładowuje
+			dokumentu, więc moduły wykonują się tylko raz — każdy skrypt strony
+			wchodzi przez `onPageInit` z lib/pageInit.ts, żeby po podmianie DOM
+			podpiąć się na nowo. Astro samo respektuje `prefers-reduced-motion`.
+		*/}
+		<ClientRouter />
 	</head>
 	<!-- `overflow-x-hidden` musi zostać na <body>, nie na wewnętrznym
 	     wrapperze: `position: sticky` liczy się względem najbliższego przodka
@@ -124,10 +132,10 @@ const jsonLd = {
 		<SpeedInsights />
 		<script>
 			import "../lib/scrollReveal";
-			// TYMCZASOWO WYŁĄCZONE — test diagnostyczny: sprawdzamy, czy ciągłe
-			// aktualizowanie transformu przez parallax (rAF na każdej klatce
-			// scrolla) jest przyczyną białego błysku pod navbarem na iOS Safari.
-			// import "../lib/parallax";
+			import "../lib/cardGlow";
+			// Parallax nie ma już swojego modułu — robi go `animation-timeline: view()`
+			// w global.css, czyli bez JS na wątku głównym. Patrz komentarz przy
+			// sekcji „Animacje: parallax".
 		</script>
 	</body>
 </html>
