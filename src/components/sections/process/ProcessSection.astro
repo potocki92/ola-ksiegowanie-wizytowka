@@ -1,0 +1,63 @@
+---
+import Section from "../../ui/Section.astro";
+import SectionHeading from "../../ui/SectionHeading.astro";
+import ProcessStep from "./ProcessStep.astro";
+
+interface Step {
+	title: string;
+	description: string;
+}
+
+const steps: Step[] = [
+	{
+		title: "Bezpłatna konsultacja",
+		description: "Poznajemy Twoją działalność i wspólnie wybieramy formę opodatkowania.",
+	},
+	{
+		title: "Umowa i pełnomocnictwo",
+		description: "Podpisujemy umowę i pełnomocnictwa zdalnie, żebym mogła działać w Twoim imieniu.",
+	},
+	{
+		title: "Przekazanie dokumentów",
+		description: "Wysyłasz faktury zdjęciem lub mailem — kiedy Ci wygodnie.",
+	},
+	{
+		title: "Spokój i terminy",
+		description: "Rozliczam, pilnuję terminów i informuję o kwotach do zapłaty.",
+	},
+];
+---
+
+<Section
+	padding="none"
+	class="bg-[#F5F6FB] px-[clamp(18px,4vw,56px)] py-[clamp(60px,8vw,110px)]"
+>
+	<SectionHeading
+		eyebrow="Jak zaczynamy"
+		heading="Cztery kroki i masz księgowość z głowy"
+		align="center"
+		size="lg"
+		headingWidth="md"
+	/>
+	<!-- `--rope-gap` jest jednocześnie odstępem siatki i długością, o jaką
+	     sznurek musi wystawać poza krok, żeby dosięgnąć następnego numerka —
+	     stąd jedna zmienna zamiast dwóch wartości do ręcznego pilnowania.
+	     Do `lg` układ jest pionowy (sznurek biegnie w dół po lewej), od `lg`
+	     poziomy; pośredniego wariantu 2×2 nie ma, bo sznurek musiałby w nim
+	     zawracać. -->
+	<ol
+		role="list"
+		class="mx-auto grid max-w-[46rem] gap-[var(--rope-gap)] [--rope-gap:14px] lg:max-w-none lg:grid-cols-4 lg:[--rope-gap:20px]"
+	>
+		{
+			steps.map((step, i) => (
+				<ProcessStep
+					index={i}
+					title={step.title}
+					description={step.description}
+					isLast={i === steps.length - 1}
+				/>
+			))
+		}
+	</ol>
+</Section>

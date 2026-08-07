@@ -267,6 +267,55 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 	transform: none;
 }
 
+/* --- Animacje: sznurek etapów w sekcji „Jak zaczynamy" --- */
+/* Sznurek jest dzieckiem kroku `[data-reveal]`, więc rysuje się dokładnie w
+   momencie, w którym pojawia się kafelek — i biegnie w stronę kolejnego etapu,
+   który dopiero wjedzie na ekran. Skalujemy (transform), nie zmieniamy
+   wysokości, żeby zostać przy właściwościach kompozytowanych na GPU.
+   Kwalifikator `html.js` jak przy reveal: bez JS sznurek jest po prostu
+   narysowany. */
+html.js [data-rope] {
+	transform: scaleY(0);
+	transform-origin: top center;
+	transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
+	transition-delay: var(--reveal-delay, 0ms);
+}
+html.js [data-reveal].is-visible [data-rope] {
+	transform: scaleY(1);
+}
+/* Numerki są węzłami sznurka i muszą leżeć dokładnie na nim przez cały czas
+   animacji. Domyślny reveal przesuwa cały krok o 20 px, więc numerek jechałby
+   obok linii, która celuje w jego docelowe miejsce. Krok pojawia się zatem samą
+   przezroczystością, a podjazd przejmuje kafelek pod numerkiem. Reguły muszą
+   stać PO bloku reveal — mają tę samą specyficzność. */
+html.js [data-process-step] {
+	transform: none;
+}
+html.js [data-process-step] [data-process-card] {
+	transform: translateY(20px);
+	transition: transform 0.7s ease;
+	transition-delay: var(--reveal-delay, 0ms);
+}
+html.js [data-process-step].is-visible [data-process-card] {
+	transform: none;
+}
+@media (min-width: 64rem) {
+	html.js [data-rope] {
+		transform: scaleX(0);
+		transform-origin: left center;
+	}
+	html.js [data-reveal].is-visible [data-rope] {
+		transform: scaleX(1);
+	}
+	/* Kaskada kroków ma sens wyłącznie w układzie poziomym: cztery kafelki
+	   wchodzą w viewport naraz, więc dopiero opóźnienie buduje kolejność
+	   etapów. W pionie każdy krok pojawia się we własnym momencie scrolla i
+	   to samo opóźnienie byłoby już tylko zwłoką po wjechaniu na ekran. */
+	html.js [data-process-step] {
+		--reveal-delay: var(--process-delay, 0ms);
+	}
+}
+
 /* --- Animacje: parallax --- */
 [data-parallax] {
 	will-change: transform;
@@ -322,6 +371,10 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 	}
 	html.js [data-reveal] {
 		opacity: 1 !important;
+		transform: none !important;
+	}
+	html.js [data-rope],
+	html.js [data-process-card] {
 		transform: none !important;
 	}
 	[data-parallax] {
