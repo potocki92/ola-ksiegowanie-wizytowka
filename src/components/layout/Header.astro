@@ -17,58 +17,35 @@ const isHome = Astro.url.pathname === "/";
 const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 ---
 
-
-
-<nav
-	data-navbar
-	class="sticky top-0 z-60 flex items-center justify-between px-[clamp(18px,4vw,56px)] py-3.5 bg-bg/78 backdrop-blur-xl border-b border-black/6"
->
-	<BrandLockup href={isHome ? "#top" : "/"} size="lg" />
-
-	<div class="hidden md:flex items-center gap-4.5 lg:gap-7.5">
-		{/*
-			Linki dostają własny kontener `relative`, bo wskaźnik aktywnej sekcji
-			pozycjonuje się względem NIEGO, a nie całego paska — przycisk CTA stoi
-			obok i nie może wchodzić w rachubę offsetów.
-		*/}
-		<div data-nav-track class="relative flex items-center gap-4.5 lg:gap-7.5">
-			{
-				navLinks.map((link) => (
-					<a
-						href={anchor(link.id)}
-						data-nav-link={link.id}
-						class="nav-link text-[14.5px] font-semibold text-muted-700 transition-colors duration-200 hover:text-ink"
-					>
-						{link.label}
-					</a>
-				))
-			}
-			<span data-nav-indicator aria-hidden="true"></span>
-		</div>
-		<Button href={anchor("kontakt")} variant="nav">Bezpłatna konsultacja</Button>
-	</div>
-
-	<button
-		id="menu-toggle"
-		aria-label="Menu"
-		aria-expanded="false"
-		aria-controls="mobile-menu"
-		class="grid h-11 w-11 place-items-center rounded-xl bg-[#F1F2F7] md:hidden"
+<header class="sticky top-0 z-60">
+	{/* `data-navbar` siedzi na `nav`, a nie na `header`, bo to `nav` niesie tło
+	    i obramowanie — `.is-scrolled` podmienia właśnie je. */}
+	<nav
+		data-navbar
+		class="flex items-center justify-between px-[clamp(18px,4vw,56px)] py-3.5 bg-bg/78 backdrop-blur-xl border-b border-black/6"
 	>
 		<BrandLockup href={isHome ? "#top" : "/"} size="lg" />
 
 		<div class="hidden md:flex items-center gap-4.5 lg:gap-7.5">
-			{
-				navLinks.map((link) => (
-					<a
-						href={anchor(link.id)}
-						data-nav-link={link.id}
-						class="nav-link nav-underline text-[14.5px] font-semibold text-muted-700 transition-colors duration-200 hover:text-ink"
-					>
-						{link.label}
-					</a>
-				))
-			}
+			{/*
+				Linki dostają własny kontener `relative`, bo wskaźnik aktywnej sekcji
+				pozycjonuje się względem NIEGO, a nie całego paska — przycisk CTA stoi
+				obok i nie może wchodzić w rachubę offsetów.
+			*/}
+			<div data-nav-track class="relative flex items-center gap-4.5 lg:gap-7.5">
+				{
+					navLinks.map((link) => (
+						<a
+							href={anchor(link.id)}
+							data-nav-link={link.id}
+							class="nav-link text-[14.5px] font-semibold text-muted-700 transition-colors duration-200 hover:text-ink"
+						>
+							{link.label}
+						</a>
+					))
+				}
+				<span data-nav-indicator aria-hidden="true"></span>
+			</div>
 			<Button href={anchor("kontakt")} variant="nav">Bezpłatna konsultacja</Button>
 		</div>
 
@@ -85,67 +62,115 @@ const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 				<span class="burger-line"></span>
 			</span>
 		</button>
-	</div>
-	{/* `--menu-i` = miejsce w kolejce; panel wjeżdżał wcześniej w całości, więc
-	    linki „były już na miejscu" zanim overlay dojechał. */}
-	<div class="mt-8 flex flex-col gap-1.5">
-		{
-			navLinks.map((link, i) => (
+	</nav>
+
+	{/* `--i` = miejsce w kolejce; panel wjeżdżał wcześniej w całości, więc linki
+	    „były już na miejscu" zanim zdążył się rozwinąć. */}
+	<div id="mobile-drawer" class="drawer md:hidden" aria-hidden="true" inert>
+		<div class="drawer-inner">
+			<nav class="flex flex-col gap-1.5 px-[clamp(18px,4vw,56px)] pt-2" aria-label="Menu mobilne">
+				{
+					navLinks.map((link, i) => (
+						<a
+							href={anchor(link.id)}
+							data-menu-link
+							data-nav-link={link.id}
+							style={`--i:${i}`}
+							class="drawer-link nav-link border-b border-border py-3 font-display text-[30px] font-bold text-ink"
+						>
+							{link.label}
+						</a>
+					))
+				}
 				<a
 					href={anchor("kontakt")}
 					data-menu-link
-					data-menu-item
-					data-nav-link={link.id}
-					style={`--menu-i:${i}`}
-					class="nav-link border-b border-border py-3 font-display text-[30px] font-bold text-ink"
+					style={`--i:${navLinks.length}`}
+					class="drawer-link btn-press mt-2 mb-6 flex h-14 items-center justify-center rounded-2xl bg-linear-to-br from-accent to-accent-2 text-[17px] font-bold text-white shadow-[0_16px_30px_-14px_rgba(47,68,104,0.5)] transition-transform duration-200"
 				>
 					Umów bezpłatną konsultację
 				</a>
 			</nav>
 		</div>
 	</div>
-	<a
-		href={anchor("kontakt")}
-		data-menu-link
-		data-menu-item
-		style={`--menu-i:${navLinks.length}`}
-		class="btn-press mt-auto flex h-14 items-center justify-center rounded-2xl bg-linear-to-br from-accent to-accent-2 text-[17px] font-bold text-white shadow-[0_16px_30px_-14px_rgba(79,91,242,0.8)] transition-transform duration-200"
-	>
-		Umów bezpłatną konsultację
-	</a>
+</header>
+
+<div
+	id="menu-backdrop"
+	class="drawer-backdrop fixed inset-0 z-58 bg-black/40 md:hidden"
+	aria-hidden="true"
+>
 </div>
 
 <script>
 	import { onPageInit } from "../../lib/pageInit";
 
-	// Menu żyje tylko w obrębie jednej strony, a po przejściu przez ClientRouter
+	// Panel żyje tylko w obrębie jednej strony, a po przejściu przez ClientRouter
 	// wszystkie te węzły są już inne — stąd wiązanie w `onPageInit`.
-	onPageInit(() => {
-		const toggleBtn = document.getElementById("menu-toggle");
-		const closeBtn = document.getElementById("menu-close");
-		const menu = document.getElementById("mobile-menu");
-		if (!toggleBtn || !closeBtn || !menu) return;
+	let toggleBtn: HTMLElement | null = null;
+	let drawer: HTMLElement | null = null;
+	let backdrop: HTMLElement | null = null;
+	let isOpen = false;
 
-		// Nawigacja z otwartym menu zostawiłaby zablokowany scroll na nowej stronie.
+	function openMenu() {
+		if (!toggleBtn || !drawer || !backdrop) return;
+		isOpen = true;
+		drawer.inert = false;
+		drawer.removeAttribute("aria-hidden");
+		drawer.classList.add("is-open");
+		backdrop.classList.add("is-open");
+		toggleBtn.setAttribute("aria-expanded", "true");
+		document.body.style.overflow = "hidden";
+		drawer.querySelector<HTMLAnchorElement>("[data-menu-link]")?.focus();
+	}
+
+	// `transitionend` bąbelkuje z dzieci `.drawer-link` (mają własne przejścia
+	// opacity/transform), więc naiwny listener `{ once: true }` na `drawer`
+	// zużyłby się na pierwszym zdarzeniu dziecka zamiast doczekać przejścia
+	// `grid-template-rows` samego panelu. Filtr po target+property i ręczne
+	// usuwanie listenera to omijają, a ta sama referencja funkcji sprawia, że
+	// powtórne `addEventListener` (szybkie zamknij/zamknij) nic nie psuje.
+	function onDrawerCollapsed(e: TransitionEvent) {
+		if (!drawer) return;
+		if (e.target !== drawer || e.propertyName !== "grid-template-rows" || isOpen) return;
+		drawer.inert = true;
+		drawer.setAttribute("aria-hidden", "true");
+		drawer.removeEventListener("transitionend", onDrawerCollapsed);
+	}
+
+	function closeMenu({ returnFocus = true }: { returnFocus?: boolean } = {}) {
+		if (!isOpen || !toggleBtn || !drawer || !backdrop) return;
+		isOpen = false;
+		drawer.classList.remove("is-open");
+		backdrop.classList.remove("is-open");
+		toggleBtn.setAttribute("aria-expanded", "false");
+		document.body.style.overflow = "";
+		if (returnFocus) toggleBtn.focus();
+		drawer.addEventListener("transitionend", onDrawerCollapsed);
+	}
+
+	// Listener dokumentu rejestrujemy raz, w zasięgu modułu. Gdyby siedział
+	// w `onPageInit`, każde przejście między stronami dokładałoby kolejny.
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "Escape" && isOpen) closeMenu();
+	});
+
+	onPageInit(() => {
+		toggleBtn = document.getElementById("menu-toggle");
+		drawer = document.getElementById("mobile-drawer");
+		backdrop = document.getElementById("menu-backdrop");
+		if (!toggleBtn || !drawer || !backdrop) return;
+
+		// Nowy dokument przychodzi z zamkniętym panelem, a nawigacja przy otwartym
+		// menu zostawiłaby zablokowany scroll na nowej stronie.
+		isOpen = false;
 		document.body.style.overflow = "";
 
-		const openMenu = () => {
-			menu.hidden = false;
-			toggleBtn.setAttribute("aria-expanded", "true");
-			document.body.style.overflow = "hidden";
-		};
-
-		const closeMenu = () => {
-			menu.hidden = true;
-			toggleBtn.setAttribute("aria-expanded", "false");
-			document.body.style.overflow = "";
-		};
-
-		toggleBtn.addEventListener("click", openMenu);
-		closeBtn.addEventListener("click", closeMenu);
-		menu
+		toggleBtn.addEventListener("click", () => (isOpen ? closeMenu() : openMenu()));
+		backdrop.addEventListener("click", () => closeMenu());
+		drawer
 			.querySelectorAll<HTMLAnchorElement>("[data-menu-link]")
-			.forEach((link) => link.addEventListener("click", closeMenu));
+			.forEach((link) => link.addEventListener("click", () => closeMenu({ returnFocus: false })));
 	});
 </script>
 

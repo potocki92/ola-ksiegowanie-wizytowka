@@ -3,6 +3,8 @@ import "../styles/global.css";
 import Analytics from "@vercel/analytics/astro";
 import SpeedInsights from "@vercel/speed-insights/astro";
 import { ClientRouter } from "astro:transitions";
+import { pricing, getJdgPriceRangeLabel } from "../data/pricing";
+import defaultOgImage from "../assets/og-image.png";
 
 interface Props {
 	title?: string;
