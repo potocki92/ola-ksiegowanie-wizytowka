@@ -2,12 +2,22 @@
 import type { HTMLAttributes } from "astro/types";
 import Icon, { type IconName } from "../Icon.astro";
 
+export interface Option {
+	value: string;
+	label: string;
+}
+
 interface Props extends HTMLAttributes<"select"> {
 	icon?: IconName;
+	/** Lista opcji. Gdy jej nie podasz, opcje przekazujesz przez slot. */
+	options?: Option[];
+	placeholder?: string;
 }
 
 const {
 	icon,
+	options,
+	placeholder,
 	class: className,
 	...attrs
 } = Astro.props;
@@ -34,21 +44,14 @@ const {
 			className,
 		]}
 	>
-		<slot />
+		{placeholder && <option value="">{placeholder}</option>}
+		{options ? options.map((option) => <option value={option.value}>{option.label}</option>) : <slot />}
 	</select>
 
-	<svg
-		width="16"
-		height="16"
-		viewBox="0 0 24 24"
-		fill="none"
-		stroke="currentColor"
-		stroke-width="2.2"
-		stroke-linecap="round"
-		stroke-linejoin="round"
+	<Icon
+		name="chevron-down"
+		size={18}
+		strokeWidth={1.9}
 		class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-muted-50"
-		aria-hidden="true"
-	>
-		<path d="m6 9 6 6 6-6" />
-	</svg>
+	/>
 </span>
