@@ -9,22 +9,39 @@ import ServicesSection from "../components/sections/services/ServicesSection.ast
 import ValueProps from "../components/sections/ValueProps.astro";
 import AboutSection from "../components/sections/about/AboutSection.astro";
 import Pricing from "../components/sections/Pricing.astro";
-import Process from "../components/sections/Process.astro";
+import ProcessSection from "../components/sections/process/ProcessSection.astro";
 import Faq from "../components/sections/Faq.astro";
 import ContactSection from "../components/sections/contact/ContactSection.astro";
+import ForWhom from "../components/sections/ForWhom.astro";
+import Testimonials from "../components/sections/Testimonials.astro";
+import { faqs } from "../data/faq";
+
+const faqPageNode = {
+	"@type": "FAQPage",
+	mainEntity: faqs.map((item) => ({
+		"@type": "Question",
+		name: item.q,
+		acceptedAnswer: {
+			"@type": "Answer",
+			text: item.a,
+		},
+	})),
+};
 ---
 
-<Layout>
+<Layout extraJsonLd={[faqPageNode]}>
 	<Header />
 	<main>
 		<Hero />
 		<ToolsStrip />
 		<ServicesSection />
+		<ForWhom />
 		<ValueProps />
 		<AboutSection />
 		<Pricing />
-		<Process />
+		<ProcessSection />
 		<Faq />
+		<Testimonials />
 		<ContactSection />
 	</main>
 	<Footer />

@@ -1,23 +1,6 @@
 @import "tailwindcss";
 
 @font-face {
-	font-family: "Plus Jakarta Sans";
-	font-style: normal;
-	font-weight: 500 800;
-	font-display: swap;
-	src: url("../assets/fonts/plus-jakarta-sans-latin-ext.woff2") format("woff2");
-	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-	font-family: "Plus Jakarta Sans";
-	font-style: normal;
-	font-weight: 500 800;
-	font-display: swap;
-	src: url("../assets/fonts/plus-jakarta-sans-latin.woff2") format("woff2");
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
 	font-family: "Hanken Grotesk";
 	font-style: normal;
 	font-weight: 400 700;
@@ -50,8 +33,9 @@
 	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* Tenor Sans — wyłącznie logotyp. Krój ma jedną grubość (400), więc bez
-   zakresu `font-weight` jak przy pozostałych rodzinach. */
+/* Tenor Sans — logotyp i nagłówki (`--font-logo`, `--font-display`). Krój ma
+   jedną grubość (400), więc bez zakresu `font-weight` jak przy pozostałych
+   rodzinach. */
 @font-face {
 	font-family: "Tenor Sans";
 	font-style: normal;
@@ -71,28 +55,33 @@
 
 @theme {
 	--font-sans: "Hanken Grotesk", sans-serif;
-	--font-display: "Plus Jakarta Sans", sans-serif;
+	--font-display: "Tenor Sans", serif;
 	--font-logo: "Tenor Sans", serif;
 
 	--color-bg: #fbfbfd;
 	--color-ink: #0b0b12;
 
-	/* Kolory wyłącznie logotypu — reszta strony zostaje na indygo.
-	   Złoto jest przyciemnione względem wizytówki (#b3924f): daje 4,78:1
-	   zamiast 2,88:1, a z odległości wciąż czyta się jako złoto. */
+	/* Granat i złoto z logotypu są teraz głównymi kolorami całej strony, nie
+	   tylko logo. Złoto jest przyciemnione względem wizytówki (#b3924f): daje
+	   4,78:1 zamiast 2,88:1, a z odległości wciąż czyta się jako złoto.
+	   Fiolet/indygo zostaje jako drugorzędny akcent, ale mocno stonowany —
+	   patrz --color-accent-3. */
 	--color-brand-navy: #16233a;
 	--color-brand-gold: #8a6d2f;
+	--color-gold-soft: #f4ecd8;
 
-	--color-accent: #4f5bf2;
-	--color-accent-2: #7b6cf6;
-	--color-accent-3: #8b78ff;
-	--color-accent-soft: #a9b2ff;
-	--color-link: #3a42c9;
-	--color-link-hover: #2a32a8;
+	--color-accent: #2f4468;
+	--color-accent-2: #3c5686;
+	--color-accent-3: #6b6f9e;
+	--color-accent-soft: #aab4cc;
+	--color-link: #2c4468;
+	--color-link-hover: #1c2c48;
 
 	--color-success: #10b981;
 	--color-success-soft: #e6f8f1;
 	--color-success-mint: #5eead4;
+
+	--color-danger-soft: #ffc2c2;
 
 	--color-muted-900: #171a2e;
 	--color-muted-800: #0c0e1c;
@@ -111,11 +100,20 @@
 	--color-border-4: #f0f1f6;
 	--color-border-5: #dddfea;
 
-	--color-surface-tint: #eef0ff;
+	--color-surface-tint: #eef1f6;
+	--color-surface-1: #f6f7fb;
+	--color-surface-2: #f1f2f7;
 
-	--animate-rise-in: riseIn 0.8s ease both;
-	--animate-rise-in-delayed: riseIn 1s ease 0.12s both;
-	--animate-sheet-up: sheetUp 0.28s ease both;
+	/* Jedna krzywa dla całej strony. `ease` (domyślna) wyhamowuje leniwie i
+	   każdy ruch wygląda przez to tak samo przeciętnie; easeOutExpo rusza
+	   ostro i dociąga do końca — to ta różnica, która czyta się jako
+	   „dopracowane", a nie „animowane". */
+	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+	--animate-rise-in: riseIn 0.8s var(--ease-out-expo) both;
+	--animate-rise-in-delayed: riseIn 1s var(--ease-out-expo) 0.12s both;
+	--animate-sheet-up: sheetUp 0.28s var(--ease-out-soft) both;
 
 	@keyframes riseIn {
 		from {
@@ -127,15 +125,6 @@
 			transform: none;
 		}
 	}
-	@keyframes floaty {
-		0%,
-		100% {
-			transform: translateY(0);
-		}
-		50% {
-			transform: translateY(-7px);
-		}
-	}
 	@keyframes sheetUp {
 		from {
 			opacity: 0;
@@ -144,6 +133,57 @@
 		to {
 			opacity: 1;
 			transform: none;
+		}
+	}
+	/* Parallax — patrz sekcja „Animacje: parallax" niżej. Zakres ruchu bierze
+	   się z `--parallax-amp`, więc jedna klatka obsługuje każdy element. */
+	@keyframes parallaxDrift {
+		from {
+			transform: translate3d(0, calc(-1 * var(--parallax-amp, 40px)), 0);
+		}
+		to {
+			transform: translate3d(0, var(--parallax-amp, 40px), 0);
+		}
+	}
+	@keyframes mediaReveal {
+		from {
+			opacity: 0;
+			clip-path: inset(0 0 100% 0);
+		}
+		to {
+			opacity: 1;
+			clip-path: inset(0 0 0 0);
+		}
+	}
+	@keyframes railGrow {
+		from {
+			transform: scaleY(0);
+		}
+		to {
+			transform: scaleY(1);
+		}
+	}
+	@keyframes timelineItem {
+		from {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+	@keyframes sheen {
+		from {
+			transform: translateX(-120%) skewX(-18deg);
+		}
+		to {
+			transform: translateX(320%) skewX(-18deg);
+		}
+	}
+	@keyframes spin {
+		to {
+			transform: rotate(1turn);
 		}
 	}
 }
@@ -201,16 +241,17 @@
 	}
 
 	input:focus,
-	textarea:focus {
+	textarea:focus,
+	select:focus {
 		border-color: var(--color-accent) !important;
-		box-shadow: 0 0 0 4px rgba(79, 91, 242, 0.14);
+		box-shadow: 0 0 0 4px rgba(47, 68, 104, 0.14);
 	}
 
 	h1,
 	h2,
 	h3 {
 		font-family: var(--font-display);
-		font-weight: 800;
+		font-weight: 400;
 	}
 
 	:focus-visible {
@@ -231,51 +272,590 @@
 }
 
 /* Aktywny link nawigacji (scrollspy) — poza @layer, żeby wygrał z utility koloru */
-.nav-underline {
-	position: relative;
-}
-.nav-underline::after {
-	content: "";
-	position: absolute;
-	left: 0;
-	bottom: -5px;
-	height: 2px;
-	width: 0;
-	border-radius: 9999px;
-	background: var(--color-accent);
-	transition: width 0.22s ease;
-}
 .nav-link.is-active {
 	color: var(--color-accent);
 }
-.nav-underline.is-active::after {
+
+/* Jedna wspólna kreska przejeżdżająca pod aktywnym linkiem. Wcześniej każdy
+   link miał własne `::after` animujące `width: 0 → 100%`, więc podkreślenie
+   „wyrastało" osobno pod każdą pozycją. Pozycję i szerokość ustawia scrollspy
+   w Header.astro (`--nav-x`, `--nav-w`) — CSS sam nie zna offsetów linków. */
+[data-nav-indicator] {
+	position: absolute;
+	left: 0;
+	bottom: -6px;
+	height: 2px;
+	width: var(--nav-w, 0px);
+	border-radius: 9999px;
+	background: var(--color-accent);
+	opacity: var(--nav-o, 0);
+	transform: translate3d(var(--nav-x, 0px), 0, 0);
+	transition:
+		transform 0.34s var(--ease-out-expo),
+		width 0.34s var(--ease-out-expo),
+		opacity 0.2s ease;
+}
+/* Pierwsze ustawienie pozycji nie może przyjechać z lewej krawędzi paska —
+   dopóki scrollspy nie policzy offsetów, kreska tylko się pojawia. */
+[data-nav-indicator]:not(.is-ready) {
+	transition: opacity 0.2s ease;
+}
+
+/* --- Animacje: pasek nawigacji unosi się po zejściu ze szczytu --- */
+[data-navbar] {
+	transition:
+		box-shadow 0.3s ease,
+		background-color 0.3s ease;
+}
+[data-navbar].is-scrolled {
+	background-color: color-mix(in srgb, var(--color-bg) 92%, transparent);
+	box-shadow: 0 10px 30px -22px rgba(11, 11, 18, 0.55);
+}
+
+/* --- Animacje: sekwencja wejścia w hero --- */
+/* Jedyna animacja na stronie odpalana bez scrolla, więc nieproporcjonalnie
+   waży na pierwszym wrażeniu. Wcześniej wjeżdżały dwa bloki naraz (cała
+   kolumna tekstu i zdjęcie); teraz każdy element ma swój numer w kolejce
+   (`--seq`), a zdjęcie odsłania się maską zamiast przyjeżdżać z dołu.
+   Bez `html.js`, bo to czysty CSS — bez JS też dojdzie do stanu końcowego. */
+[data-hero-item] {
+	animation: riseIn 0.75s var(--ease-out-expo) both;
+	animation-delay: calc(var(--seq, 0) * 90ms);
+}
+[data-hero-media] {
+	animation: mediaReveal 1.1s var(--ease-out-expo) 0.18s both;
+}
+
+/* --- Wysuwany panel nawigacji mobilnej (przypięty pod paskiem) --- */
+.drawer {
+	display: grid;
+	grid-template-rows: 0fr;
+	background: var(--color-bg);
+	border-bottom: 1px solid transparent;
+	transition:
+		grid-template-rows 0.32s ease,
+		border-color 0.32s ease;
+}
+.drawer.is-open {
+	grid-template-rows: 1fr;
+	border-color: rgb(0 0 0 / 6%);
+}
+.drawer-inner {
+	overflow: hidden;
+}
+
+.drawer-link {
+	opacity: 0;
+	transform: translateY(8px);
+	transition:
+		opacity 0.22s ease,
+		transform 0.22s ease;
+}
+.drawer.is-open .drawer-link {
+	opacity: 1;
+	transform: none;
+	/* Opóźnienie liczone tylko przy otwieraniu — zamknięcie zeruje regułę
+	   bazową, więc linki znikają razem, bez kaskady w drugą stronę. */
+	transition-delay: calc(var(--i, 0) * 40ms);
+}
+
+.drawer-backdrop {
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.28s ease;
+}
+.drawer-backdrop.is-open {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+/* Hamburger -> X, sterowany tym samym `aria-expanded`, który ustawia JS. */
+.burger {
+	position: relative;
+	display: block;
+	width: 20px;
+	height: 14px;
+}
+.burger-line {
+	position: absolute;
+	left: 0;
 	width: 100%;
+	height: 2px;
+	border-radius: 9999px;
+	background: currentColor;
+	transition:
+		top 0.28s ease,
+		transform 0.28s ease,
+		opacity 0.2s ease;
+}
+.burger-line:nth-child(1) {
+	top: 0;
+}
+.burger-line:nth-child(2) {
+	top: 6px;
+}
+.burger-line:nth-child(3) {
+	top: 12px;
+}
+#menu-toggle[aria-expanded="true"] .burger-line:nth-child(1) {
+	top: 6px;
+	transform: rotate(45deg);
+}
+#menu-toggle[aria-expanded="true"] .burger-line:nth-child(2) {
+	opacity: 0;
+	transform: scaleX(0);
+}
+#menu-toggle[aria-expanded="true"] .burger-line:nth-child(3) {
+	top: 6px;
+	transform: rotate(-45deg);
 }
 
 /* --- Animacje: reveal-on-scroll (aktywne tylko z JS) --- */
+/* Wektor wejścia wybiera wartość atrybutu: `data-reveal` (domyślnie z dołu),
+   `left`, `right`, `scale`. Mechanika (obserwator, stagger, chowanie przy
+   scrollu w górę) jest wspólna — patrz lib/scrollReveal.ts. */
 html.js [data-reveal] {
 	opacity: 0;
-	transform: translateY(20px);
+	transform: translate3d(0, 20px, 0) scale(0.985);
 	transition:
-		opacity 0.7s ease,
-		transform 0.7s ease;
+		opacity 0.6s var(--ease-out-expo),
+		transform 0.6s var(--ease-out-expo);
 	transition-delay: var(--reveal-delay, 0ms);
 }
+
+/* Kierunek poziomy ma sens tylko tam, gdzie kolumny stoją obok siebie. Poniżej
+   `md` układ się składa w jedną kolumnę i wjazd „z boku ekranu" nie miałby do
+   czego się odnosić, więc wraca ruch z dołu. */
+@media (min-width: 48rem) {
+	html.js [data-reveal="left"] {
+		transform: translate3d(-32px, 0, 0) scale(0.985);
+	}
+	html.js [data-reveal="right"] {
+		transform: translate3d(32px, 0, 0) scale(0.985);
+	}
+}
+
+html.js [data-reveal="scale"] {
+	transform: scale(0.94);
+}
+
+/* Stan docelowy celowo NIE dotyka `clip-path`. Kusi, żeby dorzucić tu maskę
+   „za jednym zamachem", ale `clip-path` inne niż `none` przycina cień
+   wychodzący poza ramkę ORAZ tworzy kontekst układania — karty zaczęłyby
+   zasłaniać elementy pozycjonowane nad nimi (np. nitkę w sekcji „Jak
+   zaczynamy"). Odsłanianie maską ma własną animację: `mediaReveal`. */
 html.js [data-reveal].is-visible,
 html.js [data-reveal-group].is-visible [data-reveal] {
 	opacity: 1;
 	transform: none;
 }
 
-/* --- Animacje: parallax --- */
-[data-parallax] {
-	will-change: transform;
-	transform: translate3d(0, calc(var(--parallax-p, 0) * var(--parallax-amp, 40px)), 0);
+/* --- Animacje: parallax (bez JS, sterowany scrollem przez kompozytor) --- */
+/* Wcześniej robił to `lib/parallax.ts`: rAF na każdej klatce scrolla ustawiał
+   `--parallax-p` i przeliczał transform na wątku głównym. Import został
+   wyłączony przy diagnozowaniu białego błysku pod navbarem na iOS Safari
+   (przyczyną okazało się brakujące tło na <html>, naprawione wyżej) i tak
+   już został. `animation-timeline: view()` daje ten sam efekt bez ani jednej
+   linijki JS. Tam, gdzie przeglądarka tego nie zna, element po prostu stoi —
+   czyli dokładnie tak, jak wyglądała strona z wyłączonym importem. */
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		[data-parallax] {
+			animation-name: parallaxDrift;
+			animation-timing-function: linear;
+			animation-fill-mode: both;
+			animation-timeline: view();
+			animation-range: cover 0% cover 100%;
+		}
+	}
 }
 @media (max-width: 48rem) {
 	[data-parallax] {
 		--parallax-amp: 20px;
 	}
+}
+
+/* --- Animacje: sznurek etapów w sekcji „Jak zaczynamy" --- */
+/* UWAGA na miejsce tych klatek: muszą stać POZA `@theme`. Tailwind v4
+   wycina z `@theme` klatki, do których nie sięga skrót `animation`, a te
+   są używane przez `animation-name` (bo `animation-timeline` wymaga
+   rozbicia na osobne właściwości). W `@theme` zostałyby po cichu usunięte
+   z builda — bez błędu, po prostu bez animacji. */
+/* Jedne klatki na oba układy: kierunek rysowania siedzi w `d` ścieżki, a
+   `pathLength="1"` sprowadza każdy odcinek do tej samej, jednostkowej
+   długości — niezależnie od kształtu i rozmiaru. */
+@keyframes ropeDraw {
+	from {
+		stroke-dashoffset: 1.02;
+	}
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+/* Sama skala, BEZ `opacity` — to nie jest kwestia gustu. Numerek siedzi na
+   styku dwóch odcinków sznurka, a łańcuch gwarantuje, że w chwili jego
+   pojawienia się kreska jest już dorysowana do jego środka. Półprzezroczysty
+   kafelek pokazywałby więc linię pod spodem. Przy skali jest nieprzezroczysty
+   na każdym etapie: węzeł po prostu wyrasta z linii. */
+@keyframes badgeArrive {
+	from {
+		transform: scale(0);
+	}
+	to {
+		transform: none;
+	}
+}
+/* Ten sam wektor co `[data-reveal]` — kafelek etapu ma wchodzić tak jak
+   każda inna karta na stronie, różni go tylko to, co go wyzwala. */
+@keyframes processCardIn {
+	from {
+		opacity: 0;
+		transform: translate3d(0, 20px, 0) scale(0.985);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+/* Każdy krok wiezie własny odcinek sznurka do następnego numerka (patrz
+   sections/process/ProcessStep.astro), więc linia działa w obu układach:
+   pionowym do `lg` i poziomym od `lg`.
+
+   Sam `<li data-process-step>` NIE animuje się wizualnie, mimo że nosi
+   `data-reveal`. Atrybut jest tu wyłącznie hakiem dla obserwatora — gdyby
+   krok chował się jak zwykły reveal, jego 20 px przesunięcia ruszyłoby
+   numerkiem, a numerek jest węzłem sznurka i musi stać dokładnie na linii,
+   która celuje w jego docelowe miejsce. Dlatego opacity i wektor wejścia
+   są zepchnięte na dzieci: rusza się kafelek, numerek tylko się pojawia.
+   Reguły muszą stać PO bloku reveal — mają tę samą specyficzność (0,2,1). */
+html.js [data-process-step] {
+	opacity: 1;
+	transform: none;
+}
+
+/* Rysowanie sznurka: `stroke-dashoffset` na znormalizowanej ścieżce
+   (`pathLength="1"`, patrz ProcessStep.astro). Czubek biegnie WZDŁUŻ łuku —
+   maska `clip-path` ścinałaby krzywą prostopadle, a `transform: scale()`
+   ściskałby gradient i zaokrąglone końcówki. Ten sam zapis obsługuje obie
+   ścieżki niżej, różni je tylko to, co pcha animację. */
+/* Dwie liczby, które wyglądają na kaprys, a nie są:
+
+   `stroke-dasharray: 1 2` — kreska równa całej ścieżce, ale przerwa DWA razy
+   dłuższa. Przy zapisie `1` (kreska 1, przerwa 1) wzór się powtarza i przy
+   offsecie powyżej jedynki w kadr wjeżdża kolejna kreska, zostawiając ogonek
+   na końcu odcinka. Przerwa 2 odsuwa następną kreskę poza ścieżkę.
+
+   `stroke-dashoffset: 1.02`, nie równe 1 — przy równym 1 granica kreski wypada
+   dokładnie na początku ścieżki i `stroke-linecap: round` maluje tam kropkę,
+   mimo że nic nie jest jeszcze narysowane. Nadmiarowe 2% spycha zaokrąglenie
+   poza ścieżkę. */
+html.js [data-rope] path {
+	stroke-dasharray: 1 2;
+	stroke-dashoffset: 1.02;
+	transition: stroke-dashoffset 0.6s var(--ease-out-expo);
+	transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Bez `opacity` — patrz uzasadnienie przy `@keyframes badgeArrive`. Ścieżka
+   zapasowa musi zachowywać się tak samo, inaczej starsze przeglądarki
+   dostałyby prześwitującą kreskę pod numerkiem. */
+html.js [data-process-badge] {
+	transform: scale(0);
+	transition: transform 0.4s var(--ease-out-expo);
+	transition-delay: var(--reveal-delay, 0ms);
+}
+html.js [data-process-card] {
+	opacity: 0;
+	transform: translate3d(0, 20px, 0) scale(0.985);
+	transition:
+		opacity 0.6s var(--ease-out-expo),
+		transform 0.6s var(--ease-out-expo);
+	transition-delay: var(--reveal-delay, 0ms);
+}
+html.js [data-process-step].is-visible [data-rope] path {
+	stroke-dashoffset: 0;
+}
+html.js [data-process-step].is-visible [data-process-badge],
+html.js [data-process-step].is-visible [data-process-card] {
+	opacity: 1;
+	transform: none;
+}
+@media (min-width: 64rem) {
+	/* Kaskada kroków ma sens wyłącznie w układzie poziomym: cztery kafelki
+	   wchodzą w viewport naraz, więc dopiero opóźnienie buduje kolejność
+	   etapów. W pionie każdy krok pojawia się we własnym momencie scrolla i
+	   to samo opóźnienie byłoby już tylko zwłoką po wjechaniu na ekran. */
+	html.js [data-process-step] {
+		--reveal-delay: calc(var(--process-i, 0) * 130ms);
+	}
+}
+
+/* Ścieżka główna: sznurek przywiązany do pozycji scrolla.
+   Powyższe `transition` to wersja zapasowa dla przeglądarek bez
+   scroll-driven animations (Safari < 26, Firefox < 144) — tam sznurek
+   odtwarza własne 0,6 s po wejściu w viewport, jak każdy inny reveal na
+   stronie. Tutaj przejmuje go oś czasu widoku: linia rysuje się w tempie
+   scrolla, staje, gdy scroll staje, i cofa się przy przewijaniu w górę.
+   Animacje CSS wygrywają z deklaracjami zwykłymi, więc nie trzeba zerować
+   `transition` — keyframes po prostu nadpisują ich wartości.
+
+   DWIE osie czasu, bo dwa układy mają przeciwne potrzeby.
+
+   W PIONIE kroki są rozłożone w dół strony, więc każdy ma animować się
+   w momencie, w którym sam przecina ekran — inaczej kolejne karty pojawiają
+   się coraz wyżej. Dlatego oś siedzi na KROKU, a zakres liczy się w `entry`
+   (przecinanie krawędzi, długość = wysokość samego kroku), nie w `cover`
+   (cała droga przez ekran, długość = viewport + krok). `view-timeline-inset`
+   przesuwa linię wyzwalania z dolnej krawędzi na 75% wysokości okna.
+   Efekt: każdy krok rusza przy tej samej linii ekranu, niezależnie od tego,
+   czy karta ma dwie czy cztery linijki i jak wysokie jest okno.
+
+   W POZIOMIE (`lg`) wszystkie cztery kroki stoją w jednym wierszu, na tej
+   samej wysokości — `entry` odpaliłoby je równocześnie. Kolejność musi tam
+   budować przesunięcie zakresu na wspólnej osi listy (`--track`, `cover`
+   + `--process-i`).
+
+   Obie osie istnieją równocześnie i nie kolidują: nazwana oś jest szukana
+   na przodkach, więc dziecko sięga po `--track` mimo bliższego `--step`. */
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		/* Łańcuch jest ściśle sekwencyjny: węzeł → odcinek → następny węzeł.
+		   Każdy element dostaje swoje okno scrolla tuż za poprzednim, więc
+		   w danym momencie rusza się dokładnie jedna rzecz, a wszystko przed
+		   nią jest już gotowe. Odcinki puszczone równolegle wyglądały jak
+		   luźne kreski wiszące w miejscach, gdzie numerka jeszcze nie ma. */
+		[data-process-step] {
+			view-timeline-name: --step;
+			view-timeline-axis: block;
+			view-timeline-inset: 0 25%;
+
+			/* Okna w jednostkach `entry` kroku, czyli w ułamkach jego wysokości.
+			   Numerek i karta startują razem — etap pojawia się jako całość.
+
+			   INWARIANT: --rope-in < 100%. Odcinek N kończy się po
+			   `--rope-in × H` px scrolla od wejścia kroku N, a numerek N+1
+			   startuje po `H + G` px, bo krok N+1 leży o tyle niżej. Warunek
+			   `--rope-in ≤ 1 + G/H` jest więc spełniony dla KAŻDEJ wysokości
+			   karty i każdego okna, o ile trzymamy się poniżej 100%. Przy
+			   zapisie na `cover` ten sufit wynosił 11–16% i zależał od
+			   viewportu, czyli trzeba go było zgadywać. */
+			--badge-in: 18%;
+			--card-in: 32%;
+			--rope-in: 97%;
+		}
+		[data-process-track] {
+			view-timeline-name: --track;
+			view-timeline-axis: block;
+
+			/* Poniższe liczby obowiązują wyłącznie w układzie poziomym.
+			   INWARIANT: --step-advance = --badge-span + --rope-span — dzięki
+			   niemu „odcinek dobiega dokładnie wtedy, gdy zapala się następny
+			   numerek" wynika z arytmetyki, a nie z dobranych liczb.
+			   Sufit: łańcuch kończy się w
+			   `--seq-from + 3 × --step-advance + --card-span` i musi zmieścić
+			   się, zanim rząd numerków wsunie się pod przyklejony navbar. */
+			--seq-from: 3%;
+			--badge-span: 6%;
+			--rope-span: 14%;
+			--card-span: 13%;
+			--step-advance: 20%;
+		}
+
+		[data-process-badge] {
+			animation-name: badgeArrive;
+			animation-timing-function: var(--ease-out-expo);
+			animation-fill-mode: both;
+			animation-timeline: --step;
+			animation-range: entry 0% entry var(--badge-in);
+		}
+		[data-process-card] {
+			animation-name: processCardIn;
+			animation-timing-function: var(--ease-out-expo);
+			animation-fill-mode: both;
+			animation-timeline: --step;
+			animation-range: entry 0% entry var(--card-in);
+		}
+		[data-rope] path {
+			animation-name: ropeDraw;
+			animation-timing-function: linear;
+			animation-fill-mode: both;
+			animation-timeline: --step;
+			animation-range: entry var(--badge-in) entry var(--rope-in);
+		}
+
+		/* Poziomo: wspólna oś listy i kaskada z indeksu. Klatki i kierunek
+		   rysowania zostają te same — zmienia się tylko, co pcha animację. */
+		@media (min-width: 64rem) {
+			[data-process-badge] {
+				animation-timeline: --track;
+				animation-range: cover
+					calc(var(--seq-from) + var(--process-i, 0) * var(--step-advance)) cover
+					calc(
+						var(--seq-from) + var(--badge-span) + var(--process-i, 0) *
+							var(--step-advance)
+					);
+			}
+			[data-process-card] {
+				animation-timeline: --track;
+				animation-range: cover
+					calc(var(--seq-from) + var(--process-i, 0) * var(--step-advance)) cover
+					calc(
+						var(--seq-from) + var(--card-span) + var(--process-i, 0) *
+							var(--step-advance)
+					);
+			}
+			[data-rope] path {
+				animation-timeline: --track;
+				animation-range: cover
+					calc(
+						var(--seq-from) + var(--badge-span) + var(--process-i, 0) *
+							var(--step-advance)
+					) cover
+					calc(
+						var(--seq-from) + var(--badge-span) + var(--rope-span) +
+							var(--process-i, 0) * var(--step-advance)
+					);
+			}
+		}
+	}
+}
+
+/* --- Animacje: oś czasu kwalifikacji („O mnie") --- */
+/* Wpisy siedzą w zwiniętym <details>, więc obserwator scrolla ich nie widzi.
+   Animacja wisi na `[open]` i odtwarza się przy każdym rozwinięciu. */
+[data-tl-rail] {
+	transform-origin: top center;
+}
+details[data-about-more][open] [data-tl-rail] {
+	animation: railGrow 0.4s var(--ease-out-expo) both;
+	animation-delay: calc(var(--tl-i, 0) * 60ms);
+}
+details[data-about-more][open] [data-tl-item] {
+	animation: timelineItem 0.5s var(--ease-out-expo) both;
+	animation-delay: calc(var(--tl-i, 0) * 60ms);
+}
+
+/* --- Animacje: podświetlenie karty podążające za kursorem --- */
+/* Gradient leci jako `background-image`, więc maluje się nad `background-color`
+   karty i pod jej treścią — bez pseudoelementu, który przy `z-index: 0`
+   przykryłby tekst, a przy `-1` schowałby się pod tłem.
+   `@property` daje płynne dojście intensywności; bez rejestracji (starsze
+   przeglądarki) `--glow-a` nadal działa jako zwykły token, tylko bez
+   przejścia — pozycja kursora ustawiana jest z lib/cardGlow.ts. */
+@property --glow-a {
+	syntax: "<number>";
+	initial-value: 0;
+	inherits: false;
+}
+
+@media (hover: hover) {
+	[data-glow] {
+		background-image: radial-gradient(
+			260px circle at var(--glow-x, 50%) var(--glow-y, 0%),
+			rgb(var(--glow-rgb, 79 91 242) / calc(var(--glow-a, 0) * var(--glow-max, 0.1))),
+			transparent 68%
+		);
+		background-repeat: no-repeat;
+		transition: --glow-a 0.28s ease;
+	}
+	[data-glow]:hover {
+		--glow-a: 1;
+	}
+}
+
+/* --- Animacje: przyciski --- */
+/* Sam hover bez stanu wciśnięcia sprawia, że przycisk wydaje się „obrazkiem".
+   Przesunięcie wraca do zera i dochodzi mikroskala — to daje odczucie kliknięcia. */
+/* `translate`/`scale` jako osobne właściwości, a nie `transform` — Tailwind v4
+   realizuje `hover:-translate-y-0.5` przez `translate`, więc transform by go
+   nie skasował i przycisk zostałby uniesiony w trakcie wciśnięcia. Reguła jest
+   poza `@layer`, dzięki czemu wygrywa z utility niezależnie od kolejności. */
+.btn-press:active {
+	translate: 0 0;
+	scale: 0.98;
+	transition-duration: 0.06s;
+}
+
+/* Refleks przejeżdżający po głównym CTA. `overflow: hidden` trzyma go w
+   zaokrągleniu, `pointer-events: none` nie odbiera kliknięcia. */
+.btn-sheen {
+	position: relative;
+	overflow: hidden;
+}
+.btn-sheen::after {
+	content: "";
+	position: absolute;
+	top: -50%;
+	bottom: -50%;
+	left: 0;
+	width: 45%;
+	pointer-events: none;
+	background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+	transform: translateX(-120%) skewX(-18deg);
+}
+@media (hover: hover) {
+	.btn-sheen:hover::after {
+		animation: sheen 0.85s var(--ease-out-soft);
+	}
+}
+
+/* --- Animacje: rozwijanie FAQ --- */
+[data-faq-answer] {
+	display: grid;
+	grid-template-rows: 0fr;
+	transition: grid-template-rows 0.3s var(--ease-out-soft);
+}
+[data-faq-answer].is-open {
+	grid-template-rows: 1fr;
+}
+[data-faq-answer] > div {
+	overflow: hidden;
+}
+
+/* --- Animacje: stan wysyłki formularza --- */
+/* Etykieta i spinner są osobnymi elementami, bo skrypt podmieniał wcześniej
+   `textContent` całego przycisku — co skasowałoby spinner razem z tekstem. */
+[data-spinner] {
+	display: none;
+	height: 17px;
+	width: 17px;
+	flex: 0 0 auto;
+	border-radius: 9999px;
+	border: 2px solid rgba(255, 255, 255, 0.35);
+	border-top-color: #fff;
+	animation: spin 0.7s linear infinite;
+}
+[data-submit][data-loading] [data-spinner] {
+	display: block;
+}
+
+/* Komunikat błędu wraca z `hidden`, czyli z `display: none` — przejścia by się
+   nie odpaliły, animacja startuje dopiero przy pojawieniu elementu. */
+[data-form-error]:not([hidden]) {
+	animation: sheetUp 0.3s var(--ease-out-soft) both;
+}
+
+/* Formularz nie znika skokiem: najpierw się wycofuje, potem skrypt chowa go
+   na dobre i pokazuje panel podziękowania. */
+[data-form-leaving] {
+	opacity: 0;
+	transform: scale(0.985);
+	transition:
+		opacity 0.22s ease,
+		transform 0.22s ease;
+}
+[data-contact-success]:not([hidden]),
+[data-intake-success]:not([hidden]) {
+	animation: riseIn 0.5s var(--ease-out-expo) both;
+}
+
+/* --- Animacje: menu mobilne --- */
+/* Panel wjeżdżał jako całość, przez co linki „były już na miejscu". Ten sam
+   stagger co w reveal robi z niego dopracowany overlay. */
+#mobile-menu:not([hidden]) [data-menu-item] {
+	animation: riseIn 0.42s var(--ease-out-expo) both;
+	animation-delay: calc(80ms + var(--menu-i, 0) * 55ms);
 }
 
 /* --- Animacje: rozwijanie FAQ --- */
@@ -320,15 +900,47 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 		transition-duration: 0.001ms !important;
 		scroll-behavior: auto !important;
 	}
+	/* Sam wyłącznik `transition`/`animation` nie wystarcza: stan początkowy
+	   oparty na `transform`, `clip-path` czy `scaleX` zostałby zamrożony i
+	   treść byłaby niewidoczna zamiast po prostu nieruchoma. Każdy nowy
+	   mechanizm animacji musi tu dopisać swój stan docelowy. */
 	html.js [data-reveal] {
 		opacity: 1 !important;
 		transform: none !important;
 	}
+	[data-hero-media] {
+		clip-path: none !important;
+	}
 	[data-parallax] {
 		transform: none !important;
+	}
+	/* Sznurek rysuje się `stroke-dashoffset`, więc bez wyzerowania go tutaj
+	   zostałby nienarysowany i niewidoczny. */
+	html.js [data-rope] path {
+		stroke-dashoffset: 0 !important;
+	}
+	html.js [data-process-badge],
+	html.js [data-process-card] {
+		opacity: 1 !important;
+		transform: none !important;
+	}
+	[data-tl-rail] {
+		transform: scaleY(1) !important;
+	}
+	[data-nav-indicator] {
+		transition: none !important;
+	}
+	[data-form-leaving] {
+		opacity: 0 !important;
 	}
 	[data-contact-success] .check-draw path,
 	[data-intake-success] .check-draw path {
 		stroke-dashoffset: 0 !important;
+	}
+	/* Spinner jest informacją o stanie, nie ozdobą — musi się kręcić mimo
+	   globalnego wyłącznika, inaczej wysyłka wygląda na zawieszoną. */
+	[data-spinner] {
+		animation-duration: 0.7s !important;
+		animation-iteration-count: infinite !important;
 	}
 }
