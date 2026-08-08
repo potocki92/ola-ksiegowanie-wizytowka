@@ -35,49 +35,48 @@ const { index, title, description, isLast } = Astro.props;
 	{
 		/*
 			Sznurek to rysowana ścieżka SVG, nie kreska odsłaniana maską —
-			`stroke-dashoffset` prowadzi czubek WZDŁUŻ łuku, czego `clip-path`
-			nie potrafi (ścinałby krzywą prostopadle).
+			`stroke-dashoffset` prowadzi czubek wzdłuż linii i zostawia mu
+			zaokrągloną końcówkę, czego `clip-path` nie daje (przesuwałby tylko
+			prostokątną maskę po gotowym kształcie).
 
 			`pathLength="1"` normalizuje długość ścieżki do jedynki niezależnie
-			od jej kształtu i rozmiaru, więc `stroke-dasharray: 1` +
-			`dashoffset: 1 → 0` rysuje ją w całości na każdym ekranie — bez
-			mierzenia `getTotalLength()` w JS. Ten sam chwyt co przy checkmarku
-			sukcesu formularza (ContactSuccess.astro).
+			od jej rozmiaru, więc `stroke-dasharray` + `dashoffset: 1 → 0`
+			rysuje ją w całości na każdym ekranie — bez mierzenia
+			`getTotalLength()` w JS. Ten sam chwyt co przy checkmarku sukcesu
+			formularza (ContactSuccess.astro).
 
-			Dwa osobne `<svg>`, bo `viewBox` i `d` nie są sterowalne z media
-			query, a każdy układ potrzebuje własnej orientacji. Oś POPRZECZNA
-			ma dokładnie 40 px i tyle samo jednostek viewBoxa, więc mapuje się
-			1:1. To daje dwie rzeczy naraz: wybrzuszenie ma równe 10 px
-			niezależnie od wysokości karty, a kreska ma równe 2 px, bo jej
-			grubość mierzy się w poprzek linii — czyli właśnie w tej
-			nieskalowanej osi. Oś wzdłużna rozciąga się dowolnie, bo tam
-			ścieżka i tak biegnie od numerka do numerka.
+			Dwa osobne `<svg>`, bo `viewBox` ani `d` nie są sterowalne z media
+			query, a każdy układ potrzebuje własnej orientacji.
+
+			Oś POPRZECZNA ma dokładnie 4 px i tyle samo jednostek viewBoxa,
+			czyli mapuje się 1:1. To trzyma grubość kreski na równych 2 px:
+			grubość mierzy się w poprzek linii, więc decyduje o niej skala
+			właśnie tej osi. Zmiana szerokości pudełka MUSI iść w parze ze
+			zmianą viewBoxa, inaczej kreska zmieni grubość. Oś wzdłużna
+			rozciąga się dowolnie — tam ścieżka i tak biegnie prosto od
+			numerka do numerka.
 
 			Dlatego NIE ma tu `vector-effect="non-scaling-stroke"`, choć przy
 			`preserveAspectRatio="none"` byłby odruchem. Liczy on wzór
-			kreskowania w przestrzeni ekranu, podczas gdy `pathLength` normalizuje
-			go w przestrzeni użytkownika — te dwa mechanizmy się gryzą i odcinek
-			rozpada się na kilka kawałków (sprawdzone). Nie jest potrzebny,
-			bo oś poprzeczna i tak jest 1:1.
-
-			Styczne na obu końcach są wzdłuż osi, więc sąsiednie odcinki
-			schodzą się bez załamania.
+			kreskowania w przestrzeni ekranu, podczas gdy `pathLength`
+			normalizuje go w przestrzeni użytkownika — te dwa mechanizmy się
+			gryzą i odcinek rozpada się na kilka osobnych kawałków
+			(sprawdzone). Przy osi poprzecznej 1:1 nie jest potrzebny.
 		*/
 		!isLast && (
 			<Fragment>
 				<svg
 					data-rope
-					data-rope-axis="y"
 					aria-hidden="true"
 					focusable="false"
 					fill="none"
-					viewBox="0 0 40 100"
+					viewBox="0 0 4 100"
 					preserveAspectRatio="none"
-					class="pointer-events-none absolute top-[22px] left-[2px] h-[calc(100%+var(--rope-gap))] w-10 lg:hidden"
+					class="pointer-events-none absolute top-[22px] left-[20px] h-[calc(100%+var(--rope-gap))] w-1 lg:hidden"
 				>
 					<path
 						pathLength="1"
-						d="M20 0 C20 14 30 22 30 50 C30 78 20 86 20 100"
+						d="M2 0 L2 100"
 						stroke="url(#rope-gradient-y)"
 						stroke-width="2"
 						stroke-linecap="round"
@@ -85,17 +84,16 @@ const { index, title, description, isLast } = Astro.props;
 				</svg>
 				<svg
 					data-rope
-					data-rope-axis="x"
 					aria-hidden="true"
 					focusable="false"
 					fill="none"
-					viewBox="0 0 100 40"
+					viewBox="0 0 100 4"
 					preserveAspectRatio="none"
-					class="pointer-events-none absolute top-[2px] left-[22px] hidden h-10 w-[calc(100%+var(--rope-gap))] lg:block"
+					class="pointer-events-none absolute top-[20px] left-[22px] hidden h-1 w-[calc(100%+var(--rope-gap))] lg:block"
 				>
 					<path
 						pathLength="1"
-						d="M0 20 C14 20 22 10 50 10 C78 10 86 20 100 20"
+						d="M0 2 L100 2"
 						stroke="url(#rope-gradient-x)"
 						stroke-width="2"
 						stroke-linecap="round"
