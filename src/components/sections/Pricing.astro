@@ -5,21 +5,9 @@ import IconTile from "../ui/IconTile.astro";
 import Section from "../ui/Section.astro";
 import SectionHeading from "../ui/SectionHeading.astro";
 import Button from "../ui/Button.astro";
+import { pricing, isPromotionActive } from "../../data/pricing";
 
-const plans = [
-	{ label: "Bez VAT", promo: "250 zł", regular: "350 zł" },
-	{ label: "Z VAT", promo: "350 zł", regular: "450 zł" },
-];
-
-const includedItems = [
-	"Prowadzenie KPiR / ryczałtu",
-	"Rozliczenia VAT i JPK",
-	"Deklaracje i rozliczenia ZUS",
-	"Pomoc w wyborze formy",
-	"Przypomnienia o terminach",
-	"Stały kontakt z księgową",
-];
-
+const promoActive = isPromotionActive(pricing.promotion);
 const reassurances = ["Bez umowy na czas określony", "Wycena w 24 h", "Bez ukrytych opłat"];
 ---
 
@@ -38,7 +26,7 @@ const reassurances = ["Bez umowy na czas określony", "Wycena w 24 h", "Bez ukry
 			class="relative overflow-hidden rounded-[26px] bg-linear-to-br from-muted-900 to-muted-800 p-[clamp(28px,3.2vw,44px)] text-white shadow-[0_30px_60px_-34px_rgba(11,11,18,0.5)]"
 		>
 			<div
-				class="pointer-events-none absolute -top-12.5 -right-12.5 h-55 w-55 rounded-full bg-[radial-gradient(circle,rgba(123,108,246,0.4),transparent_70%)]"
+				class="pointer-events-none absolute -top-12.5 -right-12.5 h-55 w-55 rounded-full bg-[radial-gradient(circle,rgba(60,86,134,0.2),transparent_70%)]"
 			>
 			</div>
 			<div class="relative">
@@ -46,16 +34,18 @@ const reassurances = ["Bez umowy na czas określony", "Wycena w 24 h", "Bez ukry
 					<div class="text-[13px] font-bold tracking-[0.5px] text-white/60 uppercase">
 						Prowadzenie JDG
 					</div>
-					<span
-						class="inline-flex items-center gap-1.5 rounded-full bg-success-mint/12 px-3 py-1 text-[11.5px] font-bold tracking-[0.4px] text-success-mint uppercase"
-					>
-						<span class="h-1.5 w-1.5 rounded-full bg-success-mint"></span>
-						Promocja
-					</span>
+					{
+						promoActive && (
+							<span class="inline-flex items-center gap-1.5 rounded-full bg-success-mint/12 px-3 py-1 text-[11.5px] font-bold tracking-[0.4px] text-success-mint uppercase">
+								<span class="h-1.5 w-1.5 rounded-full bg-success-mint" />
+								{pricing.promotion.label}
+							</span>
+						)
+					}
 				</div>
 				<div class="mt-4 grid gap-4 sm:grid-cols-2 sm:gap-5">
 					{
-						plans.map((plan) => (
+						pricing.jdg.variants.map((plan) => (
 							<div>
 								<div class="text-[12px] font-bold tracking-[0.5px] text-white/50 uppercase">
 									{plan.label}
@@ -63,32 +53,38 @@ const reassurances = ["Bez umowy na czas określony", "Wycena w 24 h", "Bez ukry
 								<div class="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
 									<span class="text-sm opacity-70">od</span>
 									<span class="font-display text-[clamp(32px,4.6vw,48px)] leading-none font-extrabold tracking-[-0.03em]">
-										{plan.promo}
+										{plan.priceFrom} zł
 									</span>
 									<span class="text-sm opacity-70">/ mies.</span>
-									<span class="ml-1 font-display text-[17px] font-bold text-white/40 line-through decoration-white/35 decoration-2">
-										{plan.regular}
-									</span>
+									{promoActive && (
+										<span class="ml-1 font-display text-[17px] font-bold text-white/40 line-through decoration-white/35 decoration-2">
+											{plan.regularPrice} zł
+										</span>
+									)}
 								</div>
 							</div>
 						))
 					}
 				</div>
 				<div class="mt-3 text-[13px] text-white/55">
-					Ceny do 20 dokumentów miesięcznie
+					Ceny do {pricing.jdg.documentLimit} dokumentów miesięcznie
 				</div>
-				<CheckItem
-					as="div"
-					size={15}
-					strokeWidth={2.6}
-					class="mt-3 inline-flex items-center gap-2 rounded-full bg-success-mint/12 px-3.5 py-1.5 text-[13px] font-bold text-success-mint"
-				>
-					100 zł taniej dla nowych klientów
-				</CheckItem>
+				{
+					promoActive && pricing.promotion.discountNote && (
+						<CheckItem
+							as="div"
+							size={15}
+							strokeWidth={2.6}
+							class="mt-3 inline-flex items-center gap-2 rounded-full bg-success-mint/12 px-3.5 py-1.5 text-[13px] font-bold text-success-mint"
+						>
+							{pricing.promotion.discountNote}
+						</CheckItem>
+					)
+				}
 				<div class="my-6 h-px bg-white/16"></div>
 				<ul class="grid gap-3 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-3.5">
 					{
-						includedItems.map((item) => (
+						pricing.jdg.includedItems.map((item) => (
 							<CheckItem
 								as="li"
 								tone="success-mint"
@@ -117,7 +113,6 @@ const reassurances = ["Bez umowy na czas określony", "Wycena w 24 h", "Bez ukry
 					}
 				</div>
 			</div>
-			
 		</div>
 		<div
 			data-reveal
@@ -131,7 +126,7 @@ const reassurances = ["Bez umowy na czas określony", "Wycena w 24 h", "Bez ukry
 			</div>
 			<p class="mt-3.5 text-[14.5px] leading-[1.6] text-muted-600">
 				Rejestracja firmy jest bezpłatna, gdy zostajemy na dłużej. Sama rejestracja bez dalszej
-				współpracy — <strong class="font-extrabold text-ink">50 zł jednorazowo</strong>.
+				współpracy — <strong class="font-extrabold text-ink">{pricing.registration.standaloneFee} zł jednorazowo</strong>.
 			</p>
 			<div class="mt-5 rounded-2xl bg-surface-tint p-4">
 				<div class="flex items-center gap-2.5 text-[13.5px] font-bold text-link">
@@ -168,7 +163,7 @@ const reassurances = ["Bez umowy na czas określony", "Wycena w 24 h", "Bez ukry
 				</div>
 				<div class="mt-4 flex items-baseline gap-2">
 					<span class="font-display text-[clamp(26px,3vw,34px)] font-extrabold tracking-[-0.02em]">
-						od 30 zł
+						od {pricing.kadry.perEmployeeFrom} zł
 					</span>
 					<span class="text-[14px] text-muted-400">/ os. / mies.</span>
 				</div>
@@ -178,11 +173,11 @@ const reassurances = ["Bez umowy na czas określony", "Wycena w 24 h", "Bez ukry
 				<div class="mt-auto flex gap-2.5 pt-5">
 					<div class="flex-1 rounded-xl bg-surface-tint p-3">
 						<div class="text-[12px] font-semibold text-muted-400">Umowa zlecenie</div>
-						<div class="mt-0.5 font-display text-lg font-extrabold">30 zł</div>
+						<div class="mt-0.5 font-display text-lg font-extrabold">{pricing.kadry.umowaZlecenie} zł</div>
 					</div>
 					<div class="flex-1 rounded-xl bg-surface-tint p-3">
 						<div class="text-[12px] font-semibold text-muted-400">Umowa o pracę</div>
-						<div class="mt-0.5 font-display text-lg font-extrabold">50 zł</div>
+						<div class="mt-0.5 font-display text-lg font-extrabold">{pricing.kadry.umowaOPrace} zł</div>
 					</div>
 				</div>
 			</div>
@@ -198,12 +193,12 @@ const reassurances = ["Bez umowy na czas określony", "Wycena w 24 h", "Bez ukry
 				</div>
 				<div class="mt-4 flex items-baseline gap-2">
 					<span class="font-display text-[clamp(26px,3vw,34px)] font-extrabold tracking-[-0.02em]">
-						od 100 zł
+						od {pricing.pit.priceFrom} zł
 					</span>
 					<span class="text-[14px] text-muted-400">jednorazowo</span>
 				</div>
 				<p class="mt-3 text-[14px] leading-[1.55] text-muted-600">
-					Roczne zeznanie (PIT-37, PIT-36, PIT-28) dla osób bez stałej obsługi. Sprawdzę ulgi
+					Roczne zeznanie ({pricing.pit.forms.join(", ")}) dla osób bez stałej obsługi. Sprawdzę ulgi
 					i odliczenia, których nie chcesz przegapić.
 				</p>
 				<div class="mt-auto flex flex-wrap gap-x-4 gap-y-1.5 pt-5">

@@ -65,7 +65,9 @@ const highlights: Highlight[] = [
 
 <Section id="o-mnie">
 	<div class="grid items-start gap-8 md:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] md:gap-[clamp(40px,5vw,80px)]">
-		<div data-reveal>
+		{/* Kolumny stoją obok siebie, więc każda wjeżdża ze swojej strony. Poniżej
+		    `md` układ się składa i CSS sam wraca do ruchu z dołu. */}
+		<div data-reveal="left">
 			<SectionHeading
 				eyebrow="O mnie"
 				heading="Aleksandra Potocka"
