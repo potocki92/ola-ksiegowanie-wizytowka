@@ -481,20 +481,15 @@ html.js [data-reveal-group].is-visible [data-reveal] {
    są używane przez `animation-name` (bo `animation-timeline` wymaga
    rozbicia na osobne właściwości). W `@theme` zostałyby po cichu usunięte
    z builda — bez błędu, po prostu bez animacji. */
-@keyframes ropeDrawY {
+/* Jedne klatki na oba układy: kierunek rysowania siedzi w `d` ścieżki, a
+   `pathLength="1"` sprowadza każdy odcinek do tej samej, jednostkowej
+   długości — niezależnie od kształtu i rozmiaru. */
+@keyframes ropeDraw {
 	from {
-		clip-path: inset(0 0 100% 0);
+		stroke-dashoffset: 1.02;
 	}
 	to {
-		clip-path: inset(0 0 0 0);
-	}
-}
-@keyframes ropeDrawX {
-	from {
-		clip-path: inset(0 100% 0 0);
-	}
-	to {
-		clip-path: inset(0 0 0 0);
+		stroke-dashoffset: 0;
 	}
 }
 @keyframes badgeArrive {
@@ -536,15 +531,29 @@ html.js [data-process-step] {
 	transform: none;
 }
 
-/* Odsłanianie sznurka: `clip-path`, nie `transform: scale()`. Skalowanie
-   ściskałoby gradient `from-accent to-accent-2` i zaokrąglone końcówki —
-   linia wyglądałaby na rozciąganą, nie rysowaną. Ten sam zapis geometrii
-   obsługuje obie ścieżki niżej, różni je tylko to, co pcha animację. */
-html.js [data-rope] {
-	clip-path: inset(0 0 100% 0);
-	transition: clip-path 0.6s var(--ease-out-expo);
+/* Rysowanie sznurka: `stroke-dashoffset` na znormalizowanej ścieżce
+   (`pathLength="1"`, patrz ProcessStep.astro). Czubek biegnie WZDŁUŻ łuku —
+   maska `clip-path` ścinałaby krzywą prostopadle, a `transform: scale()`
+   ściskałby gradient i zaokrąglone końcówki. Ten sam zapis obsługuje obie
+   ścieżki niżej, różni je tylko to, co pcha animację. */
+/* Dwie liczby, które wyglądają na kaprys, a nie są:
+
+   `stroke-dasharray: 1 2` — kreska równa całej ścieżce, ale przerwa DWA razy
+   dłuższa. Przy zapisie `1` (kreska 1, przerwa 1) wzór się powtarza i przy
+   offsecie powyżej jedynki w kadr wjeżdża kolejna kreska, zostawiając ogonek
+   na końcu odcinka. Przerwa 2 odsuwa następną kreskę poza ścieżkę.
+
+   `stroke-dashoffset: 1.02`, nie równe 1 — przy równym 1 granica kreski wypada
+   dokładnie na początku ścieżki i `stroke-linecap: round` maluje tam kropkę,
+   mimo że nic nie jest jeszcze narysowane. Nadmiarowe 2% spycha zaokrąglenie
+   poza ścieżkę. */
+html.js [data-rope] path {
+	stroke-dasharray: 1 2;
+	stroke-dashoffset: 1.02;
+	transition: stroke-dashoffset 0.6s var(--ease-out-expo);
 	transition-delay: var(--reveal-delay, 0ms);
 }
+
 html.js [data-process-badge] {
 	opacity: 0;
 	transform: scale(0.9);
@@ -561,8 +570,8 @@ html.js [data-process-card] {
 		transform 0.6s var(--ease-out-expo);
 	transition-delay: var(--reveal-delay, 0ms);
 }
-html.js [data-process-step].is-visible [data-rope] {
-	clip-path: inset(0 0 0 0);
+html.js [data-process-step].is-visible [data-rope] path {
+	stroke-dashoffset: 0;
 }
 html.js [data-process-step].is-visible [data-process-badge],
 html.js [data-process-step].is-visible [data-process-card] {
@@ -570,9 +579,6 @@ html.js [data-process-step].is-visible [data-process-card] {
 	transform: none;
 }
 @media (min-width: 64rem) {
-	html.js [data-rope] {
-		clip-path: inset(0 100% 0 0);
-	}
 	/* Kaskada kroków ma sens wyłącznie w układzie poziomym: cztery kafelki
 	   wchodzą w viewport naraz, więc dopiero opóźnienie buduje kolejność
 	   etapów. W pionie każdy krok pojawia się we własnym momencie scrolla i
@@ -619,8 +625,8 @@ html.js [data-process-step].is-visible [data-process-card] {
 			view-timeline-axis: block;
 
 			--seq-from: 3%; /* gdzie łańcuch startuje w postępie `cover` */
-			--badge-span: 8%; /* ile scrolla trwa zapalenie numerka */
-			--rope-span: 15%; /* ile scrolla trwa jeden odcinek */
+			--badge-span: 6%; /* ile scrolla trwa zapalenie numerka */
+			--rope-span: 14%; /* ile scrolla trwa jeden odcinek */
 			--card-span: 13%; /* ile scrolla trwa dojazd kafelka */
 
 			/* INWARIANT: --step-advance = --badge-span + --rope-span.
@@ -633,11 +639,13 @@ html.js [data-process-step].is-visible [data-process-card] {
 			   Mniej zostawia dziurę w łańcuchu, więcej — przestój.
 
 			   Sufit tempa: łańcuch kończy się w
-			   `--seq-from + 3 × --step-advance + --card-span` i musi zmieścić
-			   się poniżej ≈ 90% postępu, bo powyżej ostatni numerek zapalałby
-			   się już po wyjechaniu górą z ekranu. Stąd 3 + 69 + 13 = 85% —
-			   praktyczne maksimum przy tym odstępie między krokami. */
-			--step-advance: 23%;
+			   `--seq-from + 3 × --step-advance + --card-span`. Górna granica to
+			   nie „ostatni numerek jeszcze na ekranie", tylko „jeszcze pod
+			   przyklejonym paskiem nawigacji" (73 px) — przy 85% ostatni etap
+			   domykał się dokładnie w chwili, gdy rząd numerków wsuwał się pod
+			   navbar. Stąd 3 + 60 + 13 = 76%: wolniej się nie da bez zwiększenia
+			   odstępów między krokami. */
+			--step-advance: 20%;
 		}
 		[data-process-badge] {
 			animation-name: badgeArrive;
@@ -668,8 +676,11 @@ html.js [data-process-step].is-visible [data-process-card] {
 						var(--step-advance)
 				);
 		}
-		[data-rope] {
-			animation-name: ropeDrawY;
+		/* Oba układy jadą tymi samymi klatkami i tym samym zestawem liczb:
+		   kierunek rysowania siedzi w `d` ścieżki, a procenty same skalują się
+		   do wysokości listy (w pionie wysokiej, w poziomie niskiej). */
+		[data-rope] path {
+			animation-name: ropeDraw;
 			animation-timing-function: linear;
 			animation-fill-mode: both;
 			animation-timeline: --step;
@@ -682,15 +693,6 @@ html.js [data-process-step].is-visible [data-process-card] {
 					var(--seq-from) + var(--badge-span) + var(--rope-span) +
 						var(--process-i, 0) * var(--step-advance)
 				);
-		}
-
-		/* Oba układy chodzą na tym samym zestawie liczb — wspólna oś sprawia,
-		   że procenty same skalują się do wysokości listy (w pionie wysokiej,
-		   w poziomie niskiej). Różnica jest jedna: kierunek rysowania. */
-		@media (min-width: 64rem) {
-			[data-rope] {
-				animation-name: ropeDrawX;
-			}
 		}
 	}
 }
@@ -888,10 +890,10 @@ details[data-about-more][open] [data-tl-item] {
 	[data-parallax] {
 		transform: none !important;
 	}
-	/* Sznurek odsłania się `clip-path`, więc wyzerowanie samego `transform`
-	   zostawiłoby go przyciętym do zera i niewidocznym. */
-	html.js [data-rope] {
-		clip-path: none !important;
+	/* Sznurek rysuje się `stroke-dashoffset`, więc bez wyzerowania go tutaj
+	   zostałby nienarysowany i niewidoczny. */
+	html.js [data-rope] path {
+		stroke-dashoffset: 0 !important;
 	}
 	html.js [data-process-badge],
 	html.js [data-process-card] {

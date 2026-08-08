@@ -33,12 +33,73 @@ const { index, title, description, isLast } = Astro.props;
 	class="relative grid grid-cols-[44px_minmax(0,1fr)] items-start gap-x-4 lg:flex lg:flex-col lg:items-stretch"
 >
 	{
+		/*
+			Sznurek to rysowana ścieżka SVG, nie kreska odsłaniana maską —
+			`stroke-dashoffset` prowadzi czubek wzdłuż linii i zostawia mu
+			zaokrągloną końcówkę, czego `clip-path` nie daje (przesuwałby tylko
+			prostokątną maskę po gotowym kształcie).
+
+			`pathLength="1"` normalizuje długość ścieżki do jedynki niezależnie
+			od jej rozmiaru, więc `stroke-dasharray` + `dashoffset: 1 → 0`
+			rysuje ją w całości na każdym ekranie — bez mierzenia
+			`getTotalLength()` w JS. Ten sam chwyt co przy checkmarku sukcesu
+			formularza (ContactSuccess.astro).
+
+			Dwa osobne `<svg>`, bo `viewBox` ani `d` nie są sterowalne z media
+			query, a każdy układ potrzebuje własnej orientacji.
+
+			Oś POPRZECZNA ma dokładnie 4 px i tyle samo jednostek viewBoxa,
+			czyli mapuje się 1:1. To trzyma grubość kreski na równych 2 px:
+			grubość mierzy się w poprzek linii, więc decyduje o niej skala
+			właśnie tej osi. Zmiana szerokości pudełka MUSI iść w parze ze
+			zmianą viewBoxa, inaczej kreska zmieni grubość. Oś wzdłużna
+			rozciąga się dowolnie — tam ścieżka i tak biegnie prosto od
+			numerka do numerka.
+
+			Dlatego NIE ma tu `vector-effect="non-scaling-stroke"`, choć przy
+			`preserveAspectRatio="none"` byłby odruchem. Liczy on wzór
+			kreskowania w przestrzeni ekranu, podczas gdy `pathLength`
+			normalizuje go w przestrzeni użytkownika — te dwa mechanizmy się
+			gryzą i odcinek rozpada się na kilka osobnych kawałków
+			(sprawdzone). Przy osi poprzecznej 1:1 nie jest potrzebny.
+		*/
 		!isLast && (
-			<span
-				data-rope
-				aria-hidden="true"
-				class="pointer-events-none absolute top-[22px] left-[21px] h-[calc(100%+var(--rope-gap))] w-0.5 rounded-full bg-linear-to-b from-accent to-accent-2 lg:top-[21px] lg:left-[22px] lg:h-0.5 lg:w-[calc(100%+var(--rope-gap))] lg:bg-linear-to-r"
-			/>
+			<Fragment>
+				<svg
+					data-rope
+					aria-hidden="true"
+					focusable="false"
+					fill="none"
+					viewBox="0 0 4 100"
+					preserveAspectRatio="none"
+					class="pointer-events-none absolute top-[22px] left-[20px] h-[calc(100%+var(--rope-gap))] w-1 lg:hidden"
+				>
+					<path
+						pathLength="1"
+						d="M2 0 L2 100"
+						stroke="url(#rope-gradient-y)"
+						stroke-width="2"
+						stroke-linecap="round"
+					/>
+				</svg>
+				<svg
+					data-rope
+					aria-hidden="true"
+					focusable="false"
+					fill="none"
+					viewBox="0 0 100 4"
+					preserveAspectRatio="none"
+					class="pointer-events-none absolute top-[20px] left-[22px] hidden h-1 w-[calc(100%+var(--rope-gap))] lg:block"
+				>
+					<path
+						pathLength="1"
+						d="M0 2 L100 2"
+						stroke="url(#rope-gradient-x)"
+						stroke-width="2"
+						stroke-linecap="round"
+					/>
+				</svg>
+			</Fragment>
 		)
 	}
 	<div
