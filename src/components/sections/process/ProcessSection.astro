@@ -45,7 +45,10 @@ const steps: Step[] = [
 	     Do `lg` układ jest pionowy (sznurek biegnie w dół po lewej), od `lg`
 	     poziomy; pośredniego wariantu 2×2 nie ma, bo sznurek musiałby w nim
 	     zawracać. -->
+	<!-- `data-process-track` niesie oś czasu widoku dla całej sekwencji —
+	     wspólną dla czterech kroków, patrz global.css. -->
 	<ol
+		data-process-track
 		role="list"
 		class="mx-auto grid max-w-[46rem] gap-[var(--rope-gap)] [--rope-gap:14px] lg:max-w-none lg:grid-cols-4 lg:[--rope-gap:20px]"
 	>
