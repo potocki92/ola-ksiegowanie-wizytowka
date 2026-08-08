@@ -2,16 +2,17 @@
 import { defineConfig } from 'astro/config';
 import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-	// TODO: set `site` to the production domain once one is registered —
-	// needed for absolute canonical/OG URLs and the sitemap.
+	site: 'https://www.potockaksiegowosc.pl',
 
 	// `output` stays static: every page is prerendered at build time. The
 	// adapter exists for the single route that opts out via
 	// `export const prerender = false` — src/pages/api/contact.ts.
 	adapter: vercel(),
+	integrations: [sitemap()],
 	vite: {
 		plugins: [tailwindcss()],
 	},

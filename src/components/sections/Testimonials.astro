@@ -1,0 +1,29 @@
+---
+import Section from "../ui/Section.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import { testimonials } from "../../data/testimonials";
+---
+
+{
+	testimonials.length > 0 && (
+		<Section id="opinie" padding="compact">
+			<SectionHeading eyebrow="Opinie klientów" heading="Co mówią klienci" size="md" headingWidth="md" />
+
+			<div class="grid gap-4 md:grid-cols-3">
+				{testimonials.map((item) => (
+					<figure class="flex flex-col rounded-3xl border border-border-2 bg-white p-[clamp(22px,2.2vw,30px)] shadow-[0_12px_30px_-24px_rgba(11,11,18,0.22)]">
+						<blockquote class="text-[15px] leading-[1.6] text-muted-600">"{item.quote}"</blockquote>
+						<figcaption class="mt-4 text-[13.5px] font-bold text-ink">
+							{item.author}
+							{(item.company || item.industry) && (
+								<span class="block text-[12.5px] font-medium text-muted-300">
+									{[item.company, item.industry].filter(Boolean).join(" · ")}
+								</span>
+							)}
+						</figcaption>
+					</figure>
+				))}
+			</div>
+		</Section>
+	)
+}

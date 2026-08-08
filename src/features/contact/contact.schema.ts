@@ -20,6 +20,23 @@ const phoneSchema = z
     { error: "Numer telefonu wygląda na niekompletny" },
   );
 
+const inquiryTypeOptions = [
+  "Prowadzenie JDG",
+  "Założenie działalności",
+  "Zmiana biura rachunkowego",
+  "Kadry i płace",
+  "Rozliczenie roczne PIT",
+  "Inne",
+] as const;
+
+const monthlyDocumentsOptions = [
+  "Jeszcze nie wiem",
+  "Do 10",
+  "11–20",
+  "21–50",
+  "Powyżej 50",
+] as const;
+
 export const contactSubmissionSchema = z.object({
   // `error` powtarza się na `z.string()` i na `.min()` celowo: pierwszy łapie
   // pole całkiem nieobecne w zgłoszeniu, drugi pole obecne, ale za krótkie.
@@ -50,6 +67,18 @@ export const contactSubmissionSchema = z.object({
     .min(10, { error: "Opisz krótko, czego potrzebujesz (min. 10 znaków)" })
     // Górny limit chroni skrzynkę przed zalaniem jednym zgłoszeniem.
     .max(2000, { error: "Wiadomość może mieć maksymalnie 2000 znaków" }),
+
+  // Oba pola niżej są opcjonalne — puste "" z formularza zamieniamy na
+  // undefined tym samym wzorcem co przy `phone`.
+  inquiryType: z
+    .union([z.enum(inquiryTypeOptions), z.literal("")])
+    .optional()
+    .transform((value) => (value ? value : undefined)),
+
+  monthlyDocuments: z
+    .union([z.enum(monthlyDocumentsOptions), z.literal("")])
+    .optional()
+    .transform((value) => (value ? value : undefined)),
 
   // Honeypot — pole ukryte przed człowiekiem, wypełniane przez boty.
   company: z.string().max(100).optional(),
