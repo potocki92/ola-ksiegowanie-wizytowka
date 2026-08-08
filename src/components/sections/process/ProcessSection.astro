@@ -45,6 +45,22 @@ const steps: Step[] = [
 	     Do `lg` układ jest pionowy (sznurek biegnie w dół po lewej), od `lg`
 	     poziomy; pośredniego wariantu 2×2 nie ma, bo sznurek musiałby w nim
 	     zawracać. -->
+	<!-- Gradient sznurka zdefiniowany raz na sekcję i referowany przez
+	     `stroke="url(#…)"` z każdego odcinka — referencja działa między
+	     osobnymi `<svg>` w tym samym dokumencie. Dwa warianty, bo kierunek
+	     przebiegu musi iść wzdłuż odcinka: w pionie w dół, w poziomie w bok. -->
+	<svg aria-hidden="true" focusable="false" class="absolute h-0 w-0 overflow-hidden">
+		<defs>
+			<linearGradient id="rope-gradient-y" x1="0" y1="0" x2="0" y2="1">
+				<stop offset="0%" stop-color="var(--color-accent)" />
+				<stop offset="100%" stop-color="var(--color-accent-2)" />
+			</linearGradient>
+			<linearGradient id="rope-gradient-x" x1="0" y1="0" x2="1" y2="0">
+				<stop offset="0%" stop-color="var(--color-accent)" />
+				<stop offset="100%" stop-color="var(--color-accent-2)" />
+			</linearGradient>
+		</defs>
+	</svg>
 	<!-- `data-process-track` niesie oś czasu widoku dla całej sekwencji —
 	     wspólną dla czterech kroków, patrz global.css. -->
 	<ol
