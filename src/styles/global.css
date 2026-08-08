@@ -100,16 +100,14 @@
 	--color-border-4: #f0f1f6;
 	--color-border-5: #dddfea;
 
-	--color-surface-tint: #eef1f6;
+	--color-surface-tint: #eef0ff;
 	--color-surface-1: #f6f7fb;
-	--color-surface-2: #f1f2f7;
 
 	/* Jedna krzywa dla całej strony. `ease` (domyślna) wyhamowuje leniwie i
 	   każdy ruch wygląda przez to tak samo przeciętnie; easeOutExpo rusza
 	   ostro i dociąga do końca — to ta różnica, która czyta się jako
 	   „dopracowane", a nie „animowane". */
 	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-	--ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 
 	--animate-rise-in: riseIn 0.8s var(--ease-out-expo) both;
 	--animate-rise-in-delayed: riseIn 1s var(--ease-out-expo) 0.12s both;
@@ -443,7 +441,7 @@ html.js [data-reveal="scale"] {
    „za jednym zamachem", ale `clip-path` inne niż `none` przycina cień
    wychodzący poza ramkę ORAZ tworzy kontekst układania — karty zaczęłyby
    zasłaniać elementy pozycjonowane nad nimi (np. nitkę w sekcji „Jak
-   zaczynamy"). Odsłanianie maską ma własną animację: `mediaReveal`. */
+   zaczynamy"). */
 html.js [data-reveal].is-visible,
 html.js [data-reveal-group].is-visible [data-reveal] {
 	opacity: 1;
@@ -721,21 +719,6 @@ html.js [data-process-step].is-visible [data-process-card] {
 	}
 }
 
-/* --- Animacje: oś czasu kwalifikacji („O mnie") --- */
-/* Wpisy siedzą w zwiniętym <details>, więc obserwator scrolla ich nie widzi.
-   Animacja wisi na `[open]` i odtwarza się przy każdym rozwinięciu. */
-[data-tl-rail] {
-	transform-origin: top center;
-}
-details[data-about-more][open] [data-tl-rail] {
-	animation: railGrow 0.4s var(--ease-out-expo) both;
-	animation-delay: calc(var(--tl-i, 0) * 60ms);
-}
-details[data-about-more][open] [data-tl-item] {
-	animation: timelineItem 0.5s var(--ease-out-expo) both;
-	animation-delay: calc(var(--tl-i, 0) * 60ms);
-}
-
 /* --- Animacje: podświetlenie karty podążające za kursorem --- */
 /* Gradient leci jako `background-image`, więc maluje się nad `background-color`
    karty i pod jej treścią — bez pseudoelementu, który przy `z-index: 0`
@@ -762,100 +745,6 @@ details[data-about-more][open] [data-tl-item] {
 	[data-glow]:hover {
 		--glow-a: 1;
 	}
-}
-
-/* --- Animacje: przyciski --- */
-/* Sam hover bez stanu wciśnięcia sprawia, że przycisk wydaje się „obrazkiem".
-   Przesunięcie wraca do zera i dochodzi mikroskala — to daje odczucie kliknięcia. */
-/* `translate`/`scale` jako osobne właściwości, a nie `transform` — Tailwind v4
-   realizuje `hover:-translate-y-0.5` przez `translate`, więc transform by go
-   nie skasował i przycisk zostałby uniesiony w trakcie wciśnięcia. Reguła jest
-   poza `@layer`, dzięki czemu wygrywa z utility niezależnie od kolejności. */
-.btn-press:active {
-	translate: 0 0;
-	scale: 0.98;
-	transition-duration: 0.06s;
-}
-
-/* Refleks przejeżdżający po głównym CTA. `overflow: hidden` trzyma go w
-   zaokrągleniu, `pointer-events: none` nie odbiera kliknięcia. */
-.btn-sheen {
-	position: relative;
-	overflow: hidden;
-}
-.btn-sheen::after {
-	content: "";
-	position: absolute;
-	top: -50%;
-	bottom: -50%;
-	left: 0;
-	width: 45%;
-	pointer-events: none;
-	background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
-	transform: translateX(-120%) skewX(-18deg);
-}
-@media (hover: hover) {
-	.btn-sheen:hover::after {
-		animation: sheen 0.85s var(--ease-out-soft);
-	}
-}
-
-/* --- Animacje: rozwijanie FAQ --- */
-[data-faq-answer] {
-	display: grid;
-	grid-template-rows: 0fr;
-	transition: grid-template-rows 0.3s var(--ease-out-soft);
-}
-[data-faq-answer].is-open {
-	grid-template-rows: 1fr;
-}
-[data-faq-answer] > div {
-	overflow: hidden;
-}
-
-/* --- Animacje: stan wysyłki formularza --- */
-/* Etykieta i spinner są osobnymi elementami, bo skrypt podmieniał wcześniej
-   `textContent` całego przycisku — co skasowałoby spinner razem z tekstem. */
-[data-spinner] {
-	display: none;
-	height: 17px;
-	width: 17px;
-	flex: 0 0 auto;
-	border-radius: 9999px;
-	border: 2px solid rgba(255, 255, 255, 0.35);
-	border-top-color: #fff;
-	animation: spin 0.7s linear infinite;
-}
-[data-submit][data-loading] [data-spinner] {
-	display: block;
-}
-
-/* Komunikat błędu wraca z `hidden`, czyli z `display: none` — przejścia by się
-   nie odpaliły, animacja startuje dopiero przy pojawieniu elementu. */
-[data-form-error]:not([hidden]) {
-	animation: sheetUp 0.3s var(--ease-out-soft) both;
-}
-
-/* Formularz nie znika skokiem: najpierw się wycofuje, potem skrypt chowa go
-   na dobre i pokazuje panel podziękowania. */
-[data-form-leaving] {
-	opacity: 0;
-	transform: scale(0.985);
-	transition:
-		opacity 0.22s ease,
-		transform 0.22s ease;
-}
-[data-contact-success]:not([hidden]),
-[data-intake-success]:not([hidden]) {
-	animation: riseIn 0.5s var(--ease-out-expo) both;
-}
-
-/* --- Animacje: menu mobilne --- */
-/* Panel wjeżdżał jako całość, przez co linki „były już na miejscu". Ten sam
-   stagger co w reveal robi z niego dopracowany overlay. */
-#mobile-menu:not([hidden]) [data-menu-item] {
-	animation: riseIn 0.42s var(--ease-out-expo) both;
-	animation-delay: calc(80ms + var(--menu-i, 0) * 55ms);
 }
 
 /* --- Animacje: rozwijanie FAQ --- */
@@ -923,15 +812,6 @@ details[data-about-more][open] [data-tl-item] {
 	html.js [data-process-card] {
 		opacity: 1 !important;
 		transform: none !important;
-	}
-	[data-tl-rail] {
-		transform: scaleY(1) !important;
-	}
-	[data-nav-indicator] {
-		transition: none !important;
-	}
-	[data-form-leaving] {
-		opacity: 0 !important;
 	}
 	[data-contact-success] .check-draw path,
 	[data-intake-success] .check-draw path {

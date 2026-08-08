@@ -135,9 +135,10 @@ const jsonLd = {
 		<script>
 			import "../lib/scrollReveal";
 			import "../lib/cardGlow";
-			// Parallax nie ma już swojego modułu — robi go `animation-timeline: view()`
-			// w global.css, czyli bez JS na wątku głównym. Patrz komentarz przy
-			// sekcji „Animacje: parallax".
+			// TYMCZASOWO WYŁĄCZONE — test diagnostyczny: sprawdzamy, czy ciągłe
+			// aktualizowanie transformu przez parallax (rAF na każdej klatce
+			// scrolla) jest przyczyną białego błysku pod navbarem na iOS Safari.
+			// import "../lib/parallax";
 		</script>
 	</body>
 </html>
