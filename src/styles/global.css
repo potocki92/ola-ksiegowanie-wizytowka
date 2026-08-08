@@ -591,10 +591,22 @@ html.js [data-process-step].is-visible [data-process-card] {
    Animacje CSS wygrywają z deklaracjami zwykłymi, więc nie trzeba zerować
    `transition` — keyframes po prostu nadpisują ich wartości.
 
-   Jedna oś czasu na krok (`--step` na `<li>`), a nie `view()` osobno na
-   każdym elemencie: sznurek ma 2 px, kafelek ~180 px, więc ich własne
-   zakresy `cover` miałyby różne długości i choreografia by pływała.
-   Nazwana oś jest wyszukiwana na przodkach, więc `timeline-scope` odpada. */
+   JEDNA oś czasu na całą listę (`--step` na `[data-process-track]`), nie na
+   pojedynczym kroku. To nie jest kosmetyka, tylko warunek poprawnej
+   kolejności. Odcinek N mieszka w kroku N, a numerek N+1 w kroku N+1 —
+   przy osi na kroku są to DWIE różne osie, przesunięte o wysokość kroku,
+   więc „odcinek dobiega do numerka" trzeba by trafić przypadkiem. Co
+   gorsza, wychodził z tego sufit tempa: przy H = wysokość kroku,
+   G = odstęp, V = viewport, numerek N+1 wypada po odcinku N tylko gdy
+   `--badge-span + --rope-span ≤ (H+G)/(V+H)` — w pionie ≈ 15,6%, czyli
+   dokładnie tyle scrolla, ile wynosi fizyczny odstęp między krokami.
+   Każde spowolnienie ponad ten próg rozjeżdżało kolejność (numerek 3
+   zapalał się, zanim narysował się odcinek 2→3).
+
+   Wspólna oś usuwa jedno i drugie: wszystkie kroki czytają ten sam postęp,
+   kolejność wynika z indeksu, a zakres liczy się z wysokości całej listy,
+   więc na sekwencję jest kilkakrotnie więcej scrolla. Nazwana oś jest
+   wyszukiwana na przodkach, więc `timeline-scope` nie jest potrzebny. */
 @supports (animation-timeline: view()) {
 	@media (prefers-reduced-motion: no-preference) {
 		/* Łańcuch jest ściśle sekwencyjny: węzeł → odcinek → następny węzeł.
@@ -602,18 +614,30 @@ html.js [data-process-step].is-visible [data-process-card] {
 		   w danym momencie rusza się dokładnie jedna rzecz, a wszystko przed
 		   nią jest już gotowe. Odcinki puszczone równolegle wyglądały jak
 		   luźne kreski wiszące w miejscach, gdzie numerka jeszcze nie ma. */
-		[data-process-step] {
+		[data-process-track] {
 			view-timeline-name: --step;
 			view-timeline-axis: block;
 
-			--seq-from: 8%; /* gdzie łańcuch startuje w postępie `cover` */
-			--badge-span: 6%; /* ile scrolla trwa zapalenie numerka */
-			--rope-span: 18%; /* ile scrolla trwa jeden odcinek */
-			--card-span: 20%; /* ile scrolla trwa dojazd kafelka */
-			/* O ile przesuwa się okno kolejnego kroku. W pionie zero: każdy
-			   krok ma własną oś i wchodzi w swoim momencie scrolla, więc
-			   czekanie na sąsiada byłoby tylko zwłoką. */
-			--step-advance: 0%;
+			--seq-from: 3%; /* gdzie łańcuch startuje w postępie `cover` */
+			--badge-span: 8%; /* ile scrolla trwa zapalenie numerka */
+			--rope-span: 15%; /* ile scrolla trwa jeden odcinek */
+			--card-span: 13%; /* ile scrolla trwa dojazd kafelka */
+
+			/* INWARIANT: --step-advance = --badge-span + --rope-span.
+			   Przy wspólnej osi numerek N+1 startuje w
+			   `--seq-from + (N+1) × --step-advance`, a odcinek N kończy się w
+			   `--seq-from + --badge-span + --rope-span + N × --step-advance`.
+			   Równość tych dwóch wyrażeń to właśnie ten inwariant — dzięki
+			   niemu „odcinek dobiega dokładnie wtedy, gdy zapala się następny
+			   numerek" wynika z arytmetyki, a nie z dobranych liczb.
+			   Mniej zostawia dziurę w łańcuchu, więcej — przestój.
+
+			   Sufit tempa: łańcuch kończy się w
+			   `--seq-from + 3 × --step-advance + --card-span` i musi zmieścić
+			   się poniżej ≈ 90% postępu, bo powyżej ostatni numerek zapalałby
+			   się już po wyjechaniu górą z ekranu. Stąd 3 + 69 + 13 = 85% —
+			   praktyczne maksimum przy tym odstępie między krokami. */
+			--step-advance: 23%;
 		}
 		[data-process-badge] {
 			animation-name: badgeArrive;
@@ -660,23 +684,10 @@ html.js [data-process-step].is-visible [data-process-card] {
 				);
 		}
 
+		/* Oba układy chodzą na tym samym zestawie liczb — wspólna oś sprawia,
+		   że procenty same skalują się do wysokości listy (w pionie wysokiej,
+		   w poziomie niskiej). Różnica jest jedna: kierunek rysowania. */
 		@media (min-width: 64rem) {
-			[data-process-step] {
-				/* Poziomo wszystkie cztery kroki mają identyczny postęp osi
-				   (ten sam wiersz, ta sama wysokość), więc kolejność etapów
-				   musi zbudować przesunięcie okien — kaskada liczona
-				   w scrollu, nie w milisekundach.
-
-				   INWARIANT: --step-advance = --badge-span + --rope-span.
-				   Mniej zostawia dziurę w łańcuchu (odcinek rusza, zanim
-				   zapali się jego węzeł), więcej — przestój między krokami.
-				   Okna są tu ciaśniejsze niż w pionie, bo cztery kroki
-				   ustawiają się jeden za drugim na tej samej osi. */
-				--badge-span: 5%;
-				--rope-span: 10%;
-				--card-span: 12%;
-				--step-advance: 15%;
-			}
 			[data-rope] {
 				animation-name: ropeDrawX;
 			}
