@@ -492,13 +492,16 @@ html.js [data-reveal-group].is-visible [data-reveal] {
 		stroke-dashoffset: 0;
 	}
 }
+/* Sama skala, BEZ `opacity` — to nie jest kwestia gustu. Numerek siedzi na
+   styku dwóch odcinków sznurka, a łańcuch gwarantuje, że w chwili jego
+   pojawienia się kreska jest już dorysowana do jego środka. Półprzezroczysty
+   kafelek pokazywałby więc linię pod spodem. Przy skali jest nieprzezroczysty
+   na każdym etapie: węzeł po prostu wyrasta z linii. */
 @keyframes badgeArrive {
 	from {
-		opacity: 0;
-		transform: scale(0.9);
+		transform: scale(0);
 	}
 	to {
-		opacity: 1;
 		transform: none;
 	}
 }
@@ -554,12 +557,12 @@ html.js [data-rope] path {
 	transition-delay: var(--reveal-delay, 0ms);
 }
 
+/* Bez `opacity` — patrz uzasadnienie przy `@keyframes badgeArrive`. Ścieżka
+   zapasowa musi zachowywać się tak samo, inaczej starsze przeglądarki
+   dostałyby prześwitującą kreskę pod numerkiem. */
 html.js [data-process-badge] {
-	opacity: 0;
-	transform: scale(0.9);
-	transition:
-		opacity 0.4s var(--ease-out-expo),
-		transform 0.4s var(--ease-out-expo);
+	transform: scale(0);
+	transition: transform 0.4s var(--ease-out-expo);
 	transition-delay: var(--reveal-delay, 0ms);
 }
 html.js [data-process-card] {
@@ -597,22 +600,24 @@ html.js [data-process-step].is-visible [data-process-card] {
    Animacje CSS wygrywają z deklaracjami zwykłymi, więc nie trzeba zerować
    `transition` — keyframes po prostu nadpisują ich wartości.
 
-   JEDNA oś czasu na całą listę (`--step` na `[data-process-track]`), nie na
-   pojedynczym kroku. To nie jest kosmetyka, tylko warunek poprawnej
-   kolejności. Odcinek N mieszka w kroku N, a numerek N+1 w kroku N+1 —
-   przy osi na kroku są to DWIE różne osie, przesunięte o wysokość kroku,
-   więc „odcinek dobiega do numerka" trzeba by trafić przypadkiem. Co
-   gorsza, wychodził z tego sufit tempa: przy H = wysokość kroku,
-   G = odstęp, V = viewport, numerek N+1 wypada po odcinku N tylko gdy
-   `--badge-span + --rope-span ≤ (H+G)/(V+H)` — w pionie ≈ 15,6%, czyli
-   dokładnie tyle scrolla, ile wynosi fizyczny odstęp między krokami.
-   Każde spowolnienie ponad ten próg rozjeżdżało kolejność (numerek 3
-   zapalał się, zanim narysował się odcinek 2→3).
+   DWIE osie czasu, bo dwa układy mają przeciwne potrzeby.
 
-   Wspólna oś usuwa jedno i drugie: wszystkie kroki czytają ten sam postęp,
-   kolejność wynika z indeksu, a zakres liczy się z wysokości całej listy,
-   więc na sekwencję jest kilkakrotnie więcej scrolla. Nazwana oś jest
-   wyszukiwana na przodkach, więc `timeline-scope` nie jest potrzebny. */
+   W PIONIE kroki są rozłożone w dół strony, więc każdy ma animować się
+   w momencie, w którym sam przecina ekran — inaczej kolejne karty pojawiają
+   się coraz wyżej. Dlatego oś siedzi na KROKU, a zakres liczy się w `entry`
+   (przecinanie krawędzi, długość = wysokość samego kroku), nie w `cover`
+   (cała droga przez ekran, długość = viewport + krok). `view-timeline-inset`
+   przesuwa linię wyzwalania z dolnej krawędzi na 75% wysokości okna.
+   Efekt: każdy krok rusza przy tej samej linii ekranu, niezależnie od tego,
+   czy karta ma dwie czy cztery linijki i jak wysokie jest okno.
+
+   W POZIOMIE (`lg`) wszystkie cztery kroki stoją w jednym wierszu, na tej
+   samej wysokości — `entry` odpaliłoby je równocześnie. Kolejność musi tam
+   budować przesunięcie zakresu na wspólnej osi listy (`--track`, `cover`
+   + `--process-i`).
+
+   Obie osie istnieją równocześnie i nie kolidują: nazwana oś jest szukana
+   na przodkach, więc dziecko sięga po `--track` mimo bliższego `--step`. */
 @supports (animation-timeline: view()) {
 	@media (prefers-reduced-motion: no-preference) {
 		/* Łańcuch jest ściśle sekwencyjny: węzeł → odcinek → następny węzeł.
@@ -620,79 +625,98 @@ html.js [data-process-step].is-visible [data-process-card] {
 		   w danym momencie rusza się dokładnie jedna rzecz, a wszystko przed
 		   nią jest już gotowe. Odcinki puszczone równolegle wyglądały jak
 		   luźne kreski wiszące w miejscach, gdzie numerka jeszcze nie ma. */
-		[data-process-track] {
+		[data-process-step] {
 			view-timeline-name: --step;
 			view-timeline-axis: block;
+			view-timeline-inset: 0 25%;
 
-			--seq-from: 3%; /* gdzie łańcuch startuje w postępie `cover` */
-			--badge-span: 6%; /* ile scrolla trwa zapalenie numerka */
-			--rope-span: 14%; /* ile scrolla trwa jeden odcinek */
-			--card-span: 13%; /* ile scrolla trwa dojazd kafelka */
+			/* Okna w jednostkach `entry` kroku, czyli w ułamkach jego wysokości.
+			   Numerek i karta startują razem — etap pojawia się jako całość.
 
-			/* INWARIANT: --step-advance = --badge-span + --rope-span.
-			   Przy wspólnej osi numerek N+1 startuje w
-			   `--seq-from + (N+1) × --step-advance`, a odcinek N kończy się w
-			   `--seq-from + --badge-span + --rope-span + N × --step-advance`.
-			   Równość tych dwóch wyrażeń to właśnie ten inwariant — dzięki
+			   INWARIANT: --rope-in < 100%. Odcinek N kończy się po
+			   `--rope-in × H` px scrolla od wejścia kroku N, a numerek N+1
+			   startuje po `H + G` px, bo krok N+1 leży o tyle niżej. Warunek
+			   `--rope-in ≤ 1 + G/H` jest więc spełniony dla KAŻDEJ wysokości
+			   karty i każdego okna, o ile trzymamy się poniżej 100%. Przy
+			   zapisie na `cover` ten sufit wynosił 11–16% i zależał od
+			   viewportu, czyli trzeba go było zgadywać. */
+			--badge-in: 18%;
+			--card-in: 32%;
+			--rope-in: 97%;
+		}
+		[data-process-track] {
+			view-timeline-name: --track;
+			view-timeline-axis: block;
+
+			/* Poniższe liczby obowiązują wyłącznie w układzie poziomym.
+			   INWARIANT: --step-advance = --badge-span + --rope-span — dzięki
 			   niemu „odcinek dobiega dokładnie wtedy, gdy zapala się następny
 			   numerek" wynika z arytmetyki, a nie z dobranych liczb.
-			   Mniej zostawia dziurę w łańcuchu, więcej — przestój.
-
-			   Sufit tempa: łańcuch kończy się w
-			   `--seq-from + 3 × --step-advance + --card-span`. Górna granica to
-			   nie „ostatni numerek jeszcze na ekranie", tylko „jeszcze pod
-			   przyklejonym paskiem nawigacji" (73 px) — przy 85% ostatni etap
-			   domykał się dokładnie w chwili, gdy rząd numerków wsuwał się pod
-			   navbar. Stąd 3 + 60 + 13 = 76%: wolniej się nie da bez zwiększenia
-			   odstępów między krokami. */
+			   Sufit: łańcuch kończy się w
+			   `--seq-from + 3 × --step-advance + --card-span` i musi zmieścić
+			   się, zanim rząd numerków wsunie się pod przyklejony navbar. */
+			--seq-from: 3%;
+			--badge-span: 6%;
+			--rope-span: 14%;
+			--card-span: 13%;
 			--step-advance: 20%;
 		}
+
 		[data-process-badge] {
 			animation-name: badgeArrive;
 			animation-timing-function: var(--ease-out-expo);
 			animation-fill-mode: both;
 			animation-timeline: --step;
-			animation-range: cover
-				calc(var(--seq-from) + var(--process-i, 0) * var(--step-advance)) cover
-				calc(
-					var(--seq-from) + var(--badge-span) + var(--process-i, 0) *
-						var(--step-advance)
-				);
+			animation-range: entry 0% entry var(--badge-in);
 		}
-		/* Kafelek rusza razem ze swoim numerkiem — etap ma się pojawiać jako
-		   całość. Puszczony osobno (obserwatorem) wyprzedzał łańcuch: karta
-		   stała już gotowa, a nad nią ziała dziura po numerku, który czekał
-		   na sznurek. Dojazd może zachodzić na rysowanie odcinka, bo odcinek
-		   wychodzi z numerka, który jest już na miejscu. */
 		[data-process-card] {
 			animation-name: processCardIn;
 			animation-timing-function: var(--ease-out-expo);
 			animation-fill-mode: both;
 			animation-timeline: --step;
-			animation-range: cover
-				calc(var(--seq-from) + var(--process-i, 0) * var(--step-advance)) cover
-				calc(
-					var(--seq-from) + var(--card-span) + var(--process-i, 0) *
-						var(--step-advance)
-				);
+			animation-range: entry 0% entry var(--card-in);
 		}
-		/* Oba układy jadą tymi samymi klatkami i tym samym zestawem liczb:
-		   kierunek rysowania siedzi w `d` ścieżki, a procenty same skalują się
-		   do wysokości listy (w pionie wysokiej, w poziomie niskiej). */
 		[data-rope] path {
 			animation-name: ropeDraw;
 			animation-timing-function: linear;
 			animation-fill-mode: both;
 			animation-timeline: --step;
-			animation-range: cover
-				calc(
-					var(--seq-from) + var(--badge-span) + var(--process-i, 0) *
-						var(--step-advance)
-				) cover
-				calc(
-					var(--seq-from) + var(--badge-span) + var(--rope-span) +
-						var(--process-i, 0) * var(--step-advance)
-				);
+			animation-range: entry var(--badge-in) entry var(--rope-in);
+		}
+
+		/* Poziomo: wspólna oś listy i kaskada z indeksu. Klatki i kierunek
+		   rysowania zostają te same — zmienia się tylko, co pcha animację. */
+		@media (min-width: 64rem) {
+			[data-process-badge] {
+				animation-timeline: --track;
+				animation-range: cover
+					calc(var(--seq-from) + var(--process-i, 0) * var(--step-advance)) cover
+					calc(
+						var(--seq-from) + var(--badge-span) + var(--process-i, 0) *
+							var(--step-advance)
+					);
+			}
+			[data-process-card] {
+				animation-timeline: --track;
+				animation-range: cover
+					calc(var(--seq-from) + var(--process-i, 0) * var(--step-advance)) cover
+					calc(
+						var(--seq-from) + var(--card-span) + var(--process-i, 0) *
+							var(--step-advance)
+					);
+			}
+			[data-rope] path {
+				animation-timeline: --track;
+				animation-range: cover
+					calc(
+						var(--seq-from) + var(--badge-span) + var(--process-i, 0) *
+							var(--step-advance)
+					) cover
+					calc(
+						var(--seq-from) + var(--badge-span) + var(--rope-span) +
+							var(--process-i, 0) * var(--step-advance)
+					);
+			}
 		}
 	}
 }
