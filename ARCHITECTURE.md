@@ -90,7 +90,8 @@ kopię stringa.
 |---|---|---|
 | Nazwa marki | `brand.name` | logo, `<title>`, JSON-LD `name`, stopka maili |
 | Księgowa | `brand.accountant` | podpisy w mailach, sekcja „O mnie" |
-| Podmiot, NIP, adres | `legal` | stopka strony, klauzula RODO, stopka maili, JSON-LD |
+| Nazwa podmiotu | `legal.name` | klauzula RODO |
+| NIP i adres | `legal.nip`, `legal.address` | stopka strony, klauzula RODO, stopka maili, JSON-LD |
 | E-mail, telefon | `contact` | sekcja Kontakt, RODO, stopka maili |
 
 Gdy Aleksandra zarejestruje własną działalność, zmienia się wyłącznie obiekt

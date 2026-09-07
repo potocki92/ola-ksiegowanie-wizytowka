@@ -41,7 +41,6 @@ const ogImageURL = Astro.site ? new URL(ogImagePath, Astro.site) : ogImagePath;
 const accountingServiceNode = {
 	"@type": "AccountingService",
 	name: company.brand.name,
-	legalName: company.legal.name,
 	taxID: companyNipFormatted,
 	description,
 	url: Astro.site ? Astro.site.toString() : undefined,

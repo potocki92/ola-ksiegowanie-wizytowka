@@ -103,7 +103,7 @@ ${content}
 ${company.brand.name} · Jelenia Góra, Bolesławiec · online, cała Polska<br />
 <a href="tel:${company.contact.phone.href}" style="color:${COLOR.muted};text-decoration:none;">${company.contact.phone.display}</a> ·
 <a href="mailto:${company.contact.email}" style="color:${COLOR.muted};text-decoration:none;">${company.contact.email}</a><br />
-Usługi świadczy ${company.legal.name}, ${companyAddressLine}, NIP ${companyNipFormatted}
+Biuro rachunkowe, ${companyAddressLine}, NIP ${companyNipFormatted}
 </td>
 </tr>
 
