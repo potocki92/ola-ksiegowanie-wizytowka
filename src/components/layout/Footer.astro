@@ -1,10 +1,6 @@
 ---
 import BrandLockup from "../ui/BrandLockup.astro";
-import {
-	company,
-	companyAddressLine,
-	companyNipFormatted,
-} from "../../data/company";
+import { companyAddressLine, companyNipFormatted } from "../../data/company";
 
 const year = new Date().getFullYear();
 ---
@@ -18,7 +14,7 @@ const year = new Date().getFullYear();
 		<div class="flex flex-col gap-3">
 			<BrandLockup animated={false} size="sm" />
 			<address class="text-[13px] leading-relaxed text-muted-300 not-italic">
-				Usługi świadczy {company.legal.name}<br />
+				Biuro rachunkowe<br />
 				{companyAddressLine}<br />
 				NIP: {companyNipFormatted}
 			</address>
