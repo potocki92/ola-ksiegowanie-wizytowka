@@ -3,6 +3,7 @@ import CheckItem from "../ui/CheckItem.astro";
 import Section from "../ui/Section.astro";
 import Button from "../ui/Button.astro";
 import Image from "../ui/Image.astro";
+import { company } from "../../data/company";
 
 const trustBadges = ["UE Wrocław", "6 lat praktyki", "100% online"];
 ---
@@ -74,7 +75,7 @@ const trustBadges = ["UE Wrocław", "6 lat praktyki", "100% online"];
 				<div data-parallax class="absolute left-0 top-[-8%] h-[116%] w-full">
 					<Image
 						src="/portret.webp"
-						alt="mgr Aleksandra Potocka – księgowa"
+						alt={`mgr ${company.brand.accountant} – księgowa`}
 						width={1024}
 						height={1536}
 						loading="eager"

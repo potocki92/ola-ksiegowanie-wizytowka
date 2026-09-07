@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import SpeedInsights from "@vercel/speed-insights/astro";
+import { company, companyNipFormatted } from "../data/company";
 
 interface Props {
 	title?: string;
@@ -10,7 +11,7 @@ interface Props {
 }
 
 const {
-	title = "Aleksandra Potocka — Księgowość online dla jednoosobowych działalności",
+	title = `${company.brand.name} online dla jednoosobowych działalności`,
 	description = "Prowadzenie i zakładanie JDG, kadry i płace, rozliczenia VAT i ZUS — w pełni zdalnie, w całej Polsce. Bezpłatna pierwsza konsultacja.",
 	noindex = false,
 } = Astro.props;
@@ -20,15 +21,22 @@ const canonicalURL = Astro.site ? new URL(Astro.url.pathname, Astro.site) : Astr
 const jsonLd = {
 	"@context": "https://schema.org",
 	"@type": "AccountingService",
-	name: "Aleksandra Potocka — Księgowość",
+	name: company.brand.name,
+	taxID: companyNipFormatted,
 	description,
-	telephone: "+48533032455",
-	email: "kontakt@potockaksiegowosc.pl",
+	telephone: company.contact.phone.href,
+	email: company.contact.email,
 	areaServed: "PL",
 	address: {
 		"@type": "PostalAddress",
-		addressLocality: "Jelenia Góra",
-		addressCountry: "PL",
+		// Ulica jest opcjonalna — dopóki nie publikujemy adresu domowego, węzeł
+		// nie ma jej wcale, zamiast nieść pusty `streetAddress`.
+		...(company.legal.address.street
+			? { streetAddress: company.legal.address.street }
+			: {}),
+		postalCode: company.legal.address.postalCode,
+		addressLocality: company.legal.address.city,
+		addressCountry: company.legal.address.country,
 	},
 };
 ---

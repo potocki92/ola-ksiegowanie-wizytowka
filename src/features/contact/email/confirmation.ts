@@ -6,6 +6,7 @@ import {
 	renderEmailLayout,
 	renderQuoteBlock,
 } from "../../../lib/email/layout";
+import { company } from "../../../data/company";
 import type { ContactMessage } from "../contact.schema";
 import type { BuiltEmail } from "./owner-notification";
 
@@ -38,7 +39,7 @@ Jeśli sprawa jest pilna, zadzwoń:
 
 <p style="margin:24px 0 0;font-family:${FONT_STACK};font-size:15px;line-height:1.65;color:${COLOR.ink};">
 Do usłyszenia,<br />
-<strong style="font-weight:700;">Aleksandra Potocka</strong>
+<strong style="font-weight:700;">${company.brand.accountant}</strong>
 </p>
 
 <p style="margin:26px 0 0;font-family:${FONT_STACK};font-size:12px;line-height:1.6;color:${COLOR.mutedLight};">
@@ -58,14 +59,14 @@ zignoruj ją, nie podejmiemy żadnych działań.
 		"Jeśli sprawa jest pilna, zadzwoń: 533 032 455",
 		"",
 		"Do usłyszenia,",
-		"Aleksandra Potocka — Księgowość",
+		company.brand.name,
 		"",
 		"Tę wiadomość wysłał automat, bo wypełniłeś formularz na stronie.",
 		"Jeśli to nie Ty — zignoruj ją, nie podejmiemy żadnych działań.",
 	].join("\n");
 
 	return {
-		subject: "Dziękuję za wiadomość — Aleksandra Potocka, Księgowość",
+		subject: `Dziękuję za wiadomość — ${company.brand.accountant}, Księgowość`,
 		html: renderEmailLayout({
 			heading: "Dziękuję za wiadomość",
 			subheading: "Potwierdzenie wysłania formularza",

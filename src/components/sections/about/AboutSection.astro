@@ -3,6 +3,7 @@ import Section from "../../ui/Section.astro";
 import SectionHeading from "../../ui/SectionHeading.astro";
 import AboutBadge from "./AboutBadge.astro";
 import AboutCredentials, { type Highlight, type TimelineEntry } from "./AboutCredentials.astro";
+import { company } from "../../../data/company";
 
 const timeline: TimelineEntry[] = [
 	{
@@ -68,7 +69,7 @@ const highlights: Highlight[] = [
 		<div data-reveal>
 			<SectionHeading
 				eyebrow="O mnie"
-				heading="Aleksandra Potocka"
+				heading={company.brand.accountant}
 				variant="inline"
 				size="md"
 				headingWidth="none"
