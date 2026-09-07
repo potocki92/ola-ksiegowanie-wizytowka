@@ -1,5 +1,6 @@
 ---
 import Logo from "./Logo.astro";
+import { company } from "../../data/company";
 
 interface Props {
 	href?: string;
@@ -10,7 +11,7 @@ interface Props {
 
 const { href, size = "lg", animated = true, class: className } = Astro.props;
 
-const NAME = "ALEKSANDRA POTOCKA";
+const NAME = company.brand.accountant.toUpperCase();
 const TAGLINE = "KSIĘGOWOŚĆ";
 
 // Rozbicie na tablicę znaków. `.bl-name` jest flexem, a w kontenerze flex
@@ -22,9 +23,7 @@ const letters = [...NAME];
 // Bez `href` (stopka, overlay menu) `<a>` byłoby niefokusowalne, więc
 // renderujemy `<div role="img">` — nazwa dostępna ma się wtedy na czym oprzeć.
 const Tag = href ? "a" : "div";
-const label = href
-	? "Aleksandra Potocka — Księgowość, strona główna"
-	: "Aleksandra Potocka — Księgowość";
+const label = href ? `${company.brand.name}, strona główna` : company.brand.name;
 ---
 
 <Tag

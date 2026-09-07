@@ -4,24 +4,25 @@ import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
 import MobileStickyCta from "../components/layout/MobileStickyCta.astro";
 import Section from "../components/ui/Section.astro";
+import {
+	company,
+	companyAddressLine,
+	companyNipFormatted,
+} from "../data/company";
 
-// UWAGA DO UZUPEŁNIENIA PRZED PUBLIKACJĄ:
-// poniższe dane rejestrowe są wymagane w klauzuli informacyjnej RODO,
-// a nie da się ich wyprowadzić z zawartości strony.
 const ADMINISTRATOR = {
-	name: "Aleksandra Potocka",
-	businessName: "{{DO UZUPEŁNIENIA: pełna nazwa działalności}}",
-	address: "{{DO UZUPEŁNIENIA: adres siedziby}}",
-	nip: "{{DO UZUPEŁNIENIA: NIP}}",
-	email: "kontakt@potockaksiegowosc.pl",
-	phone: "533 032 455",
+	name: company.legal.name,
+	address: companyAddressLine,
+	nip: companyNipFormatted,
+	email: company.contact.email,
+	phone: company.contact.phone.display,
 };
 
-const updatedAt = "24 lipca 2026";
+const updatedAt = "28 lipca 2026";
 ---
 
 <Layout
-	title="Polityka prywatności — Aleksandra Potocka, Księgowość"
+	title={`Polityka prywatności — ${company.brand.accountant}, Księgowość`}
 	description="Zasady przetwarzania danych osobowych przekazanych przez formularz kontaktowy: administrator, cel, podstawa prawna, okres przechowywania i prawa osoby, której dane dotyczą."
 >
 	<Header />
@@ -45,11 +46,9 @@ const updatedAt = "24 lipca 2026";
 					<h2>1. Kto przetwarza Twoje dane</h2>
 					<p>
 						Administratorem danych osobowych jest {ADMINISTRATOR.name},
-						<!-- prowadząca działalność gospodarczą pod nazwą {
-							ADMINISTRATOR.businessName
-						}, z siedzibą: {ADMINISTRATOR.address}, NIP: {
-							ADMINISTRATOR.nip
-						}. -->
+						prowadzący jednoosobową działalność gospodarczą z siedzibą: {
+							ADMINISTRATOR.address
+						}, NIP: {ADMINISTRATOR.nip}.
 					</p>
 					<p>
 						Kontakt w sprawie danych osobowych: <a
@@ -70,9 +69,13 @@ const updatedAt = "24 lipca 2026";
 						<li>treść wiadomości.</li>
 					</ul>
 					<p>
-						Nie zbieramy danych automatycznie w celach marketingowych.
-						Strona nie korzysta z plików cookies służących profilowaniu ani
-						z narzędzi śledzących.
+						Nie zbieramy danych automatycznie w celach marketingowych i nie
+						profilujemy odwiedzających. Strona korzysta z Vercel Speed
+						Insights — narzędzia mierzącego szybkość działania strony, które
+						nie używa plików cookies ani innych identyfikatorów pozwalających
+						rozpoznać konkretnego użytkownika. Zbiera wyłącznie zbiorcze
+						statystyki wydajności (np. czas ładowania podstron), bez
+						możliwości powiązania ich z Twoją tożsamością.
 					</p>
 				</section>
 
@@ -124,7 +127,8 @@ const updatedAt = "24 lipca 2026";
 							wiadomości e-mail z formularza;
 						</li>
 						<li>
-							<strong>Vercel Inc.</strong> — hosting strony internetowej.
+							<strong>Vercel Inc.</strong> — hosting strony internetowej oraz
+							anonimowy pomiar wydajności (Vercel Speed Insights).
 						</li>
 					</ul>
 				</section>
