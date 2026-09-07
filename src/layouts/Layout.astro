@@ -46,6 +46,11 @@ const jsonLd = {
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- Bez tego iOS Safari sam podlinkowuje ciągi cyfr z myślnikami jako
+		     numery telefonu — NIP i kod pocztowy w stopce wychodziły niebieskim
+		     linkiem „zadzwoń". Prawdziwe telefony i tak mają jawne `href="tel:"`,
+		     więc heurystyka niczego tu nie wnosi. -->
+		<meta name="format-detection" content="telephone=no" />
 		<meta name="generator" content={Astro.generator} />
 		<script is:inline>
 			document.documentElement.classList.add("js");
