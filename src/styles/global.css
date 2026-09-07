@@ -193,6 +193,16 @@
 		color: var(--color-link);
 		text-decoration: none;
 	}
+
+	/* Pas bezpieczeństwa do `format-detection` z <head>: gdy Safari mimo meta
+	   opakuje NIP albo kod pocztowy własnym detektorem, ma to zostać zwykłym
+	   tekstem, a nie niebieskim linkiem do dzwonienia. */
+	a[x-apple-data-detectors],
+	[x-apple-data-detectors] {
+		color: inherit !important;
+		text-decoration: none !important;
+		pointer-events: none;
+	}
 	a:hover {
 		color: var(--color-link-hover);
 	}
