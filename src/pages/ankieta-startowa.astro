@@ -5,10 +5,11 @@ import Footer from "../components/layout/Footer.astro";
 import MobileStickyCta from "../components/layout/MobileStickyCta.astro";
 import Section from "../components/ui/Section.astro";
 import IntakeForm from "../components/sections/intake/IntakeForm.astro";
+import { company } from "../data/company";
 ---
 
 <Layout
-	title="Ankieta startowa przed rozmową — Aleksandra Potocka, Księgowość"
+	title={`Ankieta startowa przed rozmową — ${company.brand.accountant}, Księgowość`}
 	description="Krótka ankieta o Twojej działalności, dzięki której lepiej przygotuję się do naszej rozmowy."
 	noindex
 >

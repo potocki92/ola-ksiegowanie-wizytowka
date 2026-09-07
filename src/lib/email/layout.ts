@@ -12,6 +12,8 @@
  * Kolory pochodzą z tokenów `@theme` w `src/styles/global.css`.
  */
 
+import { company, companyAddressLine, companyNipFormatted } from "../../data/company";
+
 const COLOR = {
 	bg: "#fbfbfd",
 	ink: "#0b0b12",
@@ -98,9 +100,10 @@ ${content}
 
 <tr>
 <td style="border-top:1px solid ${COLOR.border};padding:22px 36px;font-family:${FONT_STACK};font-size:12px;line-height:1.6;color:${COLOR.mutedLight};">
-Aleksandra Potocka — Księgowość · Jelenia Góra, Bolesławiec · online, cała Polska<br />
-<a href="tel:+48533032455" style="color:${COLOR.muted};text-decoration:none;">533 032 455</a> ·
-<a href="mailto:kontakt@potockaksiegowosc.pl" style="color:${COLOR.muted};text-decoration:none;">kontakt@potockaksiegowosc.pl</a>
+${company.brand.name} · Jelenia Góra, Bolesławiec · online, cała Polska<br />
+<a href="tel:${company.contact.phone.href}" style="color:${COLOR.muted};text-decoration:none;">${company.contact.phone.display}</a> ·
+<a href="mailto:${company.contact.email}" style="color:${COLOR.muted};text-decoration:none;">${company.contact.email}</a><br />
+Usługi świadczy ${company.legal.name}, ${companyAddressLine}, NIP ${companyNipFormatted}
 </td>
 </tr>
 

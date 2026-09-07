@@ -71,11 +71,36 @@ src/
 - **Data**: page copy that repeats (FAQ items, the About timeline) is a
   typed local array in its section component's frontmatter, not a shared
   `lib`/`features` module — it's one-page marketing content, not business
-  logic reused elsewhere yet.
+  logic reused elsewhere yet. The exception is `src/data/` — pricing, FAQ
+  and `company.ts` (brand + registered-business details), which several
+  unrelated places read at once.
 - **SEO**: title/description/canonical/OG/Twitter meta and a
   `AccountingService` JSON-LD block live in `Layout.astro`. `astro.config.mjs`
   has a `site` TODO — set it once a production domain exists so canonical
   URLs and the sitemap resolve to absolute URLs.
+
+## Dane firmy
+
+Marka i podmiot prowadzący działalność to dwie różne rzeczy, więc obie mieszkają
+w jednym pliku — `src/data/company.ts`. Każde miejsce, które pokazuje nazwę,
+NIP, adres, telefon czy e-mail, importuje je stamtąd, zamiast trzymać własną
+kopię stringa.
+
+| Co zmieniasz | Gdzie w `src/data/company.ts` | Gdzie się pojawi |
+|---|---|---|
+| Nazwa marki | `brand.name` | logo, `<title>`, JSON-LD `name`, stopka maili |
+| Księgowa | `brand.accountant` | podpisy w mailach, sekcja „O mnie" |
+| Podmiot, NIP, adres | `legal` | stopka strony, klauzula RODO, stopka maili, JSON-LD |
+| E-mail, telefon | `contact` | sekcja Kontakt, RODO, stopka maili |
+
+Gdy Aleksandra zarejestruje własną działalność, zmienia się wyłącznie obiekt
+`legal` — reszta pliku i pozostałe komponenty bez zmian. Ulicę dodaje się przez
+opcjonalne pole `legal.address.street`: wchodzi wtedy sama do
+`companyAddressLine` i do `streetAddress` w JSON-LD.
+
+Placeholder `{{...}}` zostawiony w `legal` wysypuje build produkcyjny — dane
+rejestrowe idą do klauzuli RODO i stopki, więc nie mogą wyjechać na produkcję
+niewypełnione. W dev to samo sprawdzenie daje tylko ostrzeżenie w konsoli.
 
 ## Shared email infrastructure (`lib/email/`)
 

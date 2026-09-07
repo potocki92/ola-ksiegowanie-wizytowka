@@ -40,7 +40,7 @@ podzielonej na następujące sekcje — każda to osobny komponent w
 | Używane programy | `sections/ToolsStrip.astro` | Pasek z logotypami/nazwami programów księgowych, z których korzysta biuro (Comarch Optima, Symfonia, Płatnik, Subiekt GT, Rachmistrz GT). |
 | Usługi | `sections/Services.astro` | Siatka kafli z ofertą: prowadzenie JDG (zasady ogólne/liniowy/ryczałt), zakładanie JDG (CEIDG, ZUS), kadry i płace, roczne rozliczenia PIT — wraz z kaflami statystyk (cena od, % obsługi zdalnej). |
 | Jak pracuję | `sections/ValueProps.astro` | Trzy karty na temat sposobu współpracy: stały kontakt, indywidualne podejście, księgowość w pełni online. |
-| O mnie | `sections/About.astro` | Bio Aleksandry Potockiej (studia UE Wrocław, doradztwo podatkowe) i osobista linia czasu certyfikatów/kwalifikacji. |
+| O mnie | `sections/about/AboutSection.astro` | Bio Aleksandry Potockiej (studia UE Wrocław, doradztwo podatkowe) i osobista linia czasu certyfikatów/kwalifikacji. |
 | Cennik | `sections/Pricing.astro` | Widełki cenowe prowadzenia JDG (z VAT / bez VAT), co wchodzi w cenę, koszt założenia firmy oraz usługi dodatkowe (kadry i płace, PIT roczny). |
 | Jak zaczynamy | `sections/process/ProcessSection.astro` | Cztery kroki onboardingu: bezpłatna konsultacja → umowa i pełnomocnictwo → przekazanie dokumentów → spokój i terminy. Kroki stoją na „sznurku”, który dorysowuje się przy scrollu — pionowo na mobile, poziomo od `lg`. |
 | FAQ | `sections/Faq.astro` | Rozwijana lista najczęściej zadawanych pytań (akordeon). |
