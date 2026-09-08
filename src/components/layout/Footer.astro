@@ -2,11 +2,26 @@
 import BrandLockup from "../ui/BrandLockup.astro";
 import { companyAddressLine, companyNipFormatted } from "../../data/company";
 
+interface Props {
+	/**
+	 * Czy strona renderuje `MobileStickyCta`. Pasek jest `fixed`, więc na mobile
+	 * przykrywa dół stopki — rezerwujemy pod niego miejsce tylko tam, gdzie
+	 * faktycznie istnieje (inaczej zostaje martwy odstęp, np. na `/ankieta`).
+	 */
+	hasMobileStickyCta?: boolean;
+}
+
+const { hasMobileStickyCta = true } = Astro.props;
+
 const year = new Date().getFullYear();
 ---
 
 <footer
-	class="border-t border-border-2 px-[clamp(18px,4vw,56px)] py-[clamp(32px,4vw,52px)] pb-[calc(clamp(32px,4vw,52px)+92px)] md:pb-[clamp(32px,4vw,52px)]"
+	class:list={[
+		"border-t border-border-2 px-[clamp(18px,4vw,56px)] py-[clamp(32px,4vw,52px)]",
+		hasMobileStickyCta &&
+			"pb-[calc(clamp(32px,4vw,52px)+92px)] md:pb-[clamp(32px,4vw,52px)]",
+	]}
 >
 	<div
 		class="mx-auto flex max-w-305 flex-col gap-8 md:flex-row md:items-start md:justify-between"
