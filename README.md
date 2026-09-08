@@ -54,6 +54,12 @@ oraz `src/pages/ankieta.astro` (adres `/ankieta`) — rozbudowana ankieta
 o działalności klienta. Link do niej Aleksandra wysyła ręcznie (SMS, WhatsApp,
 e-mail) przed rozmową; strona ma `noindex` i nie ma jej w menu ani stopce.
 
+`src/pages/404.astro` obsługuje nieistniejące adresy. Build zapisuje ją jako
+`404.html`, a adapter Vercela kieruje tam wszystko, czego nie złapał wcześniej
+routing, ze statusem 404 — zamiast domyślnej strony Astro/Vercela użytkownik
+dostaje stronę w identyfikacji wizualnej biura, z odnośnikami do usług,
+cennika, FAQ i kontaktu.
+
 ## Funkcjonalności
 
 - **Formularz kontaktowy** (`features/contact/`) — walidacja danych po stronie

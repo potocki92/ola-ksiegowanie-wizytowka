@@ -1,0 +1,123 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+import Section from "../components/ui/Section.astro";
+import Button from "../components/ui/Button.astro";
+import { company } from "../data/company";
+
+/**
+ * Skróty zamiast samego „wróć na stronę główną". Pod 404 trafia się zwykle ze
+ * starego linku albo literówki w adresie — użytkownik ma wtedy konkretną
+ * potrzebę, więc dajemy mu wejścia w treść, a nie ślepy zaułek z jednym
+ * przyciskiem.
+ */
+const shortcuts = [
+	{
+		href: "/#uslugi",
+		label: "Usługi",
+		description: "Prowadzenie i zakładanie JDG, kadry, VAT i ZUS.",
+	},
+	{
+		href: "/#cennik",
+		label: "Cennik",
+		description: "Stałe pakiety miesięczne, bez ukrytych kosztów.",
+	},
+	{
+		href: "/#faq",
+		label: "Częste pytania",
+		description: "Forma opodatkowania, przekazywanie dokumentów, zmiana biura.",
+	},
+	{
+		href: "/#kontakt",
+		label: "Kontakt",
+		description: "Bezpłatna pierwsza konsultacja — online, w całej Polsce.",
+	},
+];
+---
+
+{/*
+	`noindex` jest tu asekuracją, nie mechanizmem: o wypadnięciu z wyników
+	decyduje status 404, który Vercel zwraca dla wygenerowanego `404.html`.
+	Meta chroni przypadki, w których ta sama treść pokaże się pod adresem
+	zwracającym 200 (np. podgląd buildu).
+*/}
+<Layout
+	title={`Nie znaleziono strony — ${company.brand.accountant}, Księgowość`}
+	description="Pod tym adresem nic nie ma. Wróć na stronę główną albo przejdź prosto do usług, cennika i kontaktu."
+	noindex
+>
+	<Header />
+
+	<main>
+		<Section
+			class="py-[clamp(56px,7vw,110px)]"
+			maxWidth="max-w-3xl"
+			glow="bg-[radial-gradient(58%_50%_at_50%_0%,rgba(123,108,246,0.16),transparent_70%)]"
+		>
+			<p class="text-[13px] font-bold tracking-[1px] text-accent uppercase">
+				Błąd 404
+			</p>
+
+			<h1
+				class="mt-3.5 text-[clamp(32px,5vw,52px)] leading-[1.05] tracking-[-0.03em] text-balance"
+			>
+				Tej strony nie ma pod tym adresem
+			</h1>
+
+			<p
+				class="mt-4 max-w-[54ch] text-[16px] leading-relaxed text-pretty text-muted-600"
+			>
+				Nic się nie stało — najczęściej to literówka w adresie albo starszy
+				link, który już nie prowadzi do aktualnej treści. Wszystko, czego
+				szukasz, jest na stronie głównej.
+			</p>
+
+			<div class="mt-[clamp(26px,3vw,38px)] flex flex-col flex-wrap gap-3 sm:flex-row">
+				<Button href="/" variant="primary" size="lg">
+					Wróć na stronę główną
+				</Button>
+				<Button href="/#kontakt" variant="secondary" size="lg" class="px-6.5">
+					Napisz do mnie
+				</Button>
+			</div>
+
+			<nav
+				aria-label="Skróty do sekcji strony"
+				class="mt-[clamp(36px,4.5vw,60px)] grid gap-3.5 sm:grid-cols-2"
+			>
+				{
+					shortcuts.map((shortcut) => (
+						<a
+							href={shortcut.href}
+							class="rounded-[18px] border border-border-2 bg-white p-5 shadow-[0_8px_24px_-22px_rgba(11,11,18,0.3)] transition-all duration-250 hover:-translate-y-1 hover:shadow-[0_20px_38px_-26px_rgba(11,11,18,0.28)]"
+						>
+							<span class="font-display text-[16px] font-extrabold text-ink">
+								{shortcut.label}
+							</span>
+							<span class="mt-1.5 block text-[13.5px] leading-[1.55] text-muted-400">
+								{shortcut.description}
+							</span>
+						</a>
+					))
+				}
+			</nav>
+
+			<p class="mt-[clamp(28px,3vw,40px)] text-[15px] text-muted-500">
+				Wolisz od razu porozmawiać? Zadzwoń:{" "}
+				<a
+					href={`tel:${company.contact.phone.href}`}
+					class="font-semibold text-link underline underline-offset-4 transition-colors duration-200 hover:text-link-hover"
+				>
+					{company.contact.phone.display}
+				</a>
+			</p>
+		</Section>
+	</main>
+
+	{/*
+		Bez `MobileStickyCta`: strona ma już dwa jawne CTA i cztery skróty —
+		dokładanie paska tylko zasłaniałoby dół listy.
+	*/}
+	<Footer hasMobileStickyCta={false} />
+</Layout>
