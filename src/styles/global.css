@@ -218,6 +218,7 @@
 	}
 
 	input:focus,
+	select:focus,
 	textarea:focus {
 		border-color: var(--color-accent) !important;
 		box-shadow: 0 0 0 4px rgba(79, 91, 242, 0.14);
@@ -607,7 +608,7 @@ html.js [data-process-step].is-visible [data-process-card] {
 	overflow: hidden;
 }
 
-/* --- Animacje: rysowany checkmark sukcesu formularzy (kontakt, ankieta) --- */
+/* --- Animacje: rysowany checkmark karty sukcesu formularzy (kontakt, ankieta) --- */
 @keyframes drawCheck {
 	from {
 		stroke-dashoffset: 1;
@@ -616,13 +617,11 @@ html.js [data-process-step].is-visible [data-process-card] {
 		stroke-dashoffset: 0;
 	}
 }
-[data-contact-success] .check-draw path,
-[data-intake-success] .check-draw path {
+[data-form-success] .check-draw path {
 	stroke-dasharray: 1;
 	stroke-dashoffset: 1;
 }
-[data-contact-success]:not([hidden]) .check-draw path,
-[data-intake-success]:not([hidden]) .check-draw path {
+[data-form-success]:not([hidden]) .check-draw path {
 	animation: drawCheck 0.5s ease 0.1s forwards;
 }
 
@@ -657,8 +656,7 @@ html.js [data-process-step].is-visible [data-process-card] {
 		opacity: 1 !important;
 		transform: none !important;
 	}
-	[data-contact-success] .check-draw path,
-	[data-intake-success] .check-draw path {
+	[data-form-success] .check-draw path {
 		stroke-dashoffset: 0 !important;
 	}
 }

@@ -1,0 +1,76 @@
+---
+import SelectField from "../../../ui/form/SelectField.astro";
+import TextAreaField from "../../../ui/form/TextAreaField.astro";
+import TextField from "../../../ui/form/TextField.astro";
+import {
+	businessStatusOptions,
+	legalFormOptions,
+} from "../../../../features/intake/intake.options";
+import IntakeFormSection from "../IntakeFormSection.astro";
+
+/**
+ * Podpowiedź przy dacie startu zależy od tego, czy firma już działa.
+ * Skrypt w `IntakeForm.astro` czyta oba warianty z `data-*` poniżej —
+ * dzięki temu treść zostaje w komponencie, a nie w kodzie JavaScriptu.
+ */
+const startDateHints = {
+	/** Zanim padnie odpowiedź o status — i gdy JavaScript nie działa. */
+	neutral: "Wystarczy przybliżony miesiąc i rok.",
+	existing: "Data, od której prowadzisz działalność — wystarczy miesiąc i rok.",
+	planned: "Planowany termin startu — wystarczy przybliżony miesiąc i rok.",
+} as const;
+---
+
+{/* Status idzie pierwszy: reszta pytań o firmę czyta się inaczej w zależności
+    od tego, czy działalność już istnieje, czy dopiero powstaje. */}
+<IntakeFormSection title="O firmie">
+	<SelectField
+		label="Status działalności"
+		name="businessStatus"
+		icon="check-circle"
+		options={businessStatusOptions}
+		required
+	/>
+
+	<TextField
+		label="Nazwa firmy"
+		name="businessName"
+		type="text"
+		icon="briefcase"
+		autocomplete="organization"
+		placeholder="Np. Kowalski Studio"
+		hint="Opcjonalnie — zostaw puste, jeśli firma jeszcze nie ma nazwy."
+	/>
+
+	<TextAreaField
+		label="Czym zajmuje się / będzie zajmować się Twoja firma?"
+		name="businessDescription"
+		icon="briefcase"
+		rows={3}
+		required
+		placeholder="Np. projektowanie stron internetowych dla małych firm…"
+	/>
+
+	<div
+		data-intake-start-date
+		data-hint-existing={startDateHints.existing}
+		data-hint-planned={startDateHints.planned}
+	>
+		<TextField
+			label="Data rozpoczęcia działalności"
+			name="plannedStartDate"
+			type="text"
+			icon="calendar-check"
+			placeholder="Np. wrzesień 2026"
+			hint={startDateHints.neutral}
+		/>
+	</div>
+
+	<SelectField
+		label="Forma prawna"
+		name="legalForm"
+		icon="file-text"
+		options={legalFormOptions}
+		required
+	/>
+</IntakeFormSection>

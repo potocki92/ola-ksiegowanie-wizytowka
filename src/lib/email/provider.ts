@@ -13,6 +13,12 @@ export interface EmailMessage {
 	text: string;
 }
 
+/**
+ * Gotowa treść wiadomości, zanim serwis zdecyduje, do kogo ją wysłać.
+ * Zwracają ją funkcje budujące maile w modułach `features`.
+ */
+export type BuiltEmail = Pick<EmailMessage, "subject" | "html" | "text">;
+
 const BREVO_ENDPOINT = "https://api.brevo.com/v3/smtp/email";
 
 /**

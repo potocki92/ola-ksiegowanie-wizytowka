@@ -80,17 +80,22 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     );
   }
 
-  const { company, elapsed, ...message } = parsed.data;
+  const { website, elapsed, ...message } = parsed.data;
 
   // Honeypot i próg czasowy odpowiadają sukcesem, mimo że nic nie wysyłają.
   // Bot, który dostałby błąd, wiedziałby czego unikać przy kolejnej próbie.
-//   if (company && company.trim().length > 0) {
-//     return json({ ok: true }, 200);
-//   }
+  //
+  // TODO: oba testy są tymczasowo wyłączone. Powodem były prawdopodobnie
+  // zgłoszenia gubione przez honeypot nazwany `company`, który menedżery
+  // haseł autouzupełniały za człowieka. Nazwa jest już neutralna (`website`),
+  // więc po sprawdzeniu na produkcji można je odkomentować.
+  //   if (website && website.trim().length > 0) {
+  //     return json({ ok: true }, 200);
+  //   }
 
-//   if (elapsed !== undefined && elapsed > 0 && elapsed < MIN_FILL_TIME_MS) {
-//     return json({ ok: true }, 200);
-//   }
+  //   if (elapsed !== undefined && elapsed > 0 && elapsed < MIN_FILL_TIME_MS) {
+  //     return json({ ok: true }, 200);
+  //   }
   if (clientAddress && isRateLimited(clientAddress)) {
     return json(
       {

@@ -6,12 +6,17 @@ interface Props extends HTMLAttributes<"label"> {
 	label: string;
 	for: string;
 	required?: boolean;
+	/** Podpowiedź pod polem. Kontrolkę z nią wiąże `aria-describedby={hintId}`. */
+	hint?: string;
+	hintId?: string;
 }
 
 const {
 	label,
 	for: htmlFor,
 	required = false,
+	hint,
+	hintId,
 	class: className,
 	...attrs
 } = Astro.props;
@@ -31,4 +36,16 @@ const {
 	</span>
 
 	<slot />
+
+	{
+		hint && (
+			<span
+				data-form-hint
+				id={hintId}
+				class="text-[12.5px] leading-relaxed text-white/50"
+			>
+				{hint}
+			</span>
+		)
+	}
 </Label>

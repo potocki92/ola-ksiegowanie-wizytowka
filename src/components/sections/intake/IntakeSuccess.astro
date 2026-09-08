@@ -1,4 +1,5 @@
 ---
+import { company } from "../../../data/company";
 ---
 
 {/*
@@ -8,7 +9,7 @@
   wygrałaby z nim i karta byłaby widoczna od razu. Układ robi wrapper w środku.
 */}
 <div
-	data-intake-success
+	data-form-success
 	hidden
 	tabindex="-1"
 	class="rounded-[20px] border border-white/13 bg-white/5 p-[clamp(28px,3.5vw,40px)] text-center outline-none"
@@ -34,27 +35,48 @@
 		</span>
 
 		<div>
-			<h3
+			<h2
 				class="text-[clamp(20px,2.4vw,26px)] leading-tight tracking-[-0.02em] text-white"
 			>
 				Dziękuję za wypełnienie ankiety!
-			</h3>
+			</h2>
 
-			<p class="mt-2.5 text-[15px] leading-relaxed text-white/65">
-				Twoje odpowiedzi do mnie dotarły — dzięki nim lepiej przygotuję się
-				do naszej rozmowy. Odezwę się najszybciej jak to możliwe, zwykle w
-				ciągu jednego dnia roboczego. Potwierdzenie wysłałam na Twój adres
-				e-mail — sprawdź też folder ze spamem.
+			{/*
+				Dwa warianty, bo kopia dla klienta bywa niedostarczona mimo
+				przyjętego zgłoszenia. Oba startują ukryte — skrypt odsłania ten,
+				który odpowiada odpowiedzi API. Interfejs nigdy nie obiecuje maila,
+				którego nie wysłaliśmy.
+			*/}
+			<p
+				data-copy-sent
+				hidden
+				class="mt-2.5 text-[15px] leading-relaxed text-white/65"
+			>
+				Twoje odpowiedzi do mnie dotarły — dzięki nim lepiej przygotuję się do
+				naszej rozmowy. Kopię ankiety wysłałam na podany adres e-mail (sprawdź
+				też folder ze spamem). Odezwę się najszybciej jak to możliwe, zwykle
+				w ciągu jednego dnia roboczego.
+			</p>
+
+			<p
+				data-copy-failed
+				hidden
+				class="mt-2.5 text-[15px] leading-relaxed text-white/65"
+			>
+				Twoje odpowiedzi do mnie dotarły i mam już wszystko, czego potrzebuję —
+				nie musisz wypełniać ankiety ponownie. Nie udało się natomiast
+				dostarczyć kopii na Twój adres e-mail. Odezwę się najszybciej jak to
+				możliwe, zwykle w ciągu jednego dnia roboczego.
 			</p>
 		</div>
 
-		<p class="text-[14px] text-white/50 gap-2 flex items-center">
+		<p class="flex items-center gap-2 text-[14px] text-white/50">
 			Sprawa pilna?
 			<a
-				href="tel:+48533032455"
+				href={`tel:${company.contact.phone.href}`}
 				class="font-semibold text-accent-soft underline underline-offset-4 hover:text-white"
 			>
-				533 032 455
+				{company.contact.phone.display}
 			</a>
 		</p>
 	</div>

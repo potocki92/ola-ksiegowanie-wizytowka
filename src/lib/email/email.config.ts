@@ -20,8 +20,8 @@ const configSchema = z.object({
 export type EmailConfig = z.infer<typeof configSchema>;
 
 /**
- * Współdzielone przez wszystkie formularze wysyłające maile (kontakt, ankieta
- * startowa) — to jedna skrzynka i jeden nadawca dla całej strony.
+ * Współdzielone przez wszystkie formularze wysyłające maile (kontakt, ankieta)
+ * — to jedna skrzynka i jeden nadawca dla całej strony.
  *
  * Celowo czytane przy każdym wywołaniu, nie na poziomie modułu: brakująca
  * zmienna ma zwrócić błąd 502 z jednego zapytania, a nie wysadzić cały import

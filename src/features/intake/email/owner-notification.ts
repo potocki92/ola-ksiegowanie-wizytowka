@@ -2,126 +2,86 @@ import {
 	COLOR,
 	FONT_STACK,
 	escapeHtml,
-	escapeHtmlWithBreaks,
-	renderDataRow,
 	renderEmailLayout,
-	renderQuoteBlock,
 } from "../../../lib/email/layout";
+import type { BuiltEmail } from "../../../lib/email/provider";
 import {
-	businessStatusOptions,
-	currentAccountingOptions,
-	employmentOptions,
-	labelFor,
-	legalFormOptions,
-	preferredContactOptions,
-	taxFormOptions,
-	vatStatusOptions,
-} from "../intake.options";
+	buildIntakeHighlights,
+	buildIntakeSubject,
+	buildIntakeSummary,
+	type IntakeSummaryField,
+} from "../intake.summary";
 import type { IntakeMessage } from "../intake.schema";
+import { renderSummaryHtml, renderSummaryText } from "./summary-sections";
 
-export interface BuiltEmail {
-	subject: string;
-	html: string;
-	text: string;
-}
+/** Puste pola zostają widoczne — właścicielka ma wiedzieć, o co dopytać. */
+const EMPTY_VALUE = "nie podano";
 
-function sectionHeading(label: string): string {
-	return `<p style="margin:26px 0 10px;font-family:${FONT_STACK};font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:${COLOR.mutedLight};">${escapeHtml(label)}</p>`;
-}
-
-/** Powiadomienie dla właścicielki o nowej ankiecie startowej wypełnionej przez klienta. */
+/** Powiadomienie dla właścicielki o nowej ankiecie wypełnionej przez klienta. */
 export function buildIntakeOwnerNotification(message: IntakeMessage): BuiltEmail {
-	const phoneHtml = message.phone
-		? `<a href="tel:${escapeHtml(message.phone.replace(/\s/g, ""))}" style="color:${COLOR.accent};text-decoration:none;">${escapeHtml(message.phone)}</a>`
-		: `<span style="color:${COLOR.mutedLight};">nie podano</span>`;
-
-	const dash = `<span style="color:${COLOR.mutedLight};">nie podano</span>`;
+	const highlights = buildIntakeHighlights(message);
+	const sections = buildIntakeSummary(message);
 
 	const content = `
-<p style="margin:0 0 8px;font-family:${FONT_STACK};font-size:15px;line-height:1.6;color:${COLOR.muted};">
-Ktoś wypełnił ankietę startową przed rozmową. Odpowiedz na tę wiadomość, żeby napisać prosto do klienta.
+<p style="margin:0 0 18px;font-family:${FONT_STACK};font-size:15px;line-height:1.6;color:${COLOR.muted};">
+Ktoś wypełnił ankietę przed rozmową. Odpowiedz na tę wiadomość, żeby napisać prosto do klienta.
 </p>
 
-${sectionHeading("Dane kontaktowe")}
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-${renderDataRow("Imię i nazwisko", escapeHtml(message.name))}
-${renderDataRow(
-	"E-mail",
-	`<a href="mailto:${escapeHtml(message.email)}" style="color:${COLOR.accent};text-decoration:none;">${escapeHtml(message.email)}</a>`,
-)}
-${renderDataRow("Telefon", phoneHtml)}
-</table>
+${renderHighlightsHtml(highlights)}
 
-${sectionHeading("O firmie")}
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-${renderDataRow(
-	"Status działalności",
-	escapeHtml(labelFor(businessStatusOptions, message.businessStatus)),
-)}
-${renderDataRow("Planowany/faktyczny start", message.plannedStartDate ? escapeHtml(message.plannedStartDate) : dash)}
-${renderDataRow("Forma prawna", escapeHtml(labelFor(legalFormOptions, message.legalForm)))}
-</table>
-${renderQuoteBlock(escapeHtmlWithBreaks(message.businessDescription))}
+${renderSummaryHtml(sections, { emptyValue: EMPTY_VALUE })}`;
 
-${sectionHeading("Rozliczenia")}
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-${renderDataRow("Forma opodatkowania", escapeHtml(labelFor(taxFormOptions, message.taxForm)))}
-${renderDataRow("Status VAT", escapeHtml(labelFor(vatStatusOptions, message.vatStatus)))}
-${renderDataRow("Zatrudnienie", escapeHtml(labelFor(employmentOptions, message.employment)))}
-${renderDataRow("Liczba osób", message.employeeCount ? escapeHtml(message.employeeCount) : dash)}
-${renderDataRow("Skala działalności", message.estimatedScale ? escapeHtml(message.estimatedScale) : dash)}
-</table>
-
-${sectionHeading("Obecna sytuacja i uwagi")}
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-${renderDataRow(
-	"Obecna obsługa księgowa",
-	escapeHtml(labelFor(currentAccountingOptions, message.currentAccounting)),
-)}
-${renderDataRow(
-	"Preferowany kontakt",
-	escapeHtml(labelFor(preferredContactOptions, message.preferredContact)),
-)}
-</table>
-${message.notes ? renderQuoteBlock(escapeHtmlWithBreaks(message.notes)) : ""}`;
-
-	const textLines = [
-		"Nowa ankieta startowa wypełniona przed rozmową.",
+	const text = [
+		"Nowa ankieta wypełniona przed rozmową.",
 		"",
-		"Dane kontaktowe",
-		`Imię i nazwisko: ${message.name}`,
-		`E-mail: ${message.email}`,
-		`Telefon: ${message.phone ?? "nie podano"}`,
+		...highlights
+			.filter((field) => field.value)
+			.map((field) => `${field.label}: ${field.value}`),
 		"",
-		"O firmie",
-		`Status działalności: ${labelFor(businessStatusOptions, message.businessStatus)}`,
-		`Planowany/faktyczny start: ${message.plannedStartDate ?? "nie podano"}`,
-		`Forma prawna: ${labelFor(legalFormOptions, message.legalForm)}`,
-		`Opis działalności: ${message.businessDescription}`,
-		"",
-		"Rozliczenia",
-		`Forma opodatkowania: ${labelFor(taxFormOptions, message.taxForm)}`,
-		`Status VAT: ${labelFor(vatStatusOptions, message.vatStatus)}`,
-		`Zatrudnienie: ${labelFor(employmentOptions, message.employment)}`,
-		`Liczba osób: ${message.employeeCount ?? "nie podano"}`,
-		`Skala działalności: ${message.estimatedScale ?? "nie podano"}`,
-		"",
-		"Obecna sytuacja i uwagi",
-		`Obecna obsługa księgowa: ${labelFor(currentAccountingOptions, message.currentAccounting)}`,
-		`Preferowany kontakt: ${labelFor(preferredContactOptions, message.preferredContact)}`,
-		`Uwagi: ${message.notes ?? "brak"}`,
+		renderSummaryText(sections, { emptyValue: EMPTY_VALUE }),
 		"",
 		"Odpowiedz na tę wiadomość, żeby napisać prosto do klienta.",
-	];
+	].join("\n");
 
 	return {
-		subject: `Ankieta startowa: ${message.name}`,
+		subject: buildIntakeSubject(message),
 		html: renderEmailLayout({
-			heading: "Nowa ankieta startowa",
+			heading: "Nowa ankieta",
 			subheading: "Formularz przed rozmową z klientem",
 			preheader: `${message.name} — ${message.businessDescription.slice(0, 90)}`,
 			content,
 		}),
-		text: textLines.join("\n"),
+		text,
 	};
+}
+
+/**
+ * Skrót zgłoszenia w jednym bloku: po jego przeczytaniu wiadomo, z kim i o
+ * czym będzie rozmowa, bez przewijania do pełnych sekcji niżej.
+ */
+function renderHighlightsHtml(fields: IntakeSummaryField[]): string {
+	const rows = fields
+		.filter((field) => field.value)
+		.map((field) => {
+			const value = escapeHtml(field.value ?? "");
+			const valueHtml = field.href
+				? `<a href="${escapeHtml(field.href)}" style="color:${COLOR.accent};text-decoration:none;font-weight:700;">${value}</a>`
+				: `<strong style="font-weight:700;">${value}</strong>`;
+
+			return `<tr>
+<td style="padding:3px 12px 3px 0;font-family:${FONT_STACK};font-size:13px;line-height:1.5;color:${COLOR.muted};white-space:nowrap;vertical-align:top;">${escapeHtml(field.label)}</td>
+<td style="padding:3px 0;font-family:${FONT_STACK};font-size:14px;line-height:1.5;color:${COLOR.ink};">${valueHtml}</td>
+</tr>`;
+		})
+		.join("\n");
+
+	return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${COLOR.surfaceTint};border-radius:14px;">
+<tr>
+<td style="padding:18px 20px;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0">
+${rows}
+</table>
+</td>
+</tr>
+</table>`;
 }

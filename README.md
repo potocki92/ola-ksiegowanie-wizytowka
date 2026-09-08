@@ -50,9 +50,9 @@ podzielonej na następujące sekcje — każda to osobny komponent w
 
 Osobnymi podstronami są `src/pages/polityka-prywatnosci.astro` — polityka
 prywatności wymagana przy przetwarzaniu danych z formularza kontaktowego —
-oraz `src/pages/ankieta-startowa.astro` — rozbudowana ankieta o działalności
-klienta, wysyłana ręcznie (bez linku w menu/stopce) potencjalnym klientom
-przed rozmową, żeby Ola mogła się do niej lepiej przygotować.
+oraz `src/pages/ankieta.astro` (adres `/ankieta`) — rozbudowana ankieta
+o działalności klienta. Link do niej Aleksandra wysyła ręcznie (SMS, WhatsApp,
+e-mail) przed rozmową; strona ma `noindex` i nie ma jej w menu ani stopce.
 
 ## Funkcjonalności
 
@@ -60,12 +60,14 @@ przed rozmową, żeby Ola mogła się do niej lepiej przygotować.
   serwera (Zod), ochrona przed spamem (honeypot + minimalny czas wypełnienia +
   licznik zgłoszeń per IP), wysyłka e-maila powiadomienia do biura oraz
   potwierdzenia dla klienta przez Brevo.
-- **Ankieta startowa** (`features/intake/`, strona `/ankieta-startowa`) —
-  rozbudowany, kilkunastopolowy formularz (dane kontaktowe, opis działalności,
-  forma prawna i opodatkowania, VAT, zatrudnienie, obecna sytuacja) wysyłany
-  bezpośrednio potencjalnym klientom przed rozmową. Ta sama ochrona
-  antyspamowa i wysyłka e-mail co formularz kontaktowy — dzielą wspólną
-  infrastrukturę mailową z `lib/email/`.
+- **Ankieta przed rozmową** (`features/intake/`, strona `/ankieta`) —
+  kilkunastopolowy formularz w pięciu sekcjach (dane kontaktowe, o firmie,
+  rozliczenia, obecna sytuacja, dodatkowe informacje), podzielony na osobne
+  komponenty sekcji w `components/sections/intake/`. Aleksandra dostaje pełną
+  ankietę z `Reply-To` klienta, a klient — kopię swoich odpowiedzi na maila.
+  Ta sama ochrona antyspamowa co w formularzu kontaktowym; obie strony dzielą
+  infrastrukturę mailową (`lib/email/`) i obsługę wysyłki w przeglądarce
+  (`lib/forms/form-submission.ts`).
 - **SEO** — tytuł, opis, meta Open Graph/Twitter oraz dane strukturalne
   `AccountingService` (JSON-LD) w `layouts/Layout.astro`.
 - **Animacje** — subtelny efekt paralaksy na zdjęciu w hero, odkrywanie
@@ -116,10 +118,11 @@ src/
 │   └── sections/        po jednym komponencie na sekcję strony głównej
 ├── features/
 │   ├── contact/         walidacja formularza kontaktowego, szablony e-maili
-│   └── intake/          walidacja ankiety startowej, szablony e-maili
+│   └── intake/          ankieta: schema, opcje, podsumowanie, serwis, e-maile
 ├── layouts/             Layout.astro — head/meta/SEO/JSON-LD
 ├── lib/
 │   ├── email/           wspólna wysyłka przez Brevo (provider, layout maila, config)
+│   ├── forms/           wspólna obsługa wysyłki formularzy w przeglądarce
 │   └── ...               drobne helpery (paralaksa, scroll-reveal, typografia)
 ├── pages/               routing plikowy; index.astro składa sekcje w jedną stronę
 │   └── api/             endpointy serverless: contact.ts, intake.ts
