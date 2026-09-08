@@ -80,16 +80,17 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 		);
 	}
 
-	const { company, elapsed, ...message } = parsed.data;
+	const { website, elapsed, ...message } = parsed.data;
 
 	// Honeypot i próg czasowy odpowiadają sukcesem, mimo że nic nie wysyłają.
-	// Bot, który dostałby błąd, wiedziałby czego unikać przy kolejnej próbie.
-	if (company && company.trim().length > 0) {
-		return json({ ok: true }, 200);
+	// Bot, który dostałby błąd, wiedziałby czego unikać przy kolejnej próbie —
+	// odpowiedź jest więc nie do odróżnienia od prawdziwego sukcesu.
+	if (website && website.trim().length > 0) {
+		return json({ ok: true, clientCopySent: true }, 200);
 	}
 
 	if (elapsed !== undefined && elapsed > 0 && elapsed < MIN_FILL_TIME_MS) {
-		return json({ ok: true }, 200);
+		return json({ ok: true, clientCopySent: true }, 200);
 	}
 
 	if (clientAddress && isRateLimited(clientAddress)) {
@@ -104,12 +105,14 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 	}
 
 	try {
-		await submitIntakeMessage(message);
+		// Wyjątek oznacza wyłącznie porażkę powiadomienia właścicielki —
+		// nieudana kopia dla klienta wraca jako `clientCopySent: false`.
+		const { clientCopySent } = await submitIntakeMessage(message);
+
+		return json({ ok: true, clientCopySent }, 200);
 	} catch (error) {
 		// Szczegóły (w tym odpowiedź dostawcy) zostają w logach serwera.
 		console.error("[intake] Wysyłka ankiety nie powiodła się:", error);
 		return json({ ok: false, error: "Nie udało się wysłać ankiety." }, 502);
 	}
-
-	return json({ ok: true }, 200);
 };

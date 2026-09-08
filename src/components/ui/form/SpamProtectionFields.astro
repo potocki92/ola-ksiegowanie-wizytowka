@@ -1,0 +1,39 @@
+---
+/**
+ * Dwa pola techniczne, których wymagają endpointy `/api/contact` i
+ * `/api/intake`: pułapka na boty i czas wypełniania formularza.
+ *
+ * Nazwa honeypota (`website`) jest celowo rozłączna z danymi domenowymi —
+ * pole nazwane `company` bywało autouzupełniane przez menedżery haseł, przez
+ * co prawdziwe zgłoszenie wyglądało dla serwera jak bot.
+ */
+interface Props {
+	/** Prefiks `id` honeypota — na stronie może stać więcej niż jeden formularz. */
+	idPrefix: string;
+}
+
+const { idPrefix } = Astro.props;
+const honeypotId = `${idPrefix}-website`;
+---
+
+{/*
+	Człowiek tego pola nie zobaczy i nie dojdzie do niego tabulatorem, więc
+	każda wartość oznacza automat. Celowo `absolute` poza ekranem, a nie
+	`display:none` — część botów pomija pola ukryte w oczywisty sposób.
+*/}
+<div
+	aria-hidden="true"
+	class="pointer-events-none absolute left-[9999px] h-0 w-0 overflow-hidden"
+>
+	<label for={honeypotId}>Adres strony WWW</label>
+	<input
+		id={honeypotId}
+		name="website"
+		type="text"
+		tabindex="-1"
+		autocomplete="off"
+	/>
+</div>
+
+{/* Czas wypełniania — uzupełniany skryptem wysyłki tuż przed POST-em. */}
+<input data-form-elapsed type="hidden" name="elapsed" value="" />

@@ -1,0 +1,15 @@
+---
+import TextAreaField from "../../../ui/form/TextAreaField.astro";
+import IntakeFormSection from "../IntakeFormSection.astro";
+---
+
+<IntakeFormSection title="Dodatkowe informacje">
+	<TextAreaField
+		label="Dodatkowe uwagi lub pytania"
+		name="notes"
+		icon="chat"
+		rows={3}
+		placeholder="Wszystko, co pomoże mi lepiej przygotować się do rozmowy…"
+		hint="Opcjonalnie."
+	/>
+</IntakeFormSection>

@@ -29,6 +29,8 @@ const optionalText = (max: number) =>
 		.optional()
 		.transform((value) => (value ? value : undefined));
 
+// Wartości `z.enum` muszą odpowiadać opcjom z `intake.options.ts` — dodając
+// nową odpowiedź, dopisz ją w obu plikach.
 export const intakeSubmissionSchema = z.object({
 	// Dane kontaktowe
 	name: z
@@ -49,15 +51,18 @@ export const intakeSubmissionSchema = z.object({
 		.transform((value) => (value ? value : undefined)),
 
 	// O firmie
+	businessStatus: z.enum(["existing", "planned"], {
+		error: "Wybierz status działalności",
+	}),
+
+	// Opcjonalna: przy statusie „dopiero planuję" firma często nie ma jeszcze nazwy.
+	businessName: optionalText(150),
+
 	businessDescription: z
 		.string({ error: "Opisz, czym zajmuje się Twoja firma" })
 		.trim()
 		.min(10, { error: "Opisz krótko działalność (min. 10 znaków)" })
 		.max(1000, { error: "Opis może mieć maksymalnie 1000 znaków" }),
-
-	businessStatus: z.enum(["existing", "planned"], {
-		error: "Wybierz status działalności",
-	}),
 
 	plannedStartDate: optionalText(100),
 
@@ -66,7 +71,7 @@ export const intakeSubmissionSchema = z.object({
 	}),
 
 	// Rozliczenia
-	taxForm: z.enum(["ryczalt", "kpir", "liniowy", "nie_wiem"], {
+	taxForm: z.enum(["ryczalt", "skala", "liniowy", "nie_wiem"], {
 		error: "Wybierz formę opodatkowania",
 	}),
 
@@ -82,19 +87,23 @@ export const intakeSubmissionSchema = z.object({
 
 	estimatedScale: optionalText(200),
 
-	// Obecna sytuacja i uwagi
-	currentAccounting: z.enum(["pierwsza_wspolpraca", "zmiana_biura"], {
-		error: "Wybierz odpowiedź o obecnej obsłudze księgowej",
-	}),
+	// Obecna sytuacja i kontakt
+	currentAccounting: z.enum(
+		["pierwsza_wspolpraca", "samodzielnie", "zmiana_biura"],
+		{ error: "Wybierz odpowiedź o obecnej obsłudze księgowej" },
+	),
 
 	preferredContact: z.enum(["telefon", "email", "bez_preferencji"], {
 		error: "Wybierz preferowany sposób kontaktu",
 	}),
 
+	// Dodatkowe informacje
 	notes: optionalText(2000),
 
 	// Honeypot — pole ukryte przed człowiekiem, wypełniane przez boty.
-	company: z.string().max(100).optional(),
+	// Nazwa celowo rozłączna z danymi domenowymi (`businessName`), żeby
+	// menedżer haseł nie wypełnił go za prawdziwego użytkownika.
+	website: z.string().max(100).optional(),
 
 	// Czas wypełniania w ms; człowiek nie wyśle formularza w ułamek sekundy.
 	elapsed: z.preprocess((value) => {
@@ -109,4 +118,4 @@ export const intakeSubmissionSchema = z.object({
 export type IntakeSubmission = z.infer<typeof intakeSubmissionSchema>;
 
 /** Dane po odsianiu pól technicznych — to trafia do szablonów maili. */
-export type IntakeMessage = Omit<IntakeSubmission, "company" | "elapsed">;
+export type IntakeMessage = Omit<IntakeSubmission, "website" | "elapsed">;

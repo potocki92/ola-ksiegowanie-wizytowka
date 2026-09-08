@@ -1,0 +1,26 @@
+---
+import SelectField from "../../../ui/form/SelectField.astro";
+import {
+	currentAccountingOptions,
+	preferredContactOptions,
+} from "../../../../features/intake/intake.options";
+import IntakeFormSection from "../IntakeFormSection.astro";
+---
+
+<IntakeFormSection title="Obecna sytuacja i kontakt">
+	<SelectField
+		label="Kto obecnie prowadzi Twoją księgowość?"
+		name="currentAccounting"
+		icon="check-circle"
+		options={currentAccountingOptions}
+		required
+	/>
+
+	<SelectField
+		label="Preferowany sposób kontaktu"
+		name="preferredContact"
+		icon="phone"
+		options={preferredContactOptions}
+		required
+	/>
+</IntakeFormSection>

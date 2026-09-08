@@ -1,0 +1,37 @@
+---
+import TextField from "../../../ui/form/TextField.astro";
+import IntakeFormSection from "../IntakeFormSection.astro";
+---
+
+<IntakeFormSection title="Dane kontaktowe">
+	<TextField
+		label="Imię i nazwisko"
+		name="name"
+		type="text"
+		icon="user"
+		required
+		autocomplete="name"
+		placeholder="Jan Kowalski"
+	/>
+
+	<TextField
+		label="E-mail"
+		name="email"
+		type="email"
+		icon="mail"
+		required
+		autocomplete="email"
+		placeholder="jan@firma.pl"
+		hint="Na ten adres wyślę kopię Twoich odpowiedzi."
+	/>
+
+	<TextField
+		label="Telefon"
+		name="phone"
+		type="tel"
+		icon="phone"
+		autocomplete="tel"
+		placeholder="533 032 455"
+		hint="Opcjonalnie — jeśli wolisz rozmowę od maila."
+	/>
+</IntakeFormSection>

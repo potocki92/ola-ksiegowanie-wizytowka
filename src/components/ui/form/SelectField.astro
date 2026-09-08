@@ -8,12 +8,17 @@ interface Props extends HTMLAttributes<"select"> {
 	label: string;
 	name: string;
 	icon?: IconName;
+	hint?: string;
+	/** Opcje selecta; pierwszy `<option>` to zawsze placeholder „Wybierz…". */
+	options: ReadonlyArray<{ value: string; label: string }>;
 }
 
 const {
 	label,
 	name,
 	icon,
+	hint,
+	options,
 	id = name,
 	required = false,
 	class: className,
@@ -24,10 +29,26 @@ const {
 // a FormField oczekuje wartości znormalizowanych.
 const fieldId = id ?? name;
 const isRequired = Boolean(required);
+const hintId = hint ? `${fieldId}-hint` : undefined;
 ---
 
-<FormField label={label} for={fieldId} required={isRequired} class={className}>
-	<Select id={fieldId} name={name} icon={icon} required={isRequired} {...attrs}>
-		<slot />
+<FormField
+	label={label}
+	for={fieldId}
+	required={isRequired}
+	hint={hint}
+	hintId={hintId}
+	class={className}
+>
+	<Select
+		id={fieldId}
+		name={name}
+		icon={icon}
+		required={isRequired}
+		aria-describedby={hintId}
+		{...attrs}
+	>
+		<option value="" selected disabled>Wybierz…</option>
+		{options.map((option) => <option value={option.value}>{option.label}</option>)}
 	</Select>
 </FormField>

@@ -9,8 +9,9 @@ export default defineConfig({
 	// needed for absolute canonical/OG URLs and the sitemap.
 
 	// `output` stays static: every page is prerendered at build time. The
-	// adapter exists for the single route that opts out via
-	// `export const prerender = false` — src/pages/api/contact.ts.
+	// adapter exists for the routes that opt out via
+	// `export const prerender = false` — src/pages/api/contact.ts and
+	// src/pages/api/intake.ts.
 	adapter: vercel(),
 	vite: {
 		plugins: [tailwindcss()],

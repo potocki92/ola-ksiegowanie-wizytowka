@@ -52,7 +52,9 @@ export const contactSubmissionSchema = z.object({
     .max(2000, { error: "Wiadomość może mieć maksymalnie 2000 znaków" }),
 
   // Honeypot — pole ukryte przed człowiekiem, wypełniane przez boty.
-  company: z.string().max(100).optional(),
+  // Nazwa celowo neutralna: pole nazwane `company` bywało autouzupełniane
+  // przez menedżery haseł, przez co prawdziwe zgłoszenie wyglądało jak bot.
+  website: z.string().max(100).optional(),
 
   // Czas wypełniania w ms; człowiek nie wyśle formularza w ułamek sekundy.
   elapsed: z.preprocess((value) => {
@@ -67,4 +69,4 @@ export const contactSubmissionSchema = z.object({
 export type ContactSubmission = z.infer<typeof contactSubmissionSchema>;
 
 /** Dane po odsianiu pól technicznych — to trafia do szablonów maili. */
-export type ContactMessage = Omit<ContactSubmission, "company" | "elapsed">;
+export type ContactMessage = Omit<ContactSubmission, "website" | "elapsed">;

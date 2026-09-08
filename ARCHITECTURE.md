@@ -16,7 +16,8 @@ ship as serverless functions through `@astrojs/vercel`.
 src/
 ├── assets/fonts/     self-hosted woff2 files (Plus Jakarta Sans, Hanken Grotesk)
 ├── components/
-│   ├── ui/           generic presentational pieces (Icon, Button, form/*)
+│   ├── ui/           generic presentational pieces (Icon, Button, form/ —
+│   │                  fields, and the shared anti-spam inputs)
 │   ├── layout/        page chrome: Header, Footer, MobileStickyCta
 │   └── sections/      one component per homepage section (Hero, Services, Faq, ...),
 │                      plus contact/ and intake/ for the two standalone form pages
@@ -25,8 +26,10 @@ src/
 │   └── intake/        intake questionnaire: schema, service, email content
 ├── layouts/           Layout.astro — head/meta/SEO/JSON-LD, imports global.css
 ├── lib/
-│   └── email/         shared Brevo transport, HTML email shell, env config —
-│                      used by both contact and intake
+│   ├── email/         shared Brevo transport, HTML email shell, env config —
+│   │                  used by both contact and intake
+│   └── forms/         form-submission.ts — the browser-side submit flow both
+│                      forms run (fetch, errors, success state)
 ├── pages/             file-based routes; index.astro composes the sections
 │   └── api/           on-demand endpoints (the only non-static routes):
 │                      contact.ts, intake.ts
@@ -120,22 +123,62 @@ request, otherwise a client would refill a form whose message already landed.
 
 Anti-spam is a honeypot field, a minimum fill time, and a per-IP counter. The
 counter lives in serverless memory, so it is a guard against crude floods
-rather than real rate limiting; a durable one would need Vercel KV.
+rather than real rate limiting; a durable one would need Vercel KV. The
+honeypot and fill-time checks are currently commented out in
+`api/contact.ts` — see the TODO there.
 
-## Intake questionnaire ("ankieta startowa")
+Both forms render the two technical fields from
+`components/ui/form/SpamProtectionFields.astro` and run the same browser-side
+submit flow from `lib/forms/form-submission.ts`; the honeypot is named
+`website` in both, deliberately unlike any real field a password manager would
+autofill.
 
-A longer, ~15-field brief that Ola sends directly to a prospective client
-before their call — not a form visitors find on their own, so
-`ankieta-startowa.astro` carries `noindex` and isn't linked from the header or
-footer. Same layering and anti-spam pattern as the contact form:
+## Intake questionnaire (`/ankieta`)
+
+A ~15-field brief that Ola sends straight to a prospective client before their
+call (SMS, WhatsApp, e-mail) — not a form visitors find on their own, so
+`ankieta.astro` carries `noindex` and isn't linked from the header or footer.
+Same layering and anti-spam pattern as the contact form:
 
 ```
 IntakeForm.astro  →  POST /api/intake  →  intake.service  →  lib/email/provider  →  Brevo
 ```
 
-`intake.options.ts` centralizes the label text for every `select` field's
-options so the form markup and the owner-notification email summary don't
-duplicate the same Polish copy in two places.
+**Gdzie czego szukać** (i co ruszyć, dodając kolejne pytanie):
+
+| Warstwa | Plik | Odpowiedzialność |
+|---|---|---|
+| Strona | `pages/ankieta.astro` | tylko kompozycja: `Layout` + nagłówek + `IntakeForm` |
+| Formularz | `components/sections/intake/IntakeForm.astro` | składa sekcje, przycisk, błąd, kartę sukcesu |
+| Sekcja pytań | `components/sections/intake/sections/Intake*Section.astro` | pola jednej grupy tematycznej |
+| Ramka sekcji | `components/sections/intake/IntakeFormSection.astro` | nagłówek + separator jednej grupy |
+| Pola warunkowe | `components/sections/intake/intake-conditional-fields.ts` | pokazywanie/chowanie pól zależnych |
+| Karta sukcesu | `components/sections/intake/IntakeSuccess.astro` | dwa warianty (z kopią / bez kopii) |
+| Walidacja i typy | `features/intake/intake.schema.ts` | Zod, granica zaufania |
+| Opcje selectów | `features/intake/intake.options.ts` | wartości + etykiety + skróty do tematu maila |
+| Prezentacja danych | `features/intake/intake.summary.ts` | sekcje/pola/etykiety wspólne dla obu maili |
+| Wysyłka | `features/intake/intake.service.ts` | kolejność maili i ich waga |
+| Maile | `features/intake/email/` | `owner-notification.ts`, `confirmation.ts`, `summary-sections.ts` |
+| HTTP | `pages/api/intake.ts` | odczyt, walidacja, antyspam, rate limit, JSON |
+
+Dodanie pytania to zwykle trzy pliki: pole w odpowiednim `Intake*Section.astro`,
+reguła w `intake.schema.ts` i — dla selecta — opcje w `intake.options.ts`. Oba
+maile podchwycą je same, o ile pole trafi do `intake.summary.ts`.
+
+**Jedno źródło prezentacji.** `intake.summary.ts` zamienia surowe odpowiedzi
+(`ryczalt`, `existing`) na czytelne sekcje z etykietami. Powiadomienie dla Oli
+i kopia dla klienta renderują tę samą strukturę przez
+`email/summary-sections.ts` — różnią się tematem, wstępem i tym, czy puste pola
+są widoczne (Ola widzi „nie podano", klient nie widzi pustych wierszy wcale).
+Bez tego każda zmiana słownictwa wymagałaby poprawki w dwóch szablonach.
+
+**Częściowa porażka wysyłki.** Powiadomienie do Oli jest krytyczne — jego błąd
+kończy zgłoszenie błędem. Kopia dla klienta jest dodatkiem, więc jej porażka
+nie unieważnia przyjętej ankiety; zamiast tego `intake.service` zwraca
+`clientCopySent: false`, endpoint przekazuje tę flagę w JSON-ie, a karta
+sukcesu wybiera wariant komunikatu. Dzięki temu interfejs nigdy nie obiecuje
+maila, którego nie wysłaliśmy, i nigdy nie prosi o ponowne wypełnienie danych,
+które już dotarły.
 
 ## Future phases
 

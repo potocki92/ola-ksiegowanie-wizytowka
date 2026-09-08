@@ -3,11 +3,12 @@ import Button from "../../ui/Button.astro";
 import Form from "../../ui/form/Form.astro";
 import TextField from "../../ui/form/TextField.astro";
 import TextAreaField from "../../ui/form/TextAreaField.astro";
+import SpamProtectionFields from "../../ui/form/SpamProtectionFields.astro";
 import ContactSuccess from "./ContactSuccess.astro";
 ---
 
 <div data-contact-block>
-	<Form data-contact-form action="/api/contact" method="POST" gap="md">
+	<Form data-form action="/api/contact" method="POST" gap="md">
 		<TextField
 			label="Imię i nazwisko"
 			name="name"
@@ -46,31 +47,10 @@ import ContactSuccess from "./ContactSuccess.astro";
 			placeholder="Np. zakładam JDG na ryczałcie, chcę przejść na Twoją obsługę…"
 		/>
 
-		{/*
-			Pułapka na boty. Człowiek tego pola nie zobaczy i nie dojdzie do niego
-			tabulatorem, więc każda wartość oznacza automat. Celowo `absolute`
-			poza ekranem, a nie `display:none` — część botów pomija pola ukryte
-			w oczywisty sposób.
-		*/}
-		<div
-			aria-hidden="true"
-			class="pointer-events-none absolute left-[9999px] h-0 w-0 overflow-hidden"
-		>
-			<label for="company">Nazwa firmy</label>
-			<input
-				id="company"
-				name="company"
-				type="text"
-				tabindex="-1"
-				autocomplete="off"
-			/>
-		</div>
-
-		{/* Czas wypełniania — uzupełniany skryptem przy wysyłce. */}
-		<input data-elapsed type="hidden" name="elapsed" value="" />
+		<SpamProtectionFields idPrefix="contact" />
 
 		<Button
-			data-submit
+			data-form-submit
 			type="submit"
 			variant="primary"
 			class="mt-1 h-13.5 cursor-pointer font-[inherit] disabled:pointer-events-none disabled:opacity-60"
@@ -116,88 +96,11 @@ import ContactSuccess from "./ContactSuccess.astro";
 </div>
 
 <script>
-	const FALLBACK_ERROR =
-		"Nie udało się wysłać wiadomości. Zadzwoń: 533 032 455 lub napisz na kontakt@potockaksiegowosc.pl";
+	import { initFormSubmission } from "../../../lib/forms/form-submission";
 
-	interface ContactResponse {
-		ok?: boolean;
-		error?: string;
-		fields?: Record<string, string[] | undefined>;
-	}
-
-	const blocks = document.querySelectorAll<HTMLElement>("[data-contact-block]");
-
-	blocks.forEach((block) => {
-		const form = block.querySelector<HTMLFormElement>("[data-contact-form]");
-		const success = block.querySelector<HTMLElement>("[data-contact-success]");
-		const errorBox = block.querySelector<HTMLElement>("[data-form-error]");
-		const submit = block.querySelector<HTMLButtonElement>("[data-submit]");
-		const elapsed = block.querySelector<HTMLInputElement>("[data-elapsed]");
-
-		if (!form || !success || !errorBox || !submit) {
-			return;
-		}
-
-		const mountedAt = Date.now();
-		const defaultLabel = submit.textContent ?? "Wyślij zapytanie";
-
-		const showError = (message?: string) => {
-			errorBox.textContent = message || FALLBACK_ERROR;
-			errorBox.hidden = false;
-		};
-
-		form.addEventListener("submit", async (event) => {
-			event.preventDefault();
-
-			// Natywna walidacja HTML zdejmuje z serwera oczywiste przypadki
-			// i pokazuje błąd przy właściwym polu.
-			if (!form.checkValidity()) {
-				form.reportValidity();
-				return;
-			}
-
-			errorBox.hidden = true;
-			submit.disabled = true;
-			submit.textContent = "Wysyłam…";
-
-			if (elapsed) {
-				elapsed.value = String(Date.now() - mountedAt);
-			}
-
-			try {
-				const response = await fetch(form.action, {
-					method: "POST",
-					headers: { "content-type": "application/json" },
-					body: JSON.stringify(Object.fromEntries(new FormData(form))),
-				});
-
-				const data: ContactResponse | null = await response
-					.json()
-					.catch(() => null);
-
-				if (!response.ok || !data?.ok) {
-					const fieldError = Object.values(data?.fields ?? {})
-						.flat()
-						.find(Boolean);
-
-					showError(fieldError ?? data?.error);
-					return;
-				}
-
-				// `form.hidden` by nie zadziałało: Form.astro nakłada `flex`,
-				// które wygrywa z `[hidden]` z preflightu Tailwinda.
-				form.style.display = "none";
-				success.hidden = false;
-
-				// Bez przeniesienia fokusu użytkownik czytnika ekranu nie
-				// dowiedziałby się, że formularz zniknął.
-				success.focus();
-			} catch {
-				showError();
-			} finally {
-				submit.disabled = false;
-				submit.textContent = defaultLabel;
-			}
-		});
+	initFormSubmission({
+		block: "[data-contact-block]",
+		fallbackError:
+			"Nie udało się wysłać wiadomości. Zadzwoń: 533 032 455 lub napisz na kontakt@potockaksiegowosc.pl",
 	});
 </script>

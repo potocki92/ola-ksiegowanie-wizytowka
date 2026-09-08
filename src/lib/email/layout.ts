@@ -125,6 +125,19 @@ export function renderDataRow(label: string, valueHtml: string): string {
 </tr>`;
 }
 
+/**
+ * Nagłówek sekcji w podsumowaniu zgłoszenia. Ciemniejszy i oddzielony linią,
+ * inaczej zlewa się z etykietami pojedynczych pól tuż pod nim.
+ */
+export function renderSectionHeading(label: string): string {
+	return `<p style="margin:30px 0 14px;padding-top:18px;border-top:1px solid ${COLOR.border};font-family:${FONT_STACK};font-size:14px;font-weight:800;letter-spacing:-0.01em;color:${COLOR.ink};">${escapeHtml(label)}</p>`;
+}
+
+/** Etykieta nad blokiem cytatu (dłuższa wypowiedź nie mieści się w wierszu). */
+export function renderFieldLabel(label: string): string {
+	return `<p style="margin:0 0 10px;font-family:${FONT_STACK};font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:${COLOR.mutedLight};">${escapeHtml(label)}</p>`;
+}
+
 /** Wyróżniony blok na treść wiadomości od klienta. */
 export function renderQuoteBlock(contentHtml: string): string {
 	return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${COLOR.surfaceTint};border-left:3px solid ${COLOR.accent};border-radius:0 12px 12px 0;">

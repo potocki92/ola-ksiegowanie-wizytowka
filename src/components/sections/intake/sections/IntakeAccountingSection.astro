@@ -1,0 +1,65 @@
+---
+import SelectField from "../../../ui/form/SelectField.astro";
+import TextField from "../../../ui/form/TextField.astro";
+import {
+	EMPLOYMENT_NONE,
+	employmentOptions,
+	taxFormOptions,
+	vatStatusOptions,
+} from "../../../../features/intake/intake.options";
+import IntakeFormSection from "../IntakeFormSection.astro";
+---
+
+<IntakeFormSection
+	title="Rozliczenia"
+	description="Jeśli czegoś nie wiesz — wybierz „jeszcze nie wiem”. Ustalimy to na rozmowie."
+>
+	<SelectField
+		label="Forma opodatkowania"
+		name="taxForm"
+		icon="file-text"
+		options={taxFormOptions}
+		required
+	/>
+
+	<SelectField
+		label="Status VAT"
+		name="vatStatus"
+		icon="file-text"
+		options={vatStatusOptions}
+		required
+	/>
+
+	<SelectField
+		label="Czy planujesz zatrudniać pracowników lub zleceniobiorców?"
+		name="employment"
+		icon="users"
+		options={employmentOptions}
+		required
+	/>
+
+	{/*
+		Liczba osób ma sens wyłącznie przy odpowiedzi „tak". Pole zostaje
+		widoczne w HTML-u — chowa je dopiero skrypt w `IntakeForm.astro`, więc
+		bez JavaScriptu formularz nadal daje się wypełnić w całości.
+	*/}
+	<div data-intake-employee-count data-hidden-for={EMPLOYMENT_NONE}>
+		<TextField
+			label="Przybliżona liczba osób"
+			name="employeeCount"
+			type="text"
+			inputmode="numeric"
+			icon="users"
+			placeholder="Np. 2"
+		/>
+	</div>
+
+	<TextField
+		label="Skala działalności"
+		name="estimatedScale"
+		type="text"
+		icon="file-text"
+		placeholder="Np. ok. 20 dokumentów miesięcznie"
+		hint="Opcjonalnie — liczba dokumentów w miesiącu lub przybliżony przychód. Pomaga w wycenie."
+	/>
+</IntakeFormSection>

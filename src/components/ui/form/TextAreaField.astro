@@ -8,12 +8,14 @@ interface Props extends HTMLAttributes<"textarea"> {
 	label: string;
 	name: string;
 	icon?: IconName;
+	hint?: string;
 }
 
 const {
 	label,
 	name,
 	icon,
+	hint,
 	id = name,
 	required = false,
 	class: className,
@@ -24,14 +26,23 @@ const {
 // a FormField oczekuje wartości znormalizowanych.
 const fieldId = id ?? name;
 const isRequired = Boolean(required);
+const hintId = hint ? `${fieldId}-hint` : undefined;
 ---
 
-<FormField label={label} for={fieldId} required={isRequired} class={className}>
+<FormField
+	label={label}
+	for={fieldId}
+	required={isRequired}
+	hint={hint}
+	hintId={hintId}
+	class={className}
+>
 	<TextArea
 		id={fieldId}
 		name={name}
 		icon={icon}
 		required={isRequired}
+		aria-describedby={hintId}
 		{...attrs}
 	/>
 </FormField>
