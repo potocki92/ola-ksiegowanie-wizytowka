@@ -1,0 +1,76 @@
+---
+import Button from "../../ui/Button.astro";
+
+interface ErrorAction {
+	href: string;
+	label: string;
+}
+
+/**
+ * Treść ekranu błędu, wspólna dla `404.astro` i `500.astro` — obie strony
+ * różnią się wyłącznie tekstem, więc markup istnieje w jednym miejscu.
+ *
+ * Celowo bez dodatkowych wariantów, ikon czy poziomów ważności: to nie jest
+ * uniwersalny komponent alertów, tylko dwa istniejące przypadki.
+ */
+interface Props {
+	/** Kod HTTP jako drobny znacznik — komunikat niesie nagłówek, nie liczba. */
+	code: string;
+	heading: string;
+	description: string;
+	primaryAction: ErrorAction;
+	secondaryAction?: ErrorAction;
+}
+
+const { code, heading, description, primaryAction, secondaryAction } = Astro.props;
+---
+
+<div class="relative w-full">
+	{/* Ten sam język wizualny co poświata w hero — tylko delikatniejsza i bez
+	    paralaksy, żeby strona błędu nie ważyła więcej niż ratowana treść.
+	    Pudełko trzyma się `inset-0`, a elipsa mieści się w nim z zapasem —
+	    wystająca poza kontener dokłada poziomy scroll, a ucięta krawędzią
+	    zostawia widoczny prostokąt zamiast poświaty. */}
+	<div
+		class="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_55%_at_50%_32%,rgba(123,108,246,0.16),transparent_70%)]"
+	>
+	</div>
+
+	<div class="relative mx-auto flex max-w-2xl flex-col items-center text-center">
+		<p
+			class="inline-flex rounded-full border border-border-3 bg-white px-3.5 py-1.5 font-display text-[13px] font-bold tracking-[0.16em] text-muted-500"
+		>
+			{code}
+		</p>
+
+		<h1
+			class="mt-6 text-[clamp(32px,5vw,52px)] leading-[1.06] tracking-[-0.03em] text-balance"
+		>
+			{heading}
+		</h1>
+
+		<p
+			class="mt-5 max-w-[52ch] text-[clamp(16px,1.35vw,18px)] leading-[1.6] text-pretty text-muted-600"
+		>
+			{description}
+		</p>
+
+		{/* Na wąskich ekranach przyciski idą w kolumnę na pełną szerokość
+		    kontenera — CTA ma być łatwe do trafienia kciukiem, a długa etykieta
+		    nie może wypchnąć układu poza viewport. */}
+		<div
+			class="mt-[clamp(26px,3vw,38px)] flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:justify-center"
+		>
+			<Button href={primaryAction.href} variant="primary" size="lg">
+				{primaryAction.label}
+			</Button>
+			{
+				secondaryAction && (
+					<Button href={secondaryAction.href} variant="secondary" size="lg" class="px-6.5">
+						{secondaryAction.label}
+					</Button>
+				)
+			}
+		</div>
+	</div>
+</div>

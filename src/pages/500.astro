@@ -1,0 +1,31 @@
+---
+import ErrorLayout from "../layouts/ErrorLayout.astro";
+import ErrorState from "../components/sections/error/ErrorState.astro";
+import { company } from "../data/company";
+---
+
+{/*
+	Strona dla nieobsłużonych błędów tras renderowanych on-demand. Astro
+	przekazuje tu prop `error` — świadomie go nie odczytujemy: zawiera
+	komunikat, stos i ścieżki serwera, a użytkownikowi nic z nich nie przyjdzie.
+	Szczegóły zostają w logach Vercela.
+
+	Zakres działania w tym projekcie: `output` jest statyczny, więc wszystkie
+	strony są prerenderowane i Astro nie ma czego renderować w runtime — ta
+	strona nie zastąpi błędu builda. Realnie obsługuje nieoczekiwany wyjątek
+	w trasach on-demand (dziś tylko `api/contact.ts` i `api/intake.ts`, które
+	mają własne `try/catch` i zawsze odpowiadają JSON-em) i jest gotowa, gdy
+	któraś strona dostanie `prerender = false`.
+*/}
+<ErrorLayout
+	title={`Coś poszło nie tak — ${company.brand.accountant}, Księgowość`}
+	description="Wystąpił chwilowy problem po naszej stronie. Spróbuj ponownie za moment."
+>
+	<ErrorState
+		code="500"
+		heading="Coś poszło nie tak"
+		description="Wystąpił chwilowy problem po naszej stronie. Odśwież stronę za moment albo wróć na stronę główną. Jeśli błąd się powtarza, daj mi znać."
+		primaryAction={{ href: "/", label: "Wróć na stronę główną" }}
+		secondaryAction={{ href: "/#kontakt", label: "Skontaktuj się" }}
+	/>
+</ErrorLayout>

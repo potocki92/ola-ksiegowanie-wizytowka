@@ -21,16 +21,19 @@ src/
 │   ├── layout/        page chrome: Header, Footer, MobileStickyCta
 │   └── sections/      one component per homepage section (Hero, Services, Faq, ...),
 │                      plus contact/ and intake/ for the two standalone form pages
+│                      and error/ for the shared 404 / 500 error state
 ├── features/
 │   ├── contact/       contact form: schema, service, email content
 │   └── intake/        intake questionnaire: schema, service, email content
-├── layouts/           Layout.astro — head/meta/SEO/JSON-LD, imports global.css
+├── layouts/           Layout.astro — head/meta/SEO/JSON-LD, imports global.css;
+│                      ErrorLayout.astro — minimal shell for 404 / 500
 ├── lib/
 │   ├── email/         shared Brevo transport, HTML email shell, env config —
 │   │                  used by both contact and intake
 │   └── forms/         form-submission.ts — the browser-side submit flow both
 │                      forms run (fetch, errors, success state)
-├── pages/             file-based routes; index.astro composes the sections
+├── pages/             file-based routes; index.astro composes the sections,
+│                      404.astro and 500.astro are Astro's error pages
 │   └── api/           on-demand endpoints (the only non-static routes):
 │                      contact.ts, intake.ts
 └── styles/            global.css — Tailwind import, @theme design tokens, @font-face
@@ -179,6 +182,40 @@ nie unieważnia przyjętej ankiety; zamiast tego `intake.service` zwraca
 sukcesu wybiera wariant komunikatu. Dzięki temu interfejs nigdy nie obiecuje
 maila, którego nie wysłaliśmy, i nigdy nie prosi o ponowne wypełnienie danych,
 które już dotarły.
+
+## Strony błędów (404, 500)
+
+`src/pages/404.astro` obsługuje nieistniejące adresy, `src/pages/500.astro` —
+nieobsłużone błędy tras renderowanych on-demand. Obie to natywny mechanizm
+Astro, bez własnego routingu i bez przekierowań: kod pochodzi z nazwy pliku.
+
+- **Status HTTP.** Astro buduje te dwie strony płasko do `404.html` i
+  `500.html` (`STATUS_CODE_PAGES` — omijają `build.format: "directory"`).
+  Adapter Vercela dokłada wtedy do `config.json` catch-all
+  `{ src: "/.*", dest: "/404.html", status: 404 }` — ale **tylko jeśli trasa
+  `/404` istnieje**. Bez tego pliku Vercel pokazuje własny, generyczny ekran.
+- **Zakres 500.** Custom 500 dotyczy wyłącznie tras renderowanych on-demand.
+  Tutaj `output` jest statyczny, więc wszystkie strony są prerenderowane i ta
+  strona nie zastąpi błędu builda — build po prostu się wysypie. Realnie jest
+  siatką bezpieczeństwa dla nieoczekiwanego wyjątku w trasach on-demand (dziś
+  tylko `api/*`, które łapią własne błędy i zawsze odpowiadają JSON-em) oraz
+  gotową stroną, gdy któraś trasa dostanie `prerender = false`. Kontrakt API
+  zostaje JSON-owy: nie ma tu middleware ani przekierowań na `/500`.
+- **Brak wycieku szczegółów.** Astro przekazuje do `500.astro` prop `error`.
+  Celowo go nie czytamy — niesie komunikat, stos i ścieżki serwera. Szczegóły
+  zostają w logach Vercela, użytkownik dostaje ogólny komunikat. Nie
+  generujemy też sztucznego „Error ID": nie ma dziś czego z nim skorelować.
+- **Wspólna prezentacja.** Cały markup ekranu błędu żyje w
+  `components/sections/error/ErrorState.astro` (kod, nagłówek, opis, dwa CTA
+  na `Button.astro`). Strony wnoszą wyłącznie treść i metadane.
+- **`ErrorLayout.astro`, nie `Layout.astro`.** Zwykły layout wysyła rzeczy,
+  które na ekranie błędu są zbędne albo wprost błędne: `canonical`, JSON-LD
+  `AccountingService`, meta OG/Twitter, Speed Insights i bundle animacji.
+  Alternatywa — trzy flagi wyłączające na layoucie używanym przez trzy realne
+  strony — byłaby konfigurowalnością na zapas. `ErrorLayout` ma ~50 linii,
+  `noindex` na stałe i nie ładuje żadnego skryptu strony.
+- **SEO.** Obie strony są `noindex, nofollow`, bez `canonical` i bez danych
+  strukturalnych. Nie ma ich w nawigacji ani stopce.
 
 ## Future phases
 
