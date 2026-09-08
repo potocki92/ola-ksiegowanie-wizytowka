@@ -54,6 +54,14 @@ oraz `src/pages/ankieta.astro` (adres `/ankieta`) — rozbudowana ankieta
 o działalności klienta. Link do niej Aleksandra wysyła ręcznie (SMS, WhatsApp,
 e-mail) przed rozmową; strona ma `noindex` i nie ma jej w menu ani stopce.
 
+Dwie ostatnie podstrony to ekrany błędów: `src/pages/404.astro` (nieistniejący
+adres) i `src/pages/500.astro` (nieobsłużone błędy tras renderowanych
+on-demand — patrz ograniczenia w
+[ARCHITECTURE.md](./ARCHITECTURE.md#strony-błędów-404-500)). Obie składają ten
+sam komponent `components/sections/error/ErrorState.astro` w lekkim
+`layouts/ErrorLayout.astro`, są `noindex` i nigdy nie pokazują użytkownikowi
+szczegółów błędu — te zostają w logach serwera.
+
 ## Funkcjonalności
 
 - **Formularz kontaktowy** (`features/contact/`) — walidacja danych po stronie
@@ -116,15 +124,18 @@ src/
 │   ├── ui/             elementy wielokrotnego użytku (Button, Icon, form/*)
 │   ├── layout/          Header, Footer, MobileStickyCta
 │   └── sections/        po jednym komponencie na sekcję strony głównej
+│                         (+ error/ErrorState.astro — wspólny ekran 404/500)
 ├── features/
 │   ├── contact/         walidacja formularza kontaktowego, szablony e-maili
 │   └── intake/          ankieta: schema, opcje, podsumowanie, serwis, e-maile
-├── layouts/             Layout.astro — head/meta/SEO/JSON-LD
+├── layouts/             Layout.astro — head/meta/SEO/JSON-LD;
+│                         ErrorLayout.astro — minimalna powłoka stron błędów
 ├── lib/
 │   ├── email/           wspólna wysyłka przez Brevo (provider, layout maila, config)
 │   ├── forms/           wspólna obsługa wysyłki formularzy w przeglądarce
 │   └── ...               drobne helpery (paralaksa, scroll-reveal, typografia)
-├── pages/               routing plikowy; index.astro składa sekcje w jedną stronę
+├── pages/               routing plikowy; index.astro składa sekcje w jedną stronę,
+│                         404.astro i 500.astro to strony błędów Astro
 │   └── api/             endpointy serverless: contact.ts, intake.ts
 └── styles/              global.css — import Tailwind + tokeny @theme
 ```

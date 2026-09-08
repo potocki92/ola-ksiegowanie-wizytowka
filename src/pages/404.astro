@@ -1,0 +1,24 @@
+---
+import ErrorLayout from "../layouts/ErrorLayout.astro";
+import ErrorState from "../components/sections/error/ErrorState.astro";
+import { company } from "../data/company";
+---
+
+{/*
+	Natywny mechanizm Astro: plik buduje się płasko do `404.html`, a adapter
+	`@astrojs/vercel` dokłada wtedy catch-all `{ src: "/.*", dest: "/404.html",
+	status: 404 }`. Nieistniejący adres dostaje więc prawdziwe 404, bez
+	własnego routingu i bez przekierowania na `/`.
+*/}
+<ErrorLayout
+	title={`Nie znaleźliśmy tej strony — ${company.brand.accountant}, Księgowość`}
+	description="Ten adres nie istnieje. Wróć na stronę główną albo napisz wiadomość."
+>
+	<ErrorState
+		code="404"
+		heading="Nie znaleźliśmy tej strony"
+		description="Adres mógł się zmienić, zawierać literówkę albo ta strona już nie istnieje. Wróć na stronę główną — a jeśli szukasz czegoś konkretnego, po prostu napisz."
+		primaryAction={{ href: "/", label: "Wróć na stronę główną" }}
+		secondaryAction={{ href: "/#kontakt", label: "Skontaktuj się" }}
+	/>
+</ErrorLayout>

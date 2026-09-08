@@ -1,0 +1,60 @@
+---
+import "../styles/global.css";
+import BrandLockup from "../components/ui/BrandLockup.astro";
+import Footer from "../components/layout/Footer.astro";
+
+/**
+ * Layout wyłącznie dla stron błędów (404, 500).
+ *
+ * Świadomie NIE jest to `Layout.astro` z flagami. Zwykły layout wysyła rzeczy,
+ * które na ekranie błędu są w najlepszym razie zbędne, a w gorszym błędne:
+ * `canonical` (dla `/404` wskazywałby na nieistniejącą treść), JSON-LD
+ * `AccountingService` (opisuje ekran błędu jako usługę księgową), meta OG/Twitter
+ * (strony błędu się nie udostępnia), Speed Insights oraz bundle animacji.
+ * Zostaje minimum: tożsamość dokumentu, favicon, style i `noindex`.
+ *
+ * Chrome strony (logotyp prowadzący na stronę główną, `<main>`, stopka) siedzi
+ * tutaj, a nie w każdej ze stron — jest identyczny dla 404 i 500, a strony mają
+ * wnosić wyłącznie treść i metadane.
+ */
+interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pl">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- Stopka pokazuje NIP i kod pocztowy — bez tego iOS Safari podlinkowuje
+		     je jako numery telefonu (patrz komentarz w Layout.astro). -->
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="icon" href="/favicon.ico" sizes="any" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		{/* Na stałe, bez propsa: 404 i 500 to jedyne strony pod tym layoutem. */}
+		<meta name="robots" content="noindex, nofollow" />
+	</head>
+	<body class="flex min-h-svh max-w-full flex-col overflow-x-hidden bg-bg">
+		<header class="px-[clamp(18px,4vw,56px)] py-3.5">
+			<BrandLockup href="/" size="lg" animated={false} />
+		</header>
+
+		<main
+			class="flex flex-1 items-center px-[clamp(18px,4vw,56px)] py-[clamp(40px,8vw,96px)]"
+		>
+			<slot />
+		</main>
+
+		<Footer hasMobileStickyCta={false} />
+	</body>
+</html>
