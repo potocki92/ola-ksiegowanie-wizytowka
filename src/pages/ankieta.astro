@@ -2,7 +2,6 @@
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
-import MobileStickyCta from "../components/layout/MobileStickyCta.astro";
 import Section from "../components/ui/Section.astro";
 import IntakeForm from "../components/sections/intake/IntakeForm.astro";
 import { company } from "../data/company";
@@ -47,6 +46,9 @@ import { company } from "../data/company";
 		</Section>
 	</main>
 
-	<Footer />
-	<MobileStickyCta />
+	{/*
+		Bez `MobileStickyCta`: na mobile pasek zasłaniałby dół formularza i
+		odciągał od jego wypełnienia na drugą stronę (`/#kontakt`).
+	*/}
+	<Footer hasMobileStickyCta={false} />
 </Layout>

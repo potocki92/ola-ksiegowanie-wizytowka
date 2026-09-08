@@ -46,7 +46,7 @@ podzielonej na następujące sekcje — każda to osobny komponent w
 | FAQ | `sections/Faq.astro` | Rozwijana lista najczęściej zadawanych pytań (akordeon). |
 | Kontakt | `sections/contact/ContactSection.astro` | Dane kontaktowe (telefon, e-mail, zasięg działania) oraz formularz kontaktowy z ochroną antyspamową, wysyłający zapytanie na e-mail biura. |
 | Stopka | `layout/Footer.astro` | Stopka z danymi firmy i linkiem do polityki prywatności. |
-| Mobilne CTA | `layout/MobileStickyCta.astro` | Przypięty do dołu ekranu pasek z przyciskiem kontaktu, widoczny tylko na urządzeniach mobilnych. |
+| Mobilne CTA | `layout/MobileStickyCta.astro` | Przypięty do dołu ekranu pasek z przyciskiem kontaktu, widoczny tylko na urządzeniach mobilnych. Nie jest renderowany na `/ankieta`, żeby nie odciągał od wypełnianego formularza — strona przekazuje wtedy `hasMobileStickyCta={false}` do stopki, która rezerwuje miejsce pod pasek. |
 
 Osobnymi podstronami są `src/pages/polityka-prywatnosci.astro` — polityka
 prywatności wymagana przy przetwarzaniu danych z formularza kontaktowego —
